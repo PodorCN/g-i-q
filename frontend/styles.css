@@ -1594,3 +1594,60 @@ td.numeric,
     scrollbar-color: #bdc9bc transparent;
   }
 }
+
+.quadrant-caution {
+  margin-top: 16px;
+  padding: 12px;
+  border: 1px solid #e5d9bd;
+  border-radius: 4px;
+  background: #fbf6eb;
+  color: #775724;
+}
+.quadrant-caution strong {
+  font-size: 12px;
+  font-weight: 650;
+}
+.quadrant-caution p {
+  font-size: 11px;
+  line-height: 1.7;
+  margin-top: 5px;
+}
+.quadrant-caution small {
+  font-size: 10px;
+  line-height: 1.7;
+  display: block;
+  margin-top: 7px;
+}
+.outlook-summary {
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+}
+.outlook-summary h3 {
+  font-size: 12px;
+  margin-bottom: 9px;
+}
+.outlook-summary dd {
+  text-transform: capitalize;
+}
+.outlook-summary p {
+  color: var(--muted);
+  margin-top: 8px;
+}
+.outlook-summary small {
+  display: block;
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.7;
+  margin-top: 8px;
+}
+.direction-evidence blockquote {
+  font-size: 12px;
+}
+@media (min-width: 601px) and (max-width: 900px) {
+  .quadrant-caution,
+  .outlook-summary {
+    grid-column: 1 / -1;
+  }
+}

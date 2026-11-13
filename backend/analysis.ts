@@ -252,9 +252,15 @@ export function directionalCoordinate(direction: Direction): number {
   return direction === 'accelerating' ? 0.62 : direction === 'decelerating' ? -0.62 : 0;
 }
 
-export function verifiedSnippet(text: string, quote: string, axis: 'growth' | 'inflation'): string {
-  const tokens = [...text.matchAll(/[\p{L}\p{N}]+/gu)];
-  const query = [...quote.matchAll(/[\p{L}\p{N}]+/gu)].map((match) =>
+export function verifiedSnippet(
+  text: string,
+  quote: string,
+  axis: 'growth' | 'inflation',
+  preservePassage = false,
+): string {
+  // Preserve decimal numbers when selecting the short excerpt (2.5% must not become 5%).
+  const tokens = [...text.matchAll(/\p{N}+(?:[.,]\p{N}+)*|[\p{L}\p{N}]+/gu)];
+  const query = [...quote.matchAll(/\p{N}+(?:[.,]\p{N}+)*|[\p{L}\p{N}]+/gu)].map((match) =>
     match[0].toLocaleLowerCase('en-US'),
   );
   if (query.length < 3) return '';
@@ -262,6 +268,12 @@ export function verifiedSnippet(text: string, quote: string, axis: 'growth' | 'i
   const position = corpus.indexOf(' ' + query.join(' ') + ' ');
   if (position < 0) return '';
   const tokenStart = corpus.slice(0, position).trim().split(/\s+/).filter(Boolean).length;
+  if (preservePassage) {
+    const end = tokens[tokenStart + query.length - 1];
+    const passage = text.slice(tokens[tokenStart].index!, end.index! + end[0].length);
+    // Direction evidence must retain its verb and qualifications, not just an axis keyword.
+    return passage.length <= 240 ? passage : '';
+  }
   const anchor = query.findIndex((word) =>
     axis === 'growth'
       ? /growth|econom|demand|hiring|employment|activity|spending/.test(word)

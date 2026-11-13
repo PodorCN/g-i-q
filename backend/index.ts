@@ -53,13 +53,18 @@ export function createAssessor(env: Env): Assess | undefined {
       inflationQuote: { type: 'string' },
       rationale: { type: 'string' },
       confidence: { type: 'string', enum: ['low', 'medium'] },
+      growthOutlook: { type: 'string', enum: ['rising', 'falling', 'steady', 'unspecified'] },
+      inflationOutlook: { type: 'string', enum: ['rising', 'falling', 'steady', 'unspecified'] },
+      growthOutlookQuote: { type: 'string' },
+      inflationOutlookQuote: { type: 'string' },
+      outlookHorizon: { type: 'string' },
     };
     const output = await env.AI!.run(env.AI_MODEL || '@cf/meta/llama-3.3-70b-instruct-fp8-fast', {
       messages: [
         { role: 'system', content: LEVELS_PROMPT },
         { role: 'user', content: JSON.stringify({ title, article: text.slice(0, 24000) }) },
       ],
-      max_tokens: 1000,
+      max_tokens: 1400,
       response_format: {
         type: 'json_schema',
         json_schema: {

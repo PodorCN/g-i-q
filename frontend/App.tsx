@@ -10,6 +10,7 @@ import {
 } from '../shared/schema';
 import Chart from './Chart';
 import { useSnapshot } from './useSnapshot';
+import { rangeQuadrants } from '../shared/quadrants';
 
 type Tab = 'map' | 'views' | 'data' | 'sources' | 'methodology';
 type Horizon = 'all' | 'current' | 'outlook';
@@ -80,6 +81,8 @@ function PointInspector({
     );
   const isData = point.kind === 'data';
   const anchors = snapshot.indicators.filter((i) => i.mode === 'level');
+  const quadrants = rangeQuadrants(point);
+  const outlook = point.outlookDirection;
   return (
     <aside className="point-inspector" aria-label="Selected point" key={point.id}>
       <div className="inspector-heading">
@@ -109,8 +112,52 @@ function PointInspector({
       </div>
       <p className="regime-line">
         <span className="small-cross" aria-hidden="true" />
-        {regime(point.x, point.y)}
+        Center: {regime(point.x, point.y)}
       </p>
+      {quadrants.length > 1 && (
+        <div className="quadrant-caution">
+          <strong>Single quadrant unresolved</strong>
+          <p>The model range overlaps {quadrants.join(', ')}.</p>
+          <small>
+            {point.kind === 'data'
+              ? 'Sensitivity to our assumptions; no quadrant probabilities.'
+              : point.horizon === 'outlook'
+                ? 'Our uncertainty about this outlook’s mapping, not the house’s odds for today’s economy.'
+                : 'Our mapping uncertainty, not probabilities assigned by the institution.'}
+          </small>
+        </div>
+      )}
+      {!isData && (outlook || point.horizon === 'outlook') && (
+        <section className="outlook-summary">
+          <h3>Source outlook direction</h3>
+          {outlook ? (
+            <>
+              <dl>
+                <div>
+                  <dt>Growth</dt>
+                  <dd>{outlook.growth === 'unspecified' ? 'Not specified' : outlook.growth}</dd>
+                </div>
+                <div>
+                  <dt>Inflation</dt>
+                  <dd>
+                    {outlook.inflation === 'unspecified' ? 'Not specified' : outlook.inflation}
+                  </dd>
+                </div>
+              </dl>
+              <p>{outlook.horizonLabel}</p>
+              <small>
+                Arrow direction only. Length is not a forecast magnitude; an unspecified axis is not
+                a forecast of no change.
+              </small>
+            </>
+          ) : (
+            <p>
+              No explicit rate-change direction verified in this article. A level forecast alone
+              does not determine an arrow.
+            </p>
+          )}
+        </section>
+      )}
       {isData ? (
         <div className="anchor-list">
           {anchors.map((i) => (
@@ -157,6 +204,17 @@ function PointInspector({
         </summary>
         <div className="disclosure-body">
           <p>{point.summary}</p>
+          {outlook && (
+            <section className="direction-evidence">
+              <h3>Direction evidence</h3>
+              {outlook.evidence.map((e) => (
+                <div key={e.axis}>
+                  <blockquote>“{e.quote}”</blockquote>
+                  <p>{e.interpretation}</p>
+                </div>
+              ))}
+            </section>
+          )}
           {!isData && data && (
             <div className="data-comparison">
               <h3>Compared with the data</h3>
@@ -253,6 +311,22 @@ function Methodology() {
           forecasts and ±0.7–1.2 pp for qualitative or longer-term interpretation. The data anchor
           uses fixed sensitivity widths of ±0.6 pp for growth and ±0.25 pp for inflation. No
           growth–inflation covariance or historical coverage has been estimated.
+        </p>
+        <p>
+          A range crossing a quadrant boundary makes the mapping inconclusive. The listed overlaps
+          follow the actual ellipse, not its rectangular bounding box. They are neither
+          probabilities nor alternate scenarios endorsed by the institution. An outlook range
+          concerns that outlook’s horizon, not today.
+        </p>
+      </section>
+      <section>
+        <h2>What the arrows mean</h2>
+        <p>
+          Arrows beside house labels show rate-change directions explicitly supported by the source,
+          at the horizon shown in the inspector. They are schematic symbols, not numerical endpoints
+          or paths from the data anchor. Missing directions remain unspecified, not steady. An
+          article may describe a later horizon than the plotted point; that date is preserved
+          separately.
         </p>
       </section>
       <section>
@@ -415,6 +489,7 @@ export default function App() {
     return value === 'current' || value === 'outlook' ? value : 'all';
   });
   const [rangeMode, setRangeMode] = useState<'selected' | 'all' | 'none'>('selected');
+  const [showOutlooks, setShowOutlooks] = useState(true);
   const [showLabels, setShowLabels] = useState(
     () => !window.matchMedia('(max-width: 600px)').matches,
   );
@@ -657,6 +732,14 @@ export default function App() {
                           <label className="checkbox-label">
                             <input
                               type="checkbox"
+                              checked={showOutlooks}
+                              onChange={(e) => setShowOutlooks(e.target.checked)}
+                            />
+                            Source outlook arrows
+                          </label>
+                          <label className="checkbox-label">
+                            <input
+                              type="checkbox"
                               checked={showLabels}
                               onChange={(e) => setShowLabels(e.target.checked)}
                             />
@@ -676,6 +759,7 @@ export default function App() {
                       showRanges={rangeMode !== 'none'}
                       rangeMode={rangeMode === 'all' ? 'all' : 'selected'}
                       showLabels={showLabels}
+                      showOutlooks={showOutlooks}
                     />
                     <div className="mobile-house-list" aria-label="Select a house view">
                       {visiblePoints.map((point) => (
@@ -690,7 +774,9 @@ export default function App() {
                       ))}
                     </div>
                     <div className="map-caption">
-                      <span>Mixed horizons. Select a point to inspect its source.</span>
+                      <span>
+                        Arrows: stated direction only. Hollow dots: mapping spans quadrants.
+                      </span>
                       <button className="text-button" onClick={() => changeTab('methodology')}>
                         How to read this <ArrowUpRight size={13} aria-hidden="true" />
                       </button>

@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "2026-11-13-levels-reviewed-mwf86z5h",
-  "asOf": "2026-11-13T17:02:57.458Z",
-  "generatedAt": "2026-11-13T17:03:19.925Z",
+  "id": "2026-11-13-outlooks-reviewed-mwfa0d99",
+  "asOf": "2026-11-13T17:54:10.845Z",
+  "generatedAt": "2026-11-13T17:54:10.845Z",
   "region": "US",
   "demo": false,
   "methodologyVersion": "1.0.0",
@@ -32,8 +32,8 @@
       "inflationRate": 3.1,
       "growthBenchmark": 2,
       "inflationBenchmark": 2,
-      "publishedAt": "2026-11-13T17:02:57.458Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "publishedAt": "2026-11-13T17:14:21.888Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "sourceUrl": "https://www.bea.gov/data/gdp/gross-domestic-product",
       "title": "Published growth and core-inflation anchors",
       "summary": "Growth is 1.45pp above the assumed 2.0% trend, using Real GDP growth 3.4% and Atlanta Fed GDPNow 3.5%. Core PCE is 3.1% y/y, 1.10pp above the 2% target. GDP and GDPNow cover different quarters. Ranges are sensitivity assumptions (±0.6pp growth, ±0.25pp inflation), not empirically calibrated confidence intervals.",
@@ -82,7 +82,7 @@
       "growthBenchmark": 2,
       "inflationBenchmark": 2,
       "publishedAt": "2026-11-09T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "sourceUrl": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
       "title": "Weekly market commentary | BlackRock Investment Institute",
       "summary": "BlackRock emphasizes AI investment support and persistent inflation alongside funding and slowdown risks. The 2.3% growth and 3.1% core-inflation equivalents are our qualitative mapping, not BlackRock numerical forecasts. Both axes have broad uncertainty.",
@@ -96,246 +96,6 @@
           "axis": "inflation",
           "quote": "We see inflation settling above pre-pandemic levels",
           "interpretation": "Mapped core-inflation equivalent 3.10%; target 2.0%. Basis: inferred."
-        }
-      ],
-      "method": "reviewed"
-    },
-    {
-      "id": "b0c8b8ce0255",
-      "institution": "J.P. Morgan Asset Management",
-      "shortName": "J.P. Morgan",
-      "color": "#b77a44",
-      "kind": "institution",
-      "x": 0.5,
-      "y": 1,
-      "xRange": {
-        "low": -0.30000000000000004,
-        "high": 1.3
-      },
-      "yRange": {
-        "low": 0.19999999999999996,
-        "high": 1.8
-      },
-      "rangeKind": "model_range",
-      "confidence": "low",
-      "horizon": "current",
-      "horizonLabel": "October macro backdrop / November review",
-      "growthBasis": "inferred",
-      "inflationBasis": "inferred",
-      "maxAgeDays": 60,
-      "mappingVersion": "view-v2",
-      "axisMode": "levels",
-      "growthRate": 2.5,
-      "inflationRate": 3,
-      "growthBenchmark": 2,
-      "inflationBenchmark": 2,
-      "publishedAt": "2026-11-04T05:48:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "sourceUrl": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
-      "title": "Monthly Market Review",
-      "summary": "The review highlights strong U.S. activity, elevated inflation and a restrictive financing backdrop. We map that backdrop to above-trend growth and above-target inflation. The 2.5% growth and 3.0% core-inflation proxies are inferred from the commentary, not published J.P. Morgan forecasts; the quoted Fed assessment is supporting context.",
-      "evidence": [
-        {
-          "axis": "growth",
-          "quote": "upgraded economic activity from ‘solid’ to ‘strong",
-          "interpretation": "Mapped real growth 2.50%; trend benchmark 2.0%. Basis: inferred."
-        },
-        {
-          "axis": "inflation",
-          "quote": "while describing inflation as ‘elevated",
-          "interpretation": "Mapped core-inflation equivalent 3.00%; target 2.0%. Basis: inferred."
-        }
-      ],
-      "method": "reviewed"
-    },
-    {
-      "id": "bf8fcf1a74b0",
-      "institution": "PIMCO",
-      "shortName": "PIMCO",
-      "color": "#8870af",
-      "kind": "institution",
-      "x": 0.3999999999999999,
-      "y": 0.6000000000000001,
-      "xRange": {
-        "low": -0.30000000000000004,
-        "high": 1.0999999999999999
-      },
-      "yRange": {
-        "low": -0.09999999999999987,
-        "high": 1.3
-      },
-      "rangeKind": "model_range",
-      "confidence": "low",
-      "horizon": "outlook",
-      "horizonLabel": "Next 6–12 months",
-      "growthBasis": "inferred",
-      "inflationBasis": "inferred",
-      "maxAgeDays": 90,
-      "mappingVersion": "view-v2",
-      "axisMode": "levels",
-      "growthRate": 2.4,
-      "inflationRate": 2.6,
-      "growthBenchmark": 2,
-      "inflationBenchmark": 2,
-      "publishedAt": "2026-10-06T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "sourceUrl": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
-      "title": "Growth Holds, Risks Widen",
-      "summary": "PIMCO’s baseline is resilient growth with moderating inflation, while geopolitical and AI risks widen the possible outcomes. Applying its global cyclical argument to the U.S., we infer 2.4% growth and a 2.6% core-inflation equivalent. Cooling inflation remains above the 2% target; these mapped numbers are not published PIMCO forecasts.",
-      "evidence": [
-        {
-          "axis": "growth",
-          "quote": "stable global growth to continue in our baseline",
-          "interpretation": "Mapped real growth 2.40%; trend benchmark 2.0%. Basis: inferred."
-        },
-        {
-          "axis": "inflation",
-          "quote": "inflation moderates as the energy price shock fades",
-          "interpretation": "Mapped core-inflation equivalent 2.60%; target 2.0%. Basis: inferred."
-        }
-      ],
-      "method": "reviewed"
-    },
-    {
-      "id": "69a498e109ff",
-      "institution": "Goldman Sachs — John Waldron",
-      "shortName": "Goldman Sachs",
-      "color": "#698eaf",
-      "kind": "institution",
-      "x": 0.5,
-      "y": 0.7999999999999998,
-      "xRange": {
-        "low": 0,
-        "high": 1
-      },
-      "yRange": {
-        "low": -2.220446049250313e-16,
-        "high": 1.5999999999999999
-      },
-      "rangeKind": "model_range",
-      "confidence": "medium",
-      "horizon": "outlook",
-      "horizonLabel": "Near-term / 2027 planning outlook",
-      "growthBasis": "direct",
-      "inflationBasis": "inferred",
-      "maxAgeDays": 90,
-      "mappingVersion": "view-v2",
-      "axisMode": "levels",
-      "growthRate": 2.5,
-      "inflationRate": 2.8,
-      "growthBenchmark": 2,
-      "inflationBenchmark": 2,
-      "publishedAt": "2026-11-04T00:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "sourceUrl": "https://www.goldmansachs.com/insights/goldman-sachs-exchanges/john-waldron-on-gdp-growth-ai-and-the-m-a-outlook",
-      "title": "John Waldron on GDP Growth, AI, and the M&A Outlook",
-      "summary": "Waldron explicitly describes an approximately 2.5% real-growth forecast and expects inflation to move down. The 2.8% core-inflation equivalent is our interpretation of that qualitative outlook, not a numerical Goldman inflation forecast. The point remains above trend and target even as inflation cools.",
-      "evidence": [
-        {
-          "axis": "growth",
-          "quote": "5% real growth plus minus",
-          "interpretation": "Mapped real growth 2.50%; trend benchmark 2.0%. Basis: direct."
-        },
-        {
-          "axis": "inflation",
-          "quote": "inflation will start to migrate down",
-          "interpretation": "Mapped core-inflation equivalent 2.80%; target 2.0%. Basis: inferred."
-        }
-      ],
-      "method": "reviewed"
-    },
-    {
-      "id": "0f967911ed90",
-      "institution": "ING Research",
-      "shortName": "ING",
-      "color": "#c4784a",
-      "kind": "institution",
-      "x": 0.25,
-      "y": 0.7000000000000002,
-      "xRange": {
-        "low": -0.25,
-        "high": 0.75
-      },
-      "yRange": {
-        "low": 2.220446049250313e-16,
-        "high": 1.4000000000000001
-      },
-      "rangeKind": "model_range",
-      "confidence": "medium",
-      "horizon": "outlook",
-      "horizonLabel": "2027 baseline / next couple of years",
-      "growthBasis": "direct",
-      "inflationBasis": "inferred",
-      "maxAgeDays": 60,
-      "mappingVersion": "view-v2",
-      "axisMode": "levels",
-      "growthRate": 2.25,
-      "inflationRate": 2.7,
-      "growthBenchmark": 2,
-      "inflationBenchmark": 2,
-      "publishedAt": "2026-11-10T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "sourceUrl": "https://think.ing.com/articles/solid-growth-cooling-inflation-3-calls-for-the-us/",
-      "title": "Solid growth and cooling inflation: 3 calls for the US",
-      "summary": "ING gives a 2–2.5% growth baseline; the plotted growth rate is its midpoint. Its base case expects inflation to ease with energy, rents and wages. We infer a 2.7% core-inflation equivalent with a broad range. The plotted scenario is its baseline, excluding the separate Iran-risk and AI-boom scenarios.",
-      "evidence": [
-        {
-          "axis": "growth",
-          "quote": "respectable US growth of 2-2.5",
-          "interpretation": "Mapped real growth 2.25%; trend benchmark 2.0%. Basis: direct."
-        },
-        {
-          "axis": "inflation",
-          "quote": "Inflation remains above target but should ease",
-          "interpretation": "Mapped core-inflation equivalent 2.70%; target 2.0%. Basis: inferred."
-        }
-      ],
-      "method": "reviewed"
-    },
-    {
-      "id": "6f904f60f816",
-      "institution": "Vanguard Economics",
-      "shortName": "Vanguard",
-      "color": "#ac4f60",
-      "kind": "institution",
-      "x": 0.2999999999999998,
-      "y": 1.2000000000000002,
-      "xRange": {
-        "low": -0.7000000000000002,
-        "high": 1.2999999999999998
-      },
-      "yRange": {
-        "low": 0.8500000000000002,
-        "high": 1.5500000000000003
-      },
-      "rangeKind": "model_range",
-      "confidence": "medium",
-      "horizon": "outlook",
-      "horizonLabel": "Year-end 2026 inflation / near-term growth",
-      "growthBasis": "inferred",
-      "inflationBasis": "direct",
-      "maxAgeDays": 60,
-      "mappingVersion": "view-v2",
-      "axisMode": "levels",
-      "growthRate": 2.3,
-      "inflationRate": 3.2,
-      "growthBenchmark": 2,
-      "inflationBenchmark": 2,
-      "publishedAt": "2026-11-09T05:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "sourceUrl": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
-      "title": "Our economic outlook for the United States",
-      "summary": "Vanguard explicitly raises its year-end core-inflation forecast to 3.2%, while expecting tariff-related disinflation in 2027. We infer 2.3% growth from its balanced-economy discussion with a wide growth range; that growth number is not a Vanguard forecast. The inflation coordinate uses the year-end forecast, not its lower April 2027 expectation.",
-      "evidence": [
-        {
-          "axis": "growth",
-          "quote": "while preserving labor-market balance",
-          "interpretation": "Mapped real growth 2.30%; trend benchmark 2.0%. Basis: inferred."
-        },
-        {
-          "axis": "inflation",
-          "quote": "2026 core inflation forecast to 3.2",
-          "interpretation": "Mapped core-inflation equivalent 3.20%; target 2.0%. Basis: direct."
         }
       ],
       "method": "reviewed"
@@ -384,6 +144,294 @@
           "axis": "inflation",
           "quote": "inflationary pressures appear somewhat sticky",
           "interpretation": "Mapped core-inflation equivalent 3.00%; target 2.0%. Basis: inferred."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "b0c8b8ce0255",
+      "institution": "J.P. Morgan Asset Management",
+      "shortName": "J.P. Morgan",
+      "color": "#b77a44",
+      "kind": "institution",
+      "x": 0.5,
+      "y": 1,
+      "xRange": {
+        "low": -0.30000000000000004,
+        "high": 1.3
+      },
+      "yRange": {
+        "low": 0.19999999999999996,
+        "high": 1.8
+      },
+      "rangeKind": "model_range",
+      "confidence": "low",
+      "horizon": "current",
+      "horizonLabel": "October macro backdrop / November review",
+      "growthBasis": "inferred",
+      "inflationBasis": "inferred",
+      "maxAgeDays": 60,
+      "mappingVersion": "view-v2",
+      "axisMode": "levels",
+      "growthRate": 2.5,
+      "inflationRate": 3,
+      "growthBenchmark": 2,
+      "inflationBenchmark": 2,
+      "publishedAt": "2026-11-04T05:48:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "sourceUrl": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
+      "title": "Monthly Market Review",
+      "summary": "The review highlights strong U.S. activity, elevated inflation and a restrictive financing backdrop. We map that backdrop to above-trend growth and above-target inflation. The 2.5% growth and 3.0% core-inflation proxies are inferred from the commentary, not published J.P. Morgan forecasts; the quoted Fed assessment is supporting context.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "upgraded economic activity from ‘solid’ to ‘strong",
+          "interpretation": "Mapped real growth 2.50%; trend benchmark 2.0%. Basis: inferred."
+        },
+        {
+          "axis": "inflation",
+          "quote": "while describing inflation as ‘elevated",
+          "interpretation": "Mapped core-inflation equivalent 3.00%; target 2.0%. Basis: inferred."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "bf8fcf1a74b0",
+      "institution": "PIMCO",
+      "shortName": "PIMCO",
+      "color": "#8870af",
+      "kind": "institution",
+      "x": 0.3999999999999999,
+      "y": 0.6000000000000001,
+      "xRange": {
+        "low": -0.30000000000000004,
+        "high": 1.0999999999999999
+      },
+      "yRange": {
+        "low": -0.09999999999999987,
+        "high": 1.3
+      },
+      "rangeKind": "model_range",
+      "confidence": "low",
+      "horizon": "outlook",
+      "horizonLabel": "Next 6–12 months",
+      "outlookDirection": {
+        "growth": "unspecified",
+        "inflation": "falling",
+        "horizonLabel": "Next 6–12 months; global baseline applied to the U.S.",
+        "evidence": [
+          {
+            "axis": "inflation",
+            "quote": "inflation moderates as the energy price shock fades",
+            "interpretation": "PIMCO’s global cyclical baseline expects moderating inflation. Applying that direction to this U.S. map is our interpretation; no U.S.-specific numerical destination is stated."
+          }
+        ]
+      },
+      "growthBasis": "inferred",
+      "inflationBasis": "inferred",
+      "maxAgeDays": 90,
+      "mappingVersion": "view-v2",
+      "axisMode": "levels",
+      "growthRate": 2.4,
+      "inflationRate": 2.6,
+      "growthBenchmark": 2,
+      "inflationBenchmark": 2,
+      "publishedAt": "2026-10-06T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "sourceUrl": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
+      "title": "Growth Holds, Risks Widen",
+      "summary": "PIMCO’s baseline is resilient growth with moderating inflation, while geopolitical and AI risks widen the possible outcomes. Applying its global cyclical argument to the U.S., we infer 2.4% growth and a 2.6% core-inflation equivalent. Cooling inflation remains above the 2% target; these mapped numbers are not published PIMCO forecasts.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "stable global growth to continue in our baseline",
+          "interpretation": "Mapped real growth 2.40%; trend benchmark 2.0%. Basis: inferred."
+        },
+        {
+          "axis": "inflation",
+          "quote": "inflation moderates as the energy price shock fades",
+          "interpretation": "Mapped core-inflation equivalent 2.60%; target 2.0%. Basis: inferred."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "69a498e109ff",
+      "institution": "Goldman Sachs — John Waldron",
+      "shortName": "Goldman Sachs",
+      "color": "#698eaf",
+      "kind": "institution",
+      "x": 0.5,
+      "y": 0.7999999999999998,
+      "xRange": {
+        "low": 0,
+        "high": 1
+      },
+      "yRange": {
+        "low": -2.220446049250313e-16,
+        "high": 1.5999999999999999
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "outlook",
+      "horizonLabel": "Near-term / 2027 planning outlook",
+      "outlookDirection": {
+        "growth": "unspecified",
+        "inflation": "falling",
+        "horizonLabel": "Forward outlook; end date not specified by Waldron",
+        "evidence": [
+          {
+            "axis": "inflation",
+            "quote": "We obviously think as a firm inflation will start to migrate down",
+            "interpretation": "John Waldron expects inflation to move down. The excerpt gives no dated inflation endpoint or growth-rate change; this is his commentary, not a formal probability forecast."
+          }
+        ]
+      },
+      "growthBasis": "direct",
+      "inflationBasis": "inferred",
+      "maxAgeDays": 90,
+      "mappingVersion": "view-v2",
+      "axisMode": "levels",
+      "growthRate": 2.5,
+      "inflationRate": 2.8,
+      "growthBenchmark": 2,
+      "inflationBenchmark": 2,
+      "publishedAt": "2026-11-04T00:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "sourceUrl": "https://www.goldmansachs.com/insights/goldman-sachs-exchanges/john-waldron-on-gdp-growth-ai-and-the-m-a-outlook",
+      "title": "John Waldron on GDP Growth, AI, and the M&A Outlook",
+      "summary": "Waldron explicitly describes an approximately 2.5% real-growth forecast and expects inflation to move down. The 2.8% core-inflation equivalent is our interpretation of that qualitative outlook, not a numerical Goldman inflation forecast. The point remains above trend and target even as inflation cools.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "2.5% real growth plus minus",
+          "interpretation": "Mapped real growth 2.50%; trend benchmark 2.0%. Basis: direct."
+        },
+        {
+          "axis": "inflation",
+          "quote": "inflation will start to migrate down",
+          "interpretation": "Mapped core-inflation equivalent 2.80%; target 2.0%. Basis: inferred."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "0f967911ed90",
+      "institution": "ING Research",
+      "shortName": "ING",
+      "color": "#c4784a",
+      "kind": "institution",
+      "x": 0.25,
+      "y": 0.7000000000000002,
+      "xRange": {
+        "low": -0.25,
+        "high": 0.75
+      },
+      "yRange": {
+        "low": 2.220446049250313e-16,
+        "high": 1.4000000000000001
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "outlook",
+      "horizonLabel": "2027 baseline / next couple of years",
+      "outlookDirection": {
+        "growth": "unspecified",
+        "inflation": "falling",
+        "horizonLabel": "2027 baseline / next couple of years",
+        "evidence": [
+          {
+            "axis": "inflation",
+            "quote": "Inflation remains above target but should ease as energy costs fall and rents cool",
+            "interpretation": "ING expects inflation to ease while above target. The point’s numerical core-inflation equivalent is our mapping, not a published endpoint."
+          }
+        ]
+      },
+      "growthBasis": "direct",
+      "inflationBasis": "inferred",
+      "maxAgeDays": 60,
+      "mappingVersion": "view-v2",
+      "axisMode": "levels",
+      "growthRate": 2.25,
+      "inflationRate": 2.7,
+      "growthBenchmark": 2,
+      "inflationBenchmark": 2,
+      "publishedAt": "2026-11-10T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "sourceUrl": "https://think.ing.com/articles/solid-growth-cooling-inflation-3-calls-for-the-us/",
+      "title": "Solid growth and cooling inflation: 3 calls for the US",
+      "summary": "ING gives a 2–2.5% growth baseline; the plotted growth rate is its midpoint. Its base case expects inflation to ease with energy, rents and wages. We infer a 2.7% core-inflation equivalent with a broad range. The plotted scenario is its baseline, excluding the separate Iran-risk and AI-boom scenarios.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "respectable US growth of 2-2.5",
+          "interpretation": "Mapped real growth 2.25%; trend benchmark 2.0%. Basis: direct."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Inflation remains above target but should ease",
+          "interpretation": "Mapped core-inflation equivalent 2.70%; target 2.0%. Basis: inferred."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "6f904f60f816",
+      "institution": "Vanguard Economics",
+      "shortName": "Vanguard",
+      "color": "#ac4f60",
+      "kind": "institution",
+      "x": 0.2999999999999998,
+      "y": 1.2000000000000002,
+      "xRange": {
+        "low": -0.7000000000000002,
+        "high": 1.2999999999999998
+      },
+      "yRange": {
+        "low": 0.8500000000000002,
+        "high": 1.5500000000000003
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "outlook",
+      "horizonLabel": "Year-end 2026 inflation / near-term growth",
+      "outlookDirection": {
+        "growth": "unspecified",
+        "inflation": "falling",
+        "horizonLabel": "By April 2027; later than the plotted year-end 2026 forecast",
+        "evidence": [
+          {
+            "axis": "inflation",
+            "quote": "By April 2027, that mechanical effect alone should bring core inflation as measured by the Personal Consumption Expenditures price index toward 2.5%, a meaningful decline from current levels",
+            "interpretation": "Vanguard describes a decline toward 2.5% core PCE by April 2027. Its plotted level forecast is 3.2% for year-end 2026. The arrow marks direction only; these two horizons stay separate."
+          }
+        ]
+      },
+      "growthBasis": "inferred",
+      "inflationBasis": "direct",
+      "maxAgeDays": 60,
+      "mappingVersion": "view-v2",
+      "axisMode": "levels",
+      "growthRate": 2.3,
+      "inflationRate": 3.2,
+      "growthBenchmark": 2,
+      "inflationBenchmark": 2,
+      "publishedAt": "2026-11-09T05:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "sourceUrl": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
+      "title": "Our economic outlook for the United States",
+      "summary": "Vanguard explicitly raises its year-end core-inflation forecast to 3.2%, while expecting tariff-related disinflation in 2027. We infer 2.3% growth from its balanced-economy discussion with a wide growth range; that growth number is not a Vanguard forecast. The inflation coordinate uses the year-end forecast, not its lower April 2027 expectation.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "while preserving labor-market balance",
+          "interpretation": "Mapped real growth 2.30%; trend benchmark 2.0%. Basis: inferred."
+        },
+        {
+          "axis": "inflation",
+          "quote": "2026 core inflation forecast to 3.2",
+          "interpretation": "Mapped core-inflation equivalent 3.20%; target 2.0%. Basis: direct."
         }
       ],
       "method": "reviewed"
@@ -847,7 +895,7 @@
       "provider": "U.S. Bureau of Economic Analysis",
       "sourceUrl": "https://www.bea.gov/data/gdp/gross-domestic-product",
       "period": "2026-09",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "value": 3.4,
       "unit": "% annual rate",
       "currentMomentum": 3.4,
@@ -872,7 +920,7 @@
       "provider": "U.S. Bureau of Economic Analysis",
       "sourceUrl": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy",
       "period": "2026-09",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "value": 3.1,
       "unit": "% annual rate",
       "currentMomentum": 3.1,
@@ -897,7 +945,7 @@
       "provider": "Federal Reserve Bank of Atlanta",
       "sourceUrl": "https://www.atlantafed.org/data/research-data",
       "period": "2026-11",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "value": 3.5,
       "unit": "% annual rate",
       "currentMomentum": 3.5,
@@ -925,79 +973,65 @@
       "title": "Weekly market commentary | BlackRock Investment Institute",
       "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
       "publishedAt": "2026-11-09T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "scored",
-      "reason": "Reviewed macro interpretation; growth inferred, inflation inferred. 6–12m tactical view.",
+      "reason": "Unchanged source article; preserving its mapped view. 6–12m tactical view.",
       "type": "commentary",
       "excerpt": ""
     },
     {
-      "id": "b0c8b8ce0255",
-      "institution": "J.P. Morgan Asset Management",
-      "shortName": "J.P. Morgan",
-      "color": "#b77a44",
-      "title": "Monthly Market Review",
-      "url": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
-      "publishedAt": "2026-11-04T05:48:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
+      "id": "4094274de2cd",
+      "institution": "BlackRock Investment Institute",
+      "shortName": "BlackRock",
+      "color": "#287b78",
+      "title": "Weekly market commentary",
+      "url": "https://www.blackrock.com/corporate/insights/blackrock-investment-institute/global-weekly-commentary",
+      "publishedAt": "2026-11-09T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "scored",
-      "reason": "Reviewed macro interpretation; growth inferred, inflation inferred. October macro backdrop / November review.",
+      "reason": "Mapped growth gap +0.30pp, inflation gap +0.50pp. Next 6-12 months. Numerical estimates are labeled direct or inferred.",
       "type": "commentary",
       "excerpt": ""
     },
     {
-      "id": "bf8fcf1a74b0",
-      "institution": "PIMCO",
-      "shortName": "PIMCO",
-      "color": "#8870af",
-      "title": "Growth Holds, Risks Widen",
-      "url": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
-      "publishedAt": "2026-10-06T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "status": "scored",
-      "reason": "Reviewed macro interpretation; growth inferred, inflation inferred. Next 6–12 months.",
+      "id": "bc32e8d75ac1",
+      "institution": "Charles Schwab",
+      "shortName": "Schwab",
+      "color": "#4268ca",
+      "title": "Charles Schwab",
+      "url": "https://www.schwab.com/learn/story/stock-market-update-open",
+      "publishedAt": null,
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "error",
+      "reason": "Full article text was unavailable; no point inferred.",
       "type": "commentary",
       "excerpt": ""
     },
     {
-      "id": "69a498e109ff",
-      "institution": "Goldman Sachs — John Waldron",
-      "shortName": "Goldman Sachs",
-      "color": "#698eaf",
-      "title": "John Waldron on GDP Growth, AI, and the M&A Outlook",
-      "url": "https://www.goldmansachs.com/insights/goldman-sachs-exchanges/john-waldron-on-gdp-growth-ai-and-the-m-a-outlook",
-      "publishedAt": "2026-11-04T00:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "status": "scored",
-      "reason": "Reviewed macro interpretation; growth direct, inflation inferred. Near-term / 2027 planning outlook.",
+      "id": "2515c2776be3",
+      "institution": "Charles Schwab",
+      "shortName": "Schwab",
+      "color": "#4268ca",
+      "title": "Charles Schwab",
+      "url": "https://international.schwab.com/story/stock-market-update-open",
+      "publishedAt": null,
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "error",
+      "reason": "HTTP 403",
       "type": "commentary",
       "excerpt": ""
     },
     {
-      "id": "0f967911ed90",
-      "institution": "ING Research",
-      "shortName": "ING",
-      "color": "#c4784a",
-      "title": "Solid growth and cooling inflation: 3 calls for the US",
-      "url": "https://think.ing.com/articles/solid-growth-cooling-inflation-3-calls-for-the-us/",
-      "publishedAt": "2026-11-10T12:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "status": "scored",
-      "reason": "Reviewed macro interpretation; growth direct, inflation inferred. 2027 baseline / next couple of years.",
-      "type": "commentary",
-      "excerpt": ""
-    },
-    {
-      "id": "6f904f60f816",
-      "institution": "Vanguard Economics",
-      "shortName": "Vanguard",
-      "color": "#ac4f60",
-      "title": "Our economic outlook for the United States",
-      "url": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
-      "publishedAt": "2026-11-09T05:00:00.000Z",
-      "retrievedAt": "2026-11-13T17:02:57.458Z",
-      "status": "scored",
-      "reason": "Reviewed macro interpretation; growth inferred, inflation direct. Year-end 2026 inflation / near-term growth.",
+      "id": "687e989f73b4",
+      "institution": "Charles Schwab",
+      "shortName": "Schwab",
+      "color": "#4268ca",
+      "title": "Charles Schwab",
+      "url": "https://www.schwab.com/learn/story/weekly-traders-outlook",
+      "publishedAt": null,
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "error",
+      "reason": "Full article text was unavailable; no point inferred.",
       "type": "commentary",
       "excerpt": ""
     },
@@ -1011,7 +1045,105 @@
       "publishedAt": "2026-11-06T12:00:00.000Z",
       "retrievedAt": "2026-11-13T17:02:57.458Z",
       "status": "scored",
-      "reason": "Reviewed macro interpretation; growth inferred, inflation inferred. Current conditions, November weekly outlook.",
+      "reason": "Retaining the last mapped view with its original dates; no new complete macro view was available.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "b0c8b8ce0255",
+      "institution": "J.P. Morgan Asset Management",
+      "shortName": "J.P. Morgan",
+      "color": "#b77a44",
+      "title": "Monthly Market Review",
+      "url": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
+      "publishedAt": "2026-11-04T05:48:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Unchanged source article; preserving its mapped view. October macro backdrop / November review.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "bf8fcf1a74b0",
+      "institution": "PIMCO",
+      "shortName": "PIMCO",
+      "color": "#8870af",
+      "title": "Growth Holds, Risks Widen",
+      "url": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
+      "publishedAt": "2026-10-06T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Unchanged source article; preserving its mapped view. Next 6–12 months.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "82b17256e313",
+      "institution": "PIMCO",
+      "shortName": "PIMCO",
+      "color": "#8870af",
+      "title": "Rupture and Resilience: 2026 Global Economic Outlook, Geopolitics, and Fixed Income Investment Strategy",
+      "url": "https://www.pimco.com/us/en/insights/rupture-and-resilience",
+      "publishedAt": "2026-06-10T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "stale",
+      "reason": "Older than the 90-day freshness window for this source; retained in the ledger.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "69a498e109ff",
+      "institution": "Goldman Sachs",
+      "shortName": "Goldman Sachs",
+      "color": "#698eaf",
+      "title": "John Waldron on GDP Growth, AI, and the M&A Outlook",
+      "url": "https://www.goldmansachs.com/insights/goldman-sachs-exchanges/john-waldron-on-gdp-growth-ai-and-the-m-a-outlook",
+      "publishedAt": "2026-11-04T00:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Unchanged source article; preserving its mapped view. Near-term / 2027 planning outlook.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "0f967911ed90",
+      "institution": "ING Research",
+      "shortName": "ING",
+      "color": "#c4784a",
+      "title": "Solid growth and cooling inflation: 3 calls for the US",
+      "url": "https://think.ing.com/articles/solid-growth-cooling-inflation-3-calls-for-the-us/",
+      "publishedAt": "2026-11-10T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Unchanged source article; preserving its mapped view. 2027 baseline / next couple of years.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "1ec8f3b62d59",
+      "institution": "ING Research",
+      "shortName": "ING",
+      "color": "#c4784a",
+      "title": "Hotter US inflation strengthens the case for a December Fed hike",
+      "url": "https://think.ing.com/articles/us-cpi-october-2026/",
+      "publishedAt": "2026-11-10T12:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Mapped growth gap +0.20pp, inflation gap +0.80pp. Next 6-12 months. Numerical estimates are labeled direct or inferred.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "6f904f60f816",
+      "institution": "Vanguard Economics",
+      "shortName": "Vanguard",
+      "color": "#ac4f60",
+      "title": "Our economic outlook for the United States",
+      "url": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
+      "publishedAt": "2026-11-09T05:00:00.000Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
+      "status": "scored",
+      "reason": "Unchanged source article; preserving its mapped view. Year-end 2026 inflation / near-term growth.",
       "type": "commentary",
       "excerpt": ""
     },
@@ -1023,7 +1155,7 @@
       "title": "Federal Reserve announces revised tentative schedule of Federal Open Market Committee meetings in 2027",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261112a.htm",
       "publishedAt": "2026-11-12T17:45:00.000Z",
-      "retrievedAt": "2026-11-13T16:34:32.678Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "news",
       "reason": "Official release; context only. Not an institutional forecast or a numeric observation.",
       "type": "news",
@@ -1037,7 +1169,7 @@
       "title": "Federal Reserve issues FOMC statement",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261028a.htm",
       "publishedAt": "2026-10-28T18:00:00.000Z",
-      "retrievedAt": "2026-11-13T16:34:32.678Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "news",
       "reason": "Official release; context only. Not an institutional forecast or a numeric observation.",
       "type": "news",
@@ -1051,7 +1183,7 @@
       "title": "Minutes of the Board&#39;s discount rate meetings on August 17, September 9, and September 16, 2026",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261013a.htm",
       "publishedAt": "2026-10-13T18:00:00.000Z",
-      "retrievedAt": "2026-11-13T16:34:32.678Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "news",
       "reason": "Official release; context only. Not an institutional forecast or a numeric observation.",
       "type": "news",
@@ -1065,7 +1197,7 @@
       "title": "Minutes of the Federal Open Market Committee, September 15-16, 2026",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20261007a.htm",
       "publishedAt": "2026-10-07T18:00:00.000Z",
-      "retrievedAt": "2026-11-13T16:34:32.678Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "news",
       "reason": "Official release; context only. Not an institutional forecast or a numeric observation.",
       "type": "news",
@@ -1079,7 +1211,7 @@
       "title": "Federal Reserve issues FOMC statement",
       "url": "https://www.federalreserve.gov/newsevents/pressreleases/monetary20260916a.htm",
       "publishedAt": "2026-09-16T18:00:00.000Z",
-      "retrievedAt": "2026-11-13T16:34:32.678Z",
+      "retrievedAt": "2026-11-13T17:14:21.888Z",
       "status": "news",
       "reason": "Official release; context only. Not an institutional forecast or a numeric observation.",
       "type": "news",
@@ -1088,102 +1220,12 @@
   ],
   "sources": [
     {
-      "id": "blackrock",
-      "name": "BlackRock Investment Institute",
-      "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "j-p-morgan",
-      "name": "J.P. Morgan Asset Management",
-      "url": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "pimco",
-      "name": "PIMCO",
-      "url": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "goldman-sachs",
-      "name": "Goldman Sachs — John Waldron",
-      "url": "https://www.goldmansachs.com/insights/goldman-sachs-exchanges/john-waldron-on-gdp-growth-ai-and-the-m-a-outlook",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "ing",
-      "name": "ING Research",
-      "url": "https://think.ing.com/articles/solid-growth-cooling-inflation-3-calls-for-the-us/",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "vanguard",
-      "name": "Vanguard Economics",
-      "url": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "schwab",
-      "name": "Charles Schwab",
-      "url": "https://www.schwab.com/learn/story/weekly-traders-outlook",
-      "type": "commentary",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "Original commentary read, evidence verified, and growth/inflation gaps mapped with explicit assumptions."
-    },
-    {
-      "id": "bea-gdp",
-      "name": "Real GDP growth",
-      "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
-      "type": "data",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "3.4%; Q3 2026 quarter-on-quarter annualized GDP."
-    },
-    {
-      "id": "bea-core-pce",
-      "name": "Core PCE inflation",
-      "url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy",
-      "type": "data",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "3.1%; core PCE, year over year."
-    },
-    {
-      "id": "gdpnow",
-      "name": "Atlanta Fed GDPNow",
-      "url": "https://www.atlantafed.org/data/research-data",
-      "type": "data",
-      "status": "ok",
-      "checkedAt": "2026-11-13T17:02:57.458Z",
-      "message": "3.5%; Fourth-Quarter GDPNow Estimate for 2026:Q4 (nowcast; not an official forecast)."
-    },
-    {
       "id": "CES0000000001",
       "name": "Nonfarm payrolls",
       "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CES0000000001",
       "type": "data",
       "status": "error",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "BLS returned REQUEST_NOT_PROCESSED: Daily request allowance reached. A dedicated BLS_API_KEY avoids the shared unregistered allowance. Retaining 2026-10, fetched 2026-11-13."
     },
     {
@@ -1192,7 +1234,7 @@
       "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CES0500000034",
       "type": "data",
       "status": "error",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "BLS returned REQUEST_NOT_PROCESSED: Daily request allowance reached. A dedicated BLS_API_KEY avoids the shared unregistered allowance. Retaining 2026-10, fetched 2026-11-13."
     },
     {
@@ -1201,7 +1243,7 @@
       "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/LNS14000000",
       "type": "data",
       "status": "error",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "BLS returned REQUEST_NOT_PROCESSED: Daily request allowance reached. A dedicated BLS_API_KEY avoids the shared unregistered allowance. Retaining 2026-10, fetched 2026-11-13."
     },
     {
@@ -1210,7 +1252,7 @@
       "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SA0",
       "type": "data",
       "status": "error",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "BLS returned REQUEST_NOT_PROCESSED: Daily request allowance reached. A dedicated BLS_API_KEY avoids the shared unregistered allowance. Retaining 2026-10, fetched 2026-11-13."
     },
     {
@@ -1219,8 +1261,107 @@
       "url": "https://api.bls.gov/publicAPI/v2/timeseries/data/CUSR0000SA0L1E",
       "type": "data",
       "status": "error",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "BLS returned REQUEST_NOT_PROCESSED: Daily request allowance reached. A dedicated BLS_API_KEY avoids the shared unregistered allowance. Retaining 2026-10, fetched 2026-11-13."
+    },
+    {
+      "id": "bea-gdp",
+      "name": "Real GDP growth",
+      "url": "https://www.bea.gov/data/gdp/gross-domestic-product",
+      "type": "data",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "3.4%; Q3 2026 quarter-on-quarter annualized GDP."
+    },
+    {
+      "id": "bea-core-pce",
+      "name": "Core PCE inflation",
+      "url": "https://www.bea.gov/data/personal-consumption-expenditures-price-index-excluding-food-and-energy",
+      "type": "data",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "3.1%; core PCE, year over year."
+    },
+    {
+      "id": "gdpnow",
+      "name": "Atlanta Fed GDPNow",
+      "url": "https://www.atlantafed.org/data/research-data",
+      "type": "data",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "3.5%; Fourth-Quarter GDPNow Estimate for 2026:Q4 (nowcast; not an official forecast)."
+    },
+    {
+      "id": "blackrock",
+      "name": "BlackRock Investment Institute",
+      "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "2 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "schwab",
+      "name": "Charles Schwab",
+      "url": "https://www.schwab.com/learn/story/stock-market-update-open",
+      "type": "commentary",
+      "status": "partial",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "3 article(s) checked; 1 comparable point(s). Unscored material remains in the evidence ledger. 1 last-known view(s) retained with original timestamps."
+    },
+    {
+      "id": "jpmorgan",
+      "name": "J.P. Morgan Asset Management",
+      "url": "https://am.jpmorgan.com/au/en/asset-management/adv/insights/market-insights/monthly-market-review/",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "1 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "pimco",
+      "name": "PIMCO",
+      "url": "https://www.pimco.com/us/en/insights",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "2 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "goldman",
+      "name": "Goldman Sachs",
+      "url": "https://www.goldmansachs.com/insights/macroeconomics",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "1 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "ing",
+      "name": "ING Research",
+      "url": "https://think.ing.com/latest/",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "2 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "vanguard",
+      "name": "Vanguard Economics",
+      "url": "https://corporate.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "1 article(s) checked; 1 comparable point(s). "
+    },
+    {
+      "id": "morgan-stanley",
+      "name": "Morgan Stanley Investment Management",
+      "url": "https://www.morganstanley.com/im/en-us/institutional-investor/insights/all-insights.html",
+      "type": "commentary",
+      "status": "error",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
+      "message": "HTTP 403"
     },
     {
       "id": "fed-news",
@@ -1228,14 +1369,12 @@
       "url": "https://www.federalreserve.gov/feeds/press_monetary.xml",
       "type": "news",
       "status": "ok",
-      "checkedAt": "2026-11-13T16:34:32.678Z",
+      "checkedAt": "2026-11-13T17:14:21.888Z",
       "message": "5 official releases collected."
     }
   ],
   "warnings": [
-    "Growth benchmark is an explicit 2.0% assumption. The inflation target is 2.0%.",
-    "Qualitative commentaries are mapped to explicitly inferred numerical rates; ranges are model uncertainty assumptions, not source-published statistical intervals.",
-    "BLS supporting series retain verified observations when the shared public API quota is exhausted. GDP, GDPNow and core PCE are collected independently."
+    "Some sources could not be refreshed. Check Sources for coverage gaps and retained observations."
   ],
   "axisMode": "levels"
 }

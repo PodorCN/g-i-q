@@ -10,6 +10,7 @@ An evidence-led **U.S. growth–inflation observatory**. Compare attributable in
 
 - Explore the four-quadrant scatter plot; select a named institution to inspect its source, date, horizon, supporting quotes, and position compared with the data.
 - Toggle uncertainty ranges and labels; show all house views by default, or filter current assessments and outlooks while preserving each author’s actual horizon.
+- Read sourced outlook arrows and their separate horizons. Hollow dots flag mappings spanning quadrants; these ranges are our uncertainty, not institution-assigned probabilities.
 - Inspect individual data series, reference months, raw history, transformations, and component scores.
 - Read unscored commentary, official news, and collection failures. Missing evidence never becomes an invented point.
 - Select historical snapshots and export the complete research JSON.

@@ -41,9 +41,19 @@ Five BLS series—nonfarm payrolls, private aggregate weekly hours, unemployment
 
 Institution ellipses show subjective axis ranges from the mapper: typically about ±0.3–0.6pp for an explicit near-term forecast and ±0.7–1.2pp for qualitative or longer-horizon interpretation. They are not the institution's published forecast intervals, estimated standard errors, or calibrated 68%/90% confidence regions. The ellipse is a visual representation of two assumed marginal widths; it does not estimate correlation.
 
+For center `(x, y)` and assumed widths `(rx, ry)`, the displayed ellipse is `((X-x)/rx)² + ((Y-y)/ry)² ≤ 1`. Cross-quadrant warnings use the actual ellipse, not its rectangular bounding box: both marginal ranges crossing zero does not necessarily mean the ellipse enters all four quadrants. Touching a boundary without entering its interior does not count as overlap. No overlap areas are converted into probabilities.
+
+A hollow institution dot means the mapping range enters more than one quadrant. Its inspector names the covered quadrants and marks a single-quadrant assignment unresolved; the center's quadrant is only a coordinate label. This represents **our uncertainty in mapping the author's view**, not the institution assigning odds to other regimes. For a forward-looking point the range concerns its forecast horizon, not today's economy. Only explicitly published scenarios or probabilities could justify that attribution, and this dashboard currently does not extract those probabilities.
+
 The hard-data point uses ±0.6pp growth and ±0.25pp inflation as transparent sensitivity assumptions. They are not statistical confidence intervals. The implementation retains a legacy momentum/bootstrap mode for old snapshots, but the live default and history selector use level snapshots.
 
 Agreement compares which side of the benchmark each point falls on; an interval spanning zero is inconclusive. A forward-looking institution may differ legitimately from current/backward-looking observations. The narrative reports those differences without treating dissimilar horizons as an apples-to-apples forecast contest.
+
+## Outlook direction arrows
+
+Small arrow glyphs in institution labels show a future direction explicitly stated in that source's base case: right/left for rising/falling real growth, up/down for rising/falling inflation. They are schematic and have equal lengths; they have no numerical destination and imply no crossing probability. They do not connect the hard-data anchor to a house point. An above-target forecast can have a downward arrow because inflation is expected to fall while remaining above target.
+
+Each known axis requires a verbatim, validated source passage; the actual directional horizon is stored separately from the plotted level forecast's horizon. An unspecified axis remains unknown, not steady, and a level forecast alone produces no arrow. Two explicitly steady axes produce no movement arrow. Qualitative rate-change extraction is still an interpretation subject to review; quotation matching establishes that the words occur in the source, not that the interpretation is infallible. Hypothetical risks and quoted third-party views must not become base-case arrows.
 
 ## Daily collection and failure behavior
 

@@ -12,6 +12,30 @@ export const EvidenceSchema = z.object({
   quote: z.string().max(240),
   interpretation: z.string(),
 });
+export const OutlookDirectionSchema = z
+  .object({
+    growth: z.enum(['rising', 'falling', 'steady', 'unspecified']),
+    inflation: z.enum(['rising', 'falling', 'steady', 'unspecified']),
+    horizonLabel: z.string().min(1).max(160),
+    evidence: z.array(EvidenceSchema).min(1).max(2),
+  })
+  .superRefine((outlook, ctx) => {
+    if (outlook.growth === 'unspecified' && outlook.inflation === 'unspecified')
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: 'An outlook needs a sourced direction',
+      });
+    for (const axis of ['growth', 'inflation'] as const) {
+      if (
+        outlook[axis] !== 'unspecified' &&
+        !outlook.evidence.some((e) => e.axis === axis && e.quote.trim().length > 0)
+      )
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: 'Each stated direction needs its own quotation',
+        });
+    }
+  });
 export const PointSchema = z
   .object({
     id: z.string(),
@@ -27,6 +51,7 @@ export const PointSchema = z
     confidence: z.enum(['low', 'medium', 'high']),
     horizon: z.enum(['current', 'outlook']),
     horizonLabel: z.string().optional(),
+    outlookDirection: OutlookDirectionSchema.optional(),
     growthDirection: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).optional(),
     inflationDirection: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).optional(),
     growthBasis: z.enum(['direct', 'inferred', 'unclear']).optional(),
@@ -149,6 +174,9 @@ export function isStale(date: string, asOf: string, days = 35): boolean {
 export function axisSupport(view: Point, data: Point, axis: Axis): string {
   const direction = axis === 'growth' ? view.growthDirection : view.inflationDirection;
   if (direction === 'unclear') return 'View unresolved';
+  const viewRange = axis === 'growth' ? view.xRange : view.yRange;
+  if (viewRange.low < -1e-9 && viewRange.high > 1e-9) return 'View inconclusive';
+  if (Math.abs(viewRange.low) < 1e-9 || Math.abs(viewRange.high) < 1e-9) return 'Near boundary';
   const range = axis === 'growth' ? data.xRange : data.yRange;
   if (range.low <= 0 && range.high >= 0) return 'Data inconclusive';
   const a = axis === 'growth' ? view.x : view.y,

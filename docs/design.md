@@ -12,6 +12,8 @@ The task is to compare named institutional macro views with the data, then inspe
 
 The plot shows all recent house views by default. Only the selected point's range is drawn; Display allows all ranges or none. Axis domains always include every full range, regardless of visibility, so the setting does not move the points. Direct forecasts and inferred coordinates remain labeled. Current and forward-looking views remain explicit, with actual author horizons in the inspector and table.
 
+Source-supported outlook arrows sit inside institution labels as small direction glyphs; they do not draw numerical destinations across the chart. Display can hide them. Hollow institution dots identify mappings spanning quadrants even when ranges are hidden. The selected inspector names the overlapping quadrants and separates mapping uncertainty from the author's view. Direction horizons and supporting excerpts stay with that point's details.
+
 ## Visual system
 
 Use self-hosted Manrope, restrained green-gray neutrals, a white plotting surface and soft quadrant colors. The chart carries the color; ordinary controls stay quiet. One border defines the plot/inspector workspace. Avoid nested cards, repeated metric strips, decorative icons and colored status dashboards.

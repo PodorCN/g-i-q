@@ -56,6 +56,10 @@ describe('Growth and inflation level coordinates', () => {
       horizonLabel: '2027 baseline',
       growthQuote,
       inflationQuote,
+      growthOutlook: 'unspecified',
+      inflationOutlook: 'falling',
+      inflationOutlookQuote: inflationQuote,
+      outlookHorizon: 'Year end',
       rationale: 'Explicit growth and core PCE forecasts.',
       confidence: 'medium',
     });
@@ -83,6 +87,12 @@ describe('Growth and inflation level coordinates', () => {
     expect(point.inflationDirection).toBeUndefined();
     expect(regime(point.x, point.y)).toBe('Overheating');
     expect(point.horizonLabel).toBe('2027 baseline');
+    expect(point.outlookDirection).toMatchObject({
+      growth: 'unspecified',
+      inflation: 'falling',
+      horizonLabel: 'Year end',
+    });
+    expect(point.outlookDirection!.evidence[0].quote).toContain('should fall');
   });
 
   it('retains original observation timestamps after provider failure', async () => {

@@ -1,6 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Point } from '../shared/schema';
 import { fitAxis } from './chartScale';
+import { outlookVector, rangeQuadrants } from '../shared/quadrants';
 
 const WIDTH = 850;
 type Layout = {
@@ -15,6 +16,7 @@ function Labels({
   sx,
   sy,
   layout,
+  showOutlooks,
 }: {
   points: Point[];
   selectedId: string;
@@ -22,6 +24,7 @@ function Labels({
   sx: (value: number) => number;
   sy: (value: number) => number;
   layout: Layout;
+  showOutlooks: boolean;
 }) {
   const { height: HEIGHT, margin: M } = layout;
   const labels = useMemo(() => {
@@ -29,7 +32,8 @@ function Labels({
     return [...points]
       .sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId))
       .map((point) => {
-        const width = Math.min(270, (point.shortName.length * 7.7 + 18) * scale);
+        const arrow = showOutlooks ? outlookVector(point) : null;
+        const width = Math.min(310, (point.shortName.length * 7.7 + 18 + (arrow ? 25 : 0)) * scale);
         const columns = [sx(point.x) + 14 * scale, sx(point.x) - width - 12 * scale].map((x) =>
           Math.max(M.left + 6, Math.min(WIDTH - M.right - width - 6, x)),
         );
@@ -58,12 +62,12 @@ function Labels({
         }
         y = Math.max(M.top + 21 * scale, Math.min(HEIGHT - M.bottom - 10 * scale, y));
         occupied.push({ x, y, width });
-        return { point, x, y, width };
+        return { point, x, y, width, arrow };
       });
-  }, [points, selectedId, scale, sx, sy, layout]);
+  }, [points, selectedId, scale, sx, sy, layout, showOutlooks]);
   return (
     <g aria-hidden="true">
-      {labels.map(({ point, x, y, width }) => (
+      {labels.map(({ point, x, y, width, arrow }) => (
         <g key={point.id} className="point-label">
           <line
             x1={sx(point.x)}
@@ -91,6 +95,29 @@ function Labels({
           >
             {point.shortName}
           </text>
+          {arrow && (
+            <g
+              className="outlook-arrow"
+              transform={`translate(${x + width - 14 * scale} ${y - 6 * scale})`}
+            >
+              <title>{`Source outlook: growth ${point.outlookDirection!.growth}, inflation ${point.outlookDirection!.inflation}. ${point.outlookDirection!.horizonLabel}. Direction only; no numerical destination.`}</title>
+              <path
+                d={(() => {
+                  const length = Math.hypot(arrow.x, arrow.y),
+                    dx = arrow.x / length,
+                    dy = -arrow.y / length;
+                  const endX = dx * 6 * scale,
+                    endY = dy * 6 * scale;
+                  return `M${-endX},${-endY}L${endX},${endY} M${endX - dx * 4 * scale - dy * 3 * scale},${endY - dy * 4 * scale + dx * 3 * scale}L${endX},${endY}L${endX - dx * 4 * scale + dy * 3 * scale},${endY - dy * 4 * scale - dx * 3 * scale}`;
+                })()}
+                stroke={point.id === selectedId ? '#fff' : point.color}
+                strokeWidth={1.6 * scale}
+                fill="none"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </g>
+          )}
         </g>
       ))}
     </g>
@@ -104,6 +131,7 @@ export default function Chart({
   showRanges,
   showLabels,
   rangeMode = 'all',
+  showOutlooks = true,
 }: {
   points: Point[];
   selectedId: string;
@@ -111,6 +139,7 @@ export default function Chart({
   showRanges: boolean;
   showLabels: boolean;
   rangeMode?: 'all' | 'selected';
+  showOutlooks?: boolean;
 }) {
   const clip = useId().replace(/:/g, '');
   const container = useRef<HTMLDivElement>(null);
@@ -269,7 +298,7 @@ export default function Chart({
               role="button"
               tabIndex={0}
               className={`scatter-point ${selectedId === point.id ? 'selected-point' : ''}`}
-              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. Select to inspect evidence.`}
+              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${rangeQuadrants(point).length > 1 ? 'Mapping range spans multiple quadrants. ' : ''}${point.outlookDirection ? `Source outlook: growth ${point.outlookDirection.growth}, inflation ${point.outlookDirection.inflation}. ` : ''}Select to inspect evidence.`}
               aria-pressed={selectedId === point.id}
               onClick={() => onSelect(point.id)}
               onKeyDown={(event) => {
@@ -314,8 +343,8 @@ export default function Chart({
                   cx={sx(point.x)}
                   cy={sy(point.y)}
                   r="6.5"
-                  fill={point.color}
-                  stroke="white"
+                  fill={rangeQuadrants(point).length > 1 ? 'white' : point.color}
+                  stroke={rangeQuadrants(point).length > 1 ? point.color : 'white'}
                   strokeWidth="2"
                 />
               )}
@@ -328,6 +357,7 @@ export default function Chart({
             sx={sx}
             sy={sy}
             layout={layout}
+            showOutlooks={showOutlooks}
           />
         </g>
         <g className="tick-labels" aria-hidden="true">
