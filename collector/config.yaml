@@ -1,0 +1,97 @@
+# g-i-q collector configuration
+#
+# Coordinate system (all values in percentage points, "pp"):
+#   x = growth gap      = expected real GDP growth over the next 6-12 months  - trend_growth
+#   y = inflation gap   = expected core PCE inflation over the next 6-12 months - inflation_target
+# Quadrants: x>0,y<0 Goldilocks | x>0,y>0 Overheating | x<0,y>0 Stagflation | x<0,y<0 Disinflationary slowdown
+
+params:
+  trend_growth: 2.0          # % real GDP, US potential growth assumption
+  inflation_target: 2.0      # % core PCE, Fed target
+  stale_after_days: 60       # a house view older than this is drawn hollow and down-weighted
+  stale_weight: 0.35         # weight multiplier for stale views
+  model_weight_share: 0.40   # share of the blended mixture given to the hard-data model point
+  mc_draws: 40000            # Monte Carlo draws for quadrant probabilities
+  min_sigma: 0.25            # floor on any reported 1-sigma (pp)
+
+llm:
+  model: claude-opus-5-5
+  effort: high
+  max_searches_per_source: 6
+
+# Houses whose market commentary is tracked.
+# type: sell_side | buy_side | official   (three types -> three colors on the chart)
+# hints: where to look first; the collector also searches the web.
+sources:
+  - id: gsam
+    name: Goldman Sachs Asset Management
+    short: GSAM
+    type: buy_side
+    hints: ["am.gs.com market pulse", "Goldman Sachs economics research outlook"]
+    domains: ["am.gs.com", "goldmansachs.com"]
+  - id: gs_research
+    name: Goldman Sachs Research
+    short: GS
+    type: sell_side
+    hints: ["Goldman Sachs economists US GDP core PCE forecast"]
+    domains: ["goldmansachs.com"]
+  - id: jpm
+    name: J.P. Morgan
+    short: JPM
+    type: sell_side
+    hints: ["J.P. Morgan economic outlook", "JPMorgan Asset Management notes on the week ahead"]
+    domains: ["jpmorgan.com", "am.jpmorgan.com"]
+  - id: ms
+    name: Morgan Stanley
+    short: MS
+    type: sell_side
+    hints: ["Morgan Stanley Thoughts on the Market Seth Carpenter Michael Gapen"]
+    domains: ["morganstanley.com"]
+  - id: bofa
+    name: BofA Global Research
+    short: BofA
+    type: sell_side
+    hints: ["BofA Global Research US economic outlook"]
+    domains: ["bofa.com", "ml.com"]
+  - id: wells
+    name: Wells Fargo
+    short: WFC
+    type: sell_side
+    hints: ["Wells Fargo Economics outlook"]
+    domains: ["wellsfargo.com", "wf.com", "wellsfargo.bluematrix.com"]
+  - id: usbank
+    name: U.S. Bank
+    short: USB
+    type: sell_side
+    hints: ["U.S. Bank monthly economic outlook"]
+    domains: ["usbank.com"]
+  - id: blackrock
+    name: BlackRock Investment Institute
+    short: BLK
+    type: buy_side
+    hints: ["BlackRock weekly market commentary"]
+    domains: ["blackrock.com"]
+  - id: pimco
+    name: PIMCO
+    short: PIMCO
+    type: buy_side
+    hints: ["PIMCO cyclical outlook"]
+    domains: ["pimco.com"]
+  - id: vanguard
+    name: Vanguard
+    short: VG
+    type: buy_side
+    hints: ["Vanguard economic and market outlook United States"]
+    domains: ["vanguard.com"]
+  - id: schwab
+    name: Charles Schwab
+    short: SCHW
+    type: buy_side
+    hints: ["Schwab market perspective"]
+    domains: ["schwab.com", "schwabassetmanagement.com"]
+  - id: fed_board
+    name: Federal Reserve (speeches / SEP)
+    short: Fed
+    type: official
+    hints: ["Federal Reserve governor speech economic outlook", "FOMC statement"]
+    domains: ["federalreserve.gov", "bis.org"]

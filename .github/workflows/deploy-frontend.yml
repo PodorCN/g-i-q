@@ -1,0 +1,29 @@
+# Deploys the static site to Cloudflare Pages when frontend/ changes.
+# Data updates never trigger this; the page reads the API at runtime.
+# Secrets:   CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID
+# Variables: GIQ_API_URL (written into config.js at deploy time), CF_PAGES_PROJECT (default "giq")
+name: deploy-frontend
+
+on:
+  push:
+    branches: [main]
+    paths: ["frontend/**", ".github/workflows/deploy-frontend.yml"]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Point the site at the API
+        if: ${{ vars.GIQ_API_URL != '' }}
+        env:
+          API: ${{ vars.GIQ_API_URL }}
+        run: |
+          sed -i "s#apiBase: \"\"#apiBase: \"${API}\"#" frontend/config.js
+          grep apiBase frontend/config.js
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy frontend --project-name=${{ vars.CF_PAGES_PROJECT || 'giq' }} --branch=main

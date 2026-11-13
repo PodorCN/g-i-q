@@ -1,0 +1,16 @@
+name = "giq-api"
+main = "src/index.js"
+compatibility_date = "2026-10-01"
+workers_dev = true
+
+# Create once with:  npx wrangler kv namespace create GIQ
+# then paste the returned id below.
+[[kv_namespaces]]
+binding = "GIQ"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+[vars]
+# Comma-separated list. Use your Pages domain(s); "https://*.giq.pages.dev" allows preview builds.
+ALLOWED_ORIGINS = "*"
+
+# Secret (not in this file):  npx wrangler secret put INGEST_TOKEN

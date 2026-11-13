@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Growth–Inflation Quadrant</title>
+  <meta name="description" content="Where the US economy sits on the growth/inflation quadrant, according to hard data and each house's market commentary, with confidence regions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23151514'/%3E%3Cpath d='M16 5v22M5 16h22' stroke='%23898781' stroke-width='2'/%3E%3Ccircle cx='21' cy='11' r='4' fill='%23eb6834'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1>Growth–Inflation Quadrant</h1>
+          <p class="sub" id="asof">Loading…</p>
+        </div>
+      </div>
+      <button class="ghost" id="theme-toggle" type="button" aria-label="Toggle dark mode">Theme</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="banner" class="banner" hidden></div>
+
+    <section class="hero" aria-labelledby="headline">
+      <p class="eyebrow">Current regime</p>
+      <h2 id="headline" class="headline">&nbsp;</h2>
+      <div class="prob-head">
+        <span class="muted small">Probability of each quadrant</span>
+        <div class="seg" role="radiogroup" aria-label="Probability basis" id="prob-basis">
+          <button role="radio" data-basis="blended" aria-checked="true">Blended</button>
+          <button role="radio" data-basis="houses" aria-checked="false">Houses</button>
+          <button role="radio" data-basis="model" aria-checked="false">Hard data</button>
+        </div>
+      </div>
+      <div class="tiles" id="tiles"></div>
+    </section>
+
+    <div class="controls" role="toolbar" aria-label="Chart options">
+      <div class="seg" role="radiogroup" aria-label="Confidence level" id="ci">
+        <button role="radio" data-ci="0.68" aria-checked="true">68% region</button>
+        <button role="radio" data-ci="0.90" aria-checked="false">90% region</button>
+      </div>
+      <label class="check"><input type="checkbox" id="opt-ellipses"> All ellipses</label>
+      <label class="check"><input type="checkbox" id="opt-arrows" checked> Direction arrows</label>
+      <label class="check"><input type="checkbox" id="opt-trail" checked> History trail</label>
+      <label class="check"><input type="checkbox" id="opt-stale" checked> Stale views</label>
+    </div>
+
+    <section class="grid">
+      <div class="card chart-card">
+        <div class="card-head">
+          <h3>Who is where</h3>
+          <ul class="legend" id="legend" aria-label="Legend"></ul>
+        </div>
+        <div id="chart" class="chart" aria-describedby="chart-desc"></div>
+        <p id="chart-desc" class="muted small chart-note">
+          x = expected real GDP growth minus trend; y = expected core PCE inflation minus the 2% target
+          (percentage points, next 6–12 months). Ellipses are confidence regions; arrows show where each
+          house expects the economy to move (for the data model: the last 3 months' momentum).
+          Hover or tab to a point for details; click to pin it.
+        </p>
+        <div id="tooltip" class="tooltip" role="status" hidden></div>
+      </div>
+
+      <aside class="card detail" id="detail" aria-live="polite"></aside>
+    </section>
+
+    <section class="card" aria-labelledby="supports-h">
+      <div class="card-head"><h3 id="supports-h">What the data supports</h3><span class="muted small" id="synth-method"></span></div>
+      <p id="data-supports" class="lede"></p>
+      <div class="two">
+        <div>
+          <h4>Consensus vs. data</h4>
+          <p id="consensus-vs-data"></p>
+          <h4>Where the houses disagree</h4>
+          <ul id="divergences" class="bullets"></ul>
+        </div>
+        <div>
+          <h4>Watch list</h4>
+          <ul id="watch" class="bullets"></ul>
+        </div>
+      </div>
+      <h4 class="mt">Hard-data indicators</h4>
+      <div class="table-wrap">
+        <table class="ind" id="indicators">
+          <thead><tr><th scope="col">Indicator</th><th scope="col" class="num">Latest</th><th scope="col">As of</th><th scope="col" class="gapcol">Gap vs trend / target (pp)</th><th scope="col">Supports</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="table-h">
+      <div class="card-head"><h3 id="table-h">All views</h3><span class="muted small">Sorted by inflation gap</span></div>
+      <div class="table-wrap">
+        <table class="views" id="views-table">
+          <thead><tr><th scope="col">Source</th><th scope="col">Type</th><th scope="col">Published</th><th scope="col" class="num">Growth gap</th><th scope="col" class="num">Inflation gap</th><th scope="col">Quadrant</th><th scope="col">Confidence</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card method" aria-labelledby="method-h">
+      <details>
+        <summary><h3 id="method-h">Methodology</h3></summary>
+        <div class="method-body">
+          <p><b>Axes.</b> <code>x = g − g*</code> and <code>y = π − π*</code>, where <code>g</code> is expected real GDP growth over the next 6–12 months, <code>g*</code> is trend growth (<span data-param="trend_growth"></span>%), <code>π</code> is expected core PCE inflation and <code>π*</code> is the Fed's target (<span data-param="inflation_target"></span>%). Units are percentage points.</p>
+          <p><b>House views.</b> Each house's latest commentary is read and scored with a fixed rubric: explicit forecasts are converted directly (CPI forecasts minus 0.4pp to put them on a PCE basis); qualitative views map to anchors (e.g. "sticky above target" = +1.0pp). The 1-sigma <code>σ</code> is 0.3pp for point forecasts, 0.5pp for ranges, 0.8pp for qualitative views, +0.2pp when the house stresses tail risks. Views older than <span data-param="stale_after_days"></span> days are marked stale (hollow, dashed) and down-weighted.</p>
+          <p><b>Hard-data model.</b> Each FRED indicator is converted into an implied gap with a documented rule of thumb (Okun's law for unemployment, CFNAI × 1.5, CPI − 0.4pp for PCE, etc.). The model point is the weighted mean of those gaps; its <code>σ</code> is their weighted dispersion plus a measurement floor. The history trail re-runs the model month by month on current-vintage data with approximate publication lags (not true real-time vintages).</p>
+          <p><b>Confidence regions.</b> Ellipse semi-axes are <code>k·σx</code> and <code>k·σy</code> with <code>k = √χ²₂(p)</code> (1.52 for 68%, 2.15 for 90%), treating the two axes as independent.</p>
+          <p><b>Quadrant probabilities.</b> Every view is a normal distribution <code>N(μ, σ)</code>; the houses form a weighted mixture (weights = confidence × staleness). "Blended" mixes the houses with the hard-data model, which gets <span data-param="model_weight_share" data-pct></span> of the weight. Probabilities are Monte Carlo shares of draws landing in each quadrant.</p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <footer class="wrap footer muted small">
+    <span id="footer-gen"></span> · Data: FRED (St. Louis Fed) and public commentary from each institution. Not investment advice.
+  </footer>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>

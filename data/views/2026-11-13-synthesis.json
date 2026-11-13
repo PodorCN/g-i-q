@@ -1,0 +1,19 @@
+{
+ "headline": "Overheating: growth ~0.9pp above trend, core inflation ~0.8–1.1pp above target, and the Fed is hiking into it",
+ "regime_call": "overheating",
+ "data_supports": "The hard data sit clearly in the Overheating / Reflation quadrant (growth gap +0.88pp, inflation gap +0.83pp). Seven of nine growth indicators run above trend: GDPNow tracks Q4 at ~3.5% after a 3.4% Q3 print, payrolls average 137k over three months against an ~80k breakeven, unemployment is 0.2pp lower than six months ago, industrial production is up 4.4% annualized and financial conditions are loose (NFCI −0.47); real retail sales are the one soft spot. On inflation, core PCE is 3.1% y/y, core CPI is running 3.7% annualized over three months and headline CPI 3.1% over six months on the energy shock. What the data do NOT support is de-anchoring: 10y breakevens (2.2%) and the 5y5y forward (2.2%) are at target, so the overshoot reads as supply/energy-driven rather than a wage-price spiral.",
+ "consensus_vs_data": "Every current house view also lands in Overheating, but the consensus sits about 0.5pp lower on growth (+0.37pp) than the data: houses are forecasting the slowdown (rate hikes, AI-capex fatigue, energy drag) that the data have not shown yet. On inflation the houses and the data agree (~+0.8pp). The stagflation tail (≈19% blended) comes mostly from houses with lower growth and stickier inflation (J.P. Morgan's stale July view, BlackRock's AI-slowdown risk).",
+ "divergences": [
+  "Growth: U.S. Bank (+0.15pp, 25% recession odds) vs Vanguard (+0.6pp) and BofA's reflation call (+0.6pp, stale).",
+  "Inflation persistence: Morgan Stanley / BlackRock (+1.0 to +1.1pp, more hikes) vs PIMCO and Fed VC Bowman (+0.6pp, energy shock fades, core PCE 'closer to 2%' in 2027).",
+  "Fed path: GSAM/MS/U.S. Bank expect December and early-2027 hikes; BlackRock and PIMCO think market pricing of further hikes is excessive."
+ ],
+ "watch_list": [
+  "FOMC decision, Dec 8–9 (≈87% priced for +25bp to 4.00–4.25%; Waller floated 50bp)",
+  "October PCE / core PCE (late Nov, approx.) — Bowman estimates 3.3% y/y",
+  "November payrolls and CPI (early-to-mid Dec, approx.)",
+  "Oil / Strait of Hormuz developments — the main driver of headline inflation",
+  "2027 year-ahead outlooks from BofA, Goldman Sachs, J.P. Morgan, Morgan Stanley (late Nov–Dec)",
+  "AI capex guidance — the key growth downside risk flagged by BlackRock and PIMCO"
+ ]
+}
