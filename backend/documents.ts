@@ -66,7 +66,7 @@ export function normalizeDate(raw: string | null | undefined, asOf: string): str
   if (/^\d{1,2}\/\d{1,2}\/\d{4}$/.test(cleaned)) return null;
   const dateOnly =
     /^\d{4}-\d{2}-\d{2}$/.test(cleaned) ||
-    /^(?:\d{1,2}\s+)?[A-Za-z]{3,9}\s+\d{1,2},?\s+20\d{2}$/.test(cleaned);
+    /^(?:[A-Za-z]{3,9}\s+\d{1,2},?\s+20\d{2}|\d{1,2}\s+[A-Za-z]{3,9}\s+20\d{2})$/.test(cleaned);
   // A date without a time is a calendar date, not midnight UTC (the prior day in ET).
   const parsed = Date.parse(dateOnly ? cleaned + ' 12:00:00 GMT' : cleaned);
   if (
@@ -81,9 +81,16 @@ export function metadata(
   html: string,
   text: string,
   asOf: string,
-): { title: string; date: string | null } {
+  options: Pick<CommentarySource, 'monthlyIssue' | 'datePattern' | 'numericDateOrder'> = {},
+): { title: string; date: string | null; datePrecision?: 'month' } {
   let title = '',
     date: string | null = null;
+  if (options.datePattern) {
+    let raw = text.match(new RegExp(options.datePattern, 'i'))?.[1];
+    if (raw && options.numericDateOrder === 'dmy')
+      raw = raw.replace(/^(\d{2})\/(\d{2})\/(\d{4})$/, '$3-$2-$1');
+    date = normalizeDate(raw, asOf);
+  }
   const visit = (value: unknown) => {
     if (!value || typeof value !== 'object') return;
     if (Array.isArray(value)) return value.forEach(visit);
@@ -125,6 +132,21 @@ export function metadata(
     html.match(/<title[^>]*>([^<]+)/i)?.[1] ||
     'Market commentary';
   if (!date) {
+    // Publisher-specific publication fields, not creation/modification timestamps.
+    const published =
+      html.match(/<pagedata\b[^>]*id=["']publish_date-data["'][^>]*>([^<]+)</i) ||
+      html.match(/<div\b[^>]*class=["'][^"']*page-heading__date[^"']*["'][^>]*>([^<]+)</i) ||
+      html.match(/<div\b[^>]*class=["']eyebrow["'][^>]*>([^<]+)</i) ||
+      html.match(/<time\b[^>]*>([\s\S]*?)<\/time>/i);
+    if (published) {
+      const visible = articleText(published[1]);
+      const day =
+        visible.match(/\b(\d{1,2}\s+[A-Za-z]+\s+20\d{2}|[A-Za-z]+\s+\d{1,2},?\s+20\d{2})\b/)?.[1] ||
+        visible.trim();
+      date = normalizeDate(day, asOf);
+    }
+  }
+  if (!date) {
     // Only inspect the beginning: a bibliography or calendar date is not publication.
     const match = text
       .slice(0, 1400)
@@ -132,6 +154,25 @@ export function metadata(
         /(?:Published(?: as of)?\s*:?\s*)?\b((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\s+\d{1,2},?\s+20\d{2})\b/i,
       );
     if (match) date = normalizeDate(match[1], asOf);
+  }
+  if (!date) {
+    const match = text
+      .slice(0, 1400)
+      .match(
+        /\b(\d{1,2}[ \t]+(?:January|February|March|April|May|June|July|August|September|October|November|December)[ \t]+20\d{2})\b/i,
+      );
+    if (match) date = normalizeDate(match[1], asOf);
+  }
+  if (!date && options.monthlyIssue) {
+    const match = text
+      .slice(0, 1400)
+      .match(
+        /\b((?:January|February|March|April|May|June|July|August|September|October|November|December))\s+(20\d{2})\b/i,
+      );
+    if (match) {
+      date = normalizeDate(`${match[1]} 1, ${match[2]}`, asOf);
+      if (date) return { title: articleText(title).trim(), date, datePrecision: 'month' };
+    }
   }
   return { title: articleText(title).trim(), date };
 }
@@ -144,7 +185,12 @@ export function discoverLinks(html: string, source: CommentarySource): string[] 
       if (name !== 'a' || !attrs.href) return;
       try {
         const url = new URL(attrs.href, source.url);
-        if (url.hostname !== new URL(source.url).hostname || !pattern.test(url.pathname)) return;
+        if (
+          ![new URL(source.url).hostname, ...(source.linkHosts || [])].includes(url.hostname) ||
+          url.protocol !== 'https:' ||
+          !pattern.test(url.pathname)
+        )
+          return;
         url.search = '';
         url.hash = '';
         if (!links.includes(url.href)) links.push(url.href);
@@ -156,6 +202,21 @@ export function discoverLinks(html: string, source: CommentarySource): string[] 
   parser.write(html);
   parser.end();
   return links.slice(0, 3);
+}
+
+export function linkedPdf(html: string, url: string, hosts: string[] = []): string | undefined {
+  const links = discoverLinks(html, {
+    id: 'pdf',
+    name: '',
+    shortName: '',
+    color: '#000000',
+    type: 'commentary',
+    mode: 'index',
+    url,
+    linkHosts: hosts,
+    linkPattern: '(?:\\.pdf$|/pdf/)',
+  });
+  return links[0];
 }
 
 export function parseFeed(

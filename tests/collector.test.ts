@@ -144,3 +144,66 @@ describe('Collection, evidence validation and abstention', () => {
     );
   });
 });
+
+describe('Level mapping evidence boundaries', () => {
+  const run = async (growthQuote: string, inflationQuote: string) => {
+    const customFetcher = (async (input: RequestInfo | URL, init?: RequestInit) =>
+      String(input).includes('api.bls.gov')
+        ? fetcher(input, init)
+        : String(input).includes('bea.gov/data/gdp')
+          ? new Response(
+              '<main>Real gross domestic product (GDP) increased at an annual rate of 3.4 percent in the third quarter of 2026.</main>',
+            )
+          : String(input).includes('bea.gov/')
+            ? new Response('<main>September 2026 +3.1%</main>')
+            : new Response(
+                html.replace(growth, growthQuote).replace(inflation, inflationQuote),
+              )) as typeof fetch;
+    return buildSnapshot({
+      now,
+      fetcher: customFetcher,
+      sources: [source],
+      axisMode: 'levels',
+      assess: async () => ({
+        growth: 'stable',
+        inflation: 'stable',
+        horizon: 'outlook',
+        confidence: 'medium',
+        growthQuote,
+        inflationQuote,
+        rationale: 'Test forecast',
+        growthRate: 2.5,
+        coreInflationRate: 2.6,
+        growthBasis: 'direct',
+        inflationBasis: 'direct',
+        growthSigma: 0.3,
+        inflationSigma: 0.3,
+      }),
+    });
+  };
+  it('does not label core CPI as a direct core PCE forecast or give it a narrow range', async () => {
+    const result = await run(
+      'We forecast US real GDP growth of 2.5%.',
+      'We forecast core CPI inflation of 2.6%.',
+    );
+    const point = result.points.find((p) => p.kind === 'institution')!;
+    expect(point.growthBasis).toBe('direct');
+    expect(point.inflationBasis).toBe('inferred');
+    expect(point.yRange.high - point.y).toBeCloseTo(0.7);
+  });
+  it('rejects a conditional risk scenario as a base case', async () => {
+    const result = await run(
+      'We forecast US real GDP growth of 2.5%.',
+      'If inflation remains above 3%, recession risks rise.',
+    );
+    expect(result.points.filter((p) => p.kind === 'institution')).toHaveLength(0);
+    expect(result.documents[0].reason).toContain('base case');
+  });
+  it('rejects an unrelated quote even when it appears verbatim in the source', async () => {
+    const result = await run(
+      'The chief executive departed on Monday.',
+      'US inflation remains elevated.',
+    );
+    expect(result.points.filter((p) => p.kind === 'institution')).toHaveLength(0);
+  });
+});

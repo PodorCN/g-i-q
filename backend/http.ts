@@ -7,6 +7,10 @@ export async function readPublic(
   const target = new URL(url);
   if (target.protocol !== 'https:') throw new Error('Only HTTPS sources are supported');
   const allowed = [
+    ...COMMENTARY_SOURCES.flatMap((s) =>
+      [s.url, ...(s.fallbackUrls || [])].map((url) => new URL(url).hostname),
+    ),
+    ...COMMENTARY_SOURCES.flatMap((s) => s.linkHosts || []),
     'api.bls.gov',
     'www.bls.gov',
     'www.blackrock.com',
@@ -39,7 +43,14 @@ export async function readPublic(
     const location = response.headers.get('Location');
     if (!location) throw new Error(`HTTP ${response.status} without a redirect destination`);
     const redirected = new URL(location, url);
-    if (redirected.hostname !== target.hostname)
+    const publisherRedirect = COMMENTARY_SOURCES.some(
+      (s) =>
+        new URL(s.url).hostname === target.hostname && s.linkHosts?.includes(redirected.hostname),
+    );
+    if (
+      redirected.protocol !== 'https:' ||
+      (redirected.hostname !== target.hostname && !publisherRedirect)
+    )
       throw new Error(
         'Cross-host source redirect blocked; update the catalog with its canonical URL',
       );
@@ -77,5 +88,14 @@ async function readBounded(response: Response): Promise<string> {
     bytes.set(chunk, offset);
     offset += chunk.byteLength;
   }
+  const prefix = new TextDecoder('latin1').decode(bytes.slice(0, 1024));
+  const pdfOffset = prefix.indexOf('%PDF-');
+  if (
+    pdfOffset === 0 ||
+    (pdfOffset > 0 && /Content-Disposition:/i.test(prefix.slice(0, pdfOffset)))
+  )
+    return pdfArticle(bytes.slice(pdfOffset));
   return new TextDecoder().decode(bytes);
 }
+import { COMMENTARY_SOURCES } from './sources';
+import { pdfArticle } from './pdf';

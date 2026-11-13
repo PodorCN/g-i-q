@@ -28,6 +28,16 @@ const date = (value: string, time = false) =>
     day: 'numeric',
     ...(time ? { hour: 'numeric', minute: '2-digit' } : {}),
   }).format(new Date(value));
+const publicationDate = (item: { publishedAt: string | null; datePrecision?: 'month' }) =>
+  !item.publishedAt
+    ? 'Date unverified'
+    : item.datePrecision === 'month'
+      ? new Intl.DateTimeFormat('en-US', {
+          timeZone: 'UTC',
+          month: 'short',
+          year: 'numeric',
+        }).format(new Date(item.publishedAt))
+      : date(item.publishedAt);
 const number = (value: number, digits = 2) =>
   new Intl.NumberFormat('en-US', {
     minimumFractionDigits: digits,
@@ -212,7 +222,7 @@ function PointInspector({
           ))}
           <div className="point-source">
             <SourceLink href={point.sourceUrl}>Read the commentary</SourceLink>
-            <span>{date(point.publishedAt)}</span>
+            <span>{publicationDate(point)}</span>
           </div>
         </div>
       )}
@@ -285,7 +295,8 @@ function PointInspector({
       </details>
       <div className="inspector-bottom">
         <span>
-          {isData ? 'Retrieved' : 'Published'} {date(point.publishedAt)}
+          {isData ? 'Retrieved' : point.datePrecision === 'month' ? 'Issue' : 'Published'}{' '}
+          {publicationDate(point)}
         </span>
         {isData && <SourceLink href={point.sourceUrl}>BEA source</SourceLink>}
       </div>
@@ -526,9 +537,7 @@ export default function App() {
   });
   const [rangeMode, setRangeMode] = useState<'selected' | 'all' | 'none'>('selected');
   const [outlookMode, setOutlookMode] = useState<'focused' | 'all' | 'none'>('focused');
-  const [showLabels, setShowLabels] = useState(
-    () => !window.matchMedia('(max-width: 600px)').matches,
-  );
+  const [showLabels, setShowLabels] = useState<boolean | null>(null);
   const [houseQuery, setHouseQuery] = useState('');
   const [sourceQuery, setSourceQuery] = useState('');
   const [sourceFilter, setSourceFilter] = useState('all');
@@ -570,6 +579,8 @@ export default function App() {
     ) || [];
   const filteredHouses = houses.filter((p) => horizon === 'all' || p.horizon === horizon);
   const visiblePoints = [...(dataPoint ? [dataPoint] : []), ...filteredHouses];
+  const labelsVisible =
+    showLabels ?? (visiblePoints.length <= 14 && !window.matchMedia('(max-width: 600px)').matches);
   const selected = visiblePoints.find((p) => p.id === selectedId) || visiblePoints[0];
   const houseResults = filteredHouses.filter((p) =>
     `${p.institution} ${p.title}`.toLowerCase().includes(houseQuery.toLowerCase()),
@@ -747,6 +758,20 @@ export default function App() {
                   <div className="chart-column">
                     <div className="chart-toolbar">
                       {horizonControl}
+                      {houses.length > 12 && (
+                        <select
+                          className="house-picker"
+                          aria-label="Select institution"
+                          value={selected?.id || ''}
+                          onChange={(e) => setSelectedId(e.target.value)}
+                        >
+                          {visiblePoints.map((p) => (
+                            <option key={p.id} value={p.id}>
+                              {p.shortName}
+                            </option>
+                          ))}
+                        </select>
+                      )}
                       <details className="display-options" ref={displayOptions}>
                         <summary>
                           <Settings2 size={16} aria-hidden="true" />
@@ -780,7 +805,7 @@ export default function App() {
                           <label className="checkbox-label">
                             <input
                               type="checkbox"
-                              checked={showLabels}
+                              checked={labelsVisible}
                               onChange={(e) => setShowLabels(e.target.checked)}
                             />
                             All institution labels
@@ -798,7 +823,7 @@ export default function App() {
                       onSelect={setSelectedId}
                       showRanges={rangeMode !== 'none'}
                       rangeMode={rangeMode === 'all' ? 'all' : 'selected'}
-                      showLabels={showLabels}
+                      showLabels={labelsVisible}
                       showOutlooks={outlookMode !== 'none'}
                       outlookMode={outlookMode === 'all' ? 'all' : 'focused'}
                     />
@@ -910,7 +935,7 @@ export default function App() {
                             <HorizonLabel point={p} />
                             <small>{p.horizonLabel || p.horizon}</small>
                           </td>
-                          <td>{date(p.publishedAt)}</td>
+                          <td>{publicationDate(p)}</td>
                           <td>
                             <SourceLink href={p.sourceUrl}>Article</SourceLink>
                           </td>
@@ -1004,7 +1029,7 @@ export default function App() {
                     <article key={doc.id}>
                       <div className="article-meta">
                         <strong>{doc.shortName}</strong>
-                        <span>{doc.publishedAt ? date(doc.publishedAt) : 'Date unverified'}</span>
+                        <span>{publicationDate(doc)}</span>
                         <span className="article-state">
                           {
                             {

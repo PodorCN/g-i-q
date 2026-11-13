@@ -1656,6 +1656,21 @@ td.numeric,
 .outlook-path:focus-visible .outlook-shaft {
   stroke-width: 4;
 }
+.house-picker {
+  max-width: 165px;
+  min-width: 0;
+  font-size: 12px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--soft);
+}
+@media (max-width: 600px) {
+  .house-picker {
+    display: none;
+  }
+}
 .outlook-summary p {
   color: var(--muted);
   margin-top: 8px;

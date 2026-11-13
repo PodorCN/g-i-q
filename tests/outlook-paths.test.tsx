@@ -71,10 +71,11 @@ describe('Outlook paths use both coordinates at the plotted horizon', () => {
     expect(arrowSegment(from, { x: 701, y: 200 })).toBeNull();
   });
 
-  it('draws five reference-to-outlook paths, focuses one, and can hide them', () => {
-    expect(render().match(/class="outlook-path"/g) || []).toHaveLength(5);
+  it('draws eligible reference-to-outlook paths, focuses one, and can hide them', () => {
+    const eligible = snapshot.points.filter((p) => outlookPath(p, data)).length;
+    expect(render().match(/class="outlook-path"/g) || []).toHaveLength(eligible);
     expect(render(ing.id).match(/class="outlook-path"/g) || []).toHaveLength(1);
-    expect(render(ing.id, true, 'all').match(/class="outlook-path"/g) || []).toHaveLength(5);
+    expect(render(ing.id, true, 'all').match(/class="outlook-path"/g) || []).toHaveLength(eligible);
     expect(render(ing.id, false)).not.toContain('class="outlook-path"');
     const current = snapshot.points.find(
       (p) => p.kind === 'institution' && p.horizon === 'current',

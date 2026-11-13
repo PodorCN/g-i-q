@@ -18,7 +18,14 @@ import {
   type Assessment,
 } from './analysis';
 import { COMMENTARY_SOURCES, SERIES, type CommentarySource } from './sources';
-import { articleText, discoverLinks, metadata, normalizeDate, parseFeed } from './documents';
+import {
+  articleText,
+  discoverLinks,
+  linkedPdf,
+  metadata,
+  normalizeDate,
+  parseFeed,
+} from './documents';
 import { readPublic, type Fetcher } from './http';
 import { collectLevels, levelDataPoint } from './levels';
 import { verifiedOutlook } from './outlook';
@@ -254,18 +261,35 @@ export async function buildSnapshot(
         const candidates: { document: ResearchDocument; point?: Point }[] = [];
         for (const url of urls) {
           try {
-            const html = url === source.url ? body : await readPublic(url, fetcher);
+            let html = url === source.url ? body : await readPublic(url, fetcher);
+            let articleUrl = url;
+            const pageMeta = metadata(html, articleText(html), now, source);
+            const pdfUrl = source.followPdf ? linkedPdf(html, url, source.linkHosts) : undefined;
+            if (pdfUrl) {
+              html = await readPublic(pdfUrl, fetcher);
+              articleUrl = pdfUrl;
+            }
             const text = articleText(html),
-              meta = metadata(html, text, now);
-            const id = await shortHash(url + (meta.date || '') + text);
+              meta = metadata(html, text, now, source);
+            if (pdfUrl && pageMeta.date) {
+              meta.date = pageMeta.date;
+              meta.datePrecision = pageMeta.datePrecision;
+            }
+            if (pdfUrl || meta.title === 'Market commentary')
+              meta.title =
+                pageMeta.title === 'Market commentary'
+                  ? `${source.shortName} research`
+                  : pageMeta.title;
+            const id = await shortHash(articleUrl + (meta.date || '') + text);
             const document: ResearchDocument = {
               id,
               institution: source.name,
               shortName: source.shortName,
               color: source.color,
               title: meta.title,
-              url,
+              url: articleUrl,
               publishedAt: meta.date,
+              datePrecision: meta.datePrecision,
               retrievedAt: now,
               status: 'unscored',
               type: 'commentary',
@@ -360,6 +384,26 @@ export async function buildSnapshot(
               candidates.push({ document });
               continue;
             }
+            if (
+              options.axisMode === 'levels' &&
+              (!/growth|GDP|gross domestic product|econom|demand|consum|employment|labou?r|investment|output/i.test(
+                assessment.growthQuote,
+              ) ||
+                !/inflation|PCE|CPI|consumer prices|price pressures/i.test(
+                  assessment.inflationQuote,
+                ) ||
+                /^(?:if|unless|in (?:an?|the) (?:upside|downside|risk) scenario)\b/i.test(
+                  assessment.growthQuote.trim(),
+                ) ||
+                /^(?:if|unless|in (?:an?|the) (?:upside|downside|risk) scenario)\b/i.test(
+                  assessment.inflationQuote.trim(),
+                ))
+            ) {
+              document.reason =
+                'The quotations do not establish a two-axis macro base case; no point inferred.';
+              candidates.push({ document });
+              continue;
+            }
             const coordinate = (direction: Assessment['growth'], score?: number) =>
               direction === 'unclear' || direction === 'stable'
                 ? 0
@@ -406,8 +450,9 @@ export async function buildSnapshot(
               maxAgeDays: source.maxAgeDays || 35,
               mappingVersion: 'view-v2',
               publishedAt: meta.date,
+              datePrecision: meta.datePrecision,
               retrievedAt: now,
-              sourceUrl: url,
+              sourceUrl: articleUrl,
               title: meta.title,
               summary: assessment.rationale,
               method: options.assess ? 'llm' : 'rules',
@@ -434,10 +479,30 @@ export async function buildSnapshot(
                 candidates.push({ document });
                 continue;
               }
+              // The main axes are real GDP and core PCE, not earnings or core CPI.
+              if (
+                assessment.growthBasis === 'direct' &&
+                !/\bGDP\b|gross domestic product|real.{0,30}growth/i.test(assessment.growthQuote)
+              )
+                assessment.growthBasis = 'inferred';
+              if (
+                assessment.inflationBasis === 'direct' &&
+                !(
+                  /\bcore\b/i.test(assessment.inflationQuote) &&
+                  /\bPCE\b|personal consumption expenditures/i.test(assessment.inflationQuote)
+                )
+              )
+                assessment.inflationBasis = 'inferred';
               const gx = assessment.growthRate - 2,
                 iy = assessment.coreInflationRate - 2;
-              const widthX = assessment.growthSigma || 0.9,
-                widthY = assessment.inflationSigma || 0.7;
+              const widthX = Math.max(
+                  assessment.growthSigma || 0.9,
+                  assessment.growthBasis === 'direct' ? 0.15 : 0.7,
+                ),
+                widthY = Math.max(
+                  assessment.inflationSigma || 0.7,
+                  assessment.inflationBasis === 'direct' ? 0.15 : 0.7,
+                );
               const bounded = (center: number, width: number) => ({
                 low: Math.max(-3, center - width),
                 high: Math.min(3, center + width),
