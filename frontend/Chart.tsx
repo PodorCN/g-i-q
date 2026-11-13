@@ -1,25 +1,25 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Point } from '../shared/schema';
+import { fitAxis } from './chartScale';
 
 const WIDTH = 850,
   HEIGHT = 530;
 const M = { top: 27, right: 30, bottom: 65, left: 56 };
 const PW = WIDTH - M.left - M.right,
   PH = HEIGHT - M.top - M.bottom;
-const LIMIT = 2.5;
-const sx = (value: number) => M.left + ((value + LIMIT) / (LIMIT * 2)) * PW;
-const sy = (value: number) => M.top + ((LIMIT - value) / (LIMIT * 2)) * PH;
-const zeroX = sx(0),
-  zeroY = sy(0);
 
 function Labels({
   points,
   selectedId,
   scale,
+  sx,
+  sy,
 }: {
   points: Point[];
   selectedId: string;
   scale: number;
+  sx: (value: number) => number;
+  sy: (value: number) => number;
 }) {
   const labels = useMemo(() => {
     const occupied: { x: number; y: number; width: number }[] = [];
@@ -30,6 +30,7 @@ function Labels({
         let x = sx(point.x) + 14 * scale,
           y = sy(point.y) - 14 * scale;
         if (x + width > WIDTH - M.right) x = sx(point.x) - width - 12 * scale;
+        x = Math.max(M.left + 4, Math.min(WIDTH - M.right - width - 4, x));
         let attempt = 0;
         while (
           occupied.some(
@@ -48,7 +49,7 @@ function Labels({
         occupied.push({ x, y, width });
         return { point, x, y, width };
       });
-  }, [points, selectedId, scale]);
+  }, [points, selectedId, scale, sx, sy]);
   return (
     <g aria-hidden="true">
       {labels.map(({ point, x, y, width }) => (
@@ -101,6 +102,19 @@ export default function Chart({
   const clip = useId().replace(/:/g, '');
   const container = useRef<HTMLDivElement>(null);
   const [labelScale, setLabelScale] = useState(1);
+  const { xAxis, yAxis, sx, sy } = useMemo(() => {
+    // Include ranges even when hidden so toggling them does not move the points.
+    const xAxis = fitAxis(points.flatMap((p) => [p.x, p.xRange.low, p.xRange.high]));
+    const yAxis = fitAxis(points.flatMap((p) => [p.y, p.yRange.low, p.yRange.high]));
+    return {
+      xAxis,
+      yAxis,
+      sx: (value: number) => M.left + ((value - xAxis.min) / (xAxis.max - xAxis.min)) * PW,
+      sy: (value: number) => M.top + ((yAxis.max - value) / (yAxis.max - yAxis.min)) * PH,
+    };
+  }, [points]);
+  const zeroX = sx(0),
+    zeroY = sy(0);
   useEffect(() => {
     if (!container.current) return;
     const observer = new ResizeObserver(([entry]) => {
@@ -128,16 +142,40 @@ export default function Chart({
           </clipPath>
         </defs>
         <g clipPath={`url(#${clip})`}>
-          <rect x={M.left} y={M.top} width={PW / 2} height={PH / 2} fill="#faf1e7" />
-          <rect x={zeroX} y={M.top} width={PW / 2} height={PH / 2} fill="#eaf5f1" />
-          <rect x={M.left} y={zeroY} width={PW / 2} height={PH / 2} fill="#f1edf7" />
-          <rect x={zeroX} y={zeroY} width={PW / 2} height={PH / 2} fill="#edf2fc" />
-          {[-2, -1, 1, 2].map((tick) => (
-            <g key={tick} className="chart-grid">
-              <line x1={sx(tick)} x2={sx(tick)} y1={M.top} y2={M.top + PH} />
-              <line y1={sy(tick)} y2={sy(tick)} x1={M.left} x2={M.left + PW} />
-            </g>
-          ))}
+          <rect x={M.left} y={M.top} width={zeroX - M.left} height={zeroY - M.top} fill="#faf1e7" />
+          <rect
+            x={zeroX}
+            y={M.top}
+            width={M.left + PW - zeroX}
+            height={zeroY - M.top}
+            fill="#eaf5f1"
+          />
+          <rect
+            x={M.left}
+            y={zeroY}
+            width={zeroX - M.left}
+            height={M.top + PH - zeroY}
+            fill="#f1edf7"
+          />
+          <rect
+            x={zeroX}
+            y={zeroY}
+            width={M.left + PW - zeroX}
+            height={M.top + PH - zeroY}
+            fill="#edf2fc"
+          />
+          <g className="chart-grid">
+            {xAxis.ticks
+              .filter((tick) => tick !== 0)
+              .map((tick) => (
+                <line key={`x-${tick}`} x1={sx(tick)} x2={sx(tick)} y1={M.top} y2={M.top + PH} />
+              ))}
+            {yAxis.ticks
+              .filter((tick) => tick !== 0)
+              .map((tick) => (
+                <line key={`y-${tick}`} y1={sy(tick)} y2={sy(tick)} x1={M.left} x2={M.left + PW} />
+              ))}
+          </g>
           <line x1={zeroX} x2={zeroX} y1={M.top} y2={M.top + PH} className="zero-axis" />
           <line y1={zeroY} y2={zeroY} x1={M.left} x2={M.left + PW} className="zero-axis" />
           <g className="quadrant-name" aria-hidden="true" style={{ fontSize: 11 * labelScale }}>
@@ -253,20 +291,22 @@ export default function Chart({
               )}
             </g>
           ))}
-          {showLabels && <Labels points={points} selectedId={selectedId} scale={labelScale} />}
+          {showLabels && (
+            <Labels points={points} selectedId={selectedId} scale={labelScale} sx={sx} sy={sy} />
+          )}
         </g>
         <g className="tick-labels" aria-hidden="true">
-          {[-2, -1, 0, 1, 2].map((tick) => (
-            <g key={tick}>
-              <text x={sx(tick)} y={HEIGHT - M.bottom + 20} textAnchor="middle">
-                {tick > 0 ? '+' : ''}
-                {tick.toFixed(1)}
-              </text>
-              <text x={M.left - 12} y={sy(tick) + 4} textAnchor="end">
-                {tick > 0 ? '+' : ''}
-                {tick.toFixed(1)}
-              </text>
-            </g>
+          {xAxis.ticks.map((tick) => (
+            <text key={`x-${tick}`} x={sx(tick)} y={HEIGHT - M.bottom + 20} textAnchor="middle">
+              {tick > 0 ? '+' : ''}
+              {tick.toFixed(1)}
+            </text>
+          ))}
+          {yAxis.ticks.map((tick) => (
+            <text key={`y-${tick}`} x={M.left - 12} y={sy(tick) + 4} textAnchor="end">
+              {tick > 0 ? '+' : ''}
+              {tick.toFixed(1)}
+            </text>
           ))}
         </g>
         <text x={M.left} y={HEIGHT - 9} className="axis-description">
@@ -284,7 +324,7 @@ export default function Chart({
         >
           Core inflation vs 2% target (pp)
         </text>
-        <text x={zeroX} y={HEIGHT - 9} textAnchor="middle" className="axis-title">
+        <text x={M.left + PW / 2} y={HEIGHT - 9} textAnchor="middle" className="axis-title">
           Growth vs 2% trend (pp)
         </text>
       </svg>
