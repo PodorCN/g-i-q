@@ -1,0 +1,23 @@
+{
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "giq-api",
+  "main": "index.ts",
+  "compatibility_date": "2026-11-01",
+  "workers_dev": true,
+  "observability": { "enabled": true },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "giq",
+      "database_id": "5e51ea3d-37fd-49b2-9643-67a046ee8275",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "ai": { "binding": "AI" },
+  "triggers": { "crons": ["0 11 * * *", "0 12 * * *"] },
+  "vars": {
+    "AI_ENABLED": "true",
+    "AI_MODEL": "@cf/meta/llama-3.3-70b-instruct-fp8-fast",
+    "ALLOWED_ORIGIN": "https://g-i-q.pages.dev",
+  },
+}

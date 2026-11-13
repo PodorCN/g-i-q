@@ -1,0 +1,39 @@
+{
+  "name": "g-i-q",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "An evidence-led growth and inflation observatory. Cloudflare Pages + Worker + D1.",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "dev:api": "wrangler dev --config backend/wrangler.jsonc",
+    "build": "tsc --noEmit && vite build",
+    "test": "vitest run",
+    "refresh": "tsx scripts/refresh.ts",
+    "db:migrate:local": "wrangler d1 migrations apply giq --local --config backend/wrangler.jsonc",
+    "db:migrate": "wrangler d1 migrations apply giq --remote --config backend/wrangler.jsonc",
+    "deploy:backend": "wrangler deploy --config backend/wrangler.jsonc",
+    "deploy:frontend": "npm run build && wrangler pages deploy dist --project-name g-i-q --branch main",
+    "check:worker": "wrangler deploy --dry-run --config backend/wrangler.jsonc --outdir /tmp/giq-worker-build"
+  },
+  "dependencies": {
+    "@fontsource-variable/manrope": "^5.2.8",
+    "fast-xml-parser": "^5.3.0",
+    "htmlparser2": "^10.0.0",
+    "lucide-react": "^0.468.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vite": "^7.2.0",
+    "vitest": "^4.0.0",
+    "wrangler": "^4.45.0"
+  }
+}

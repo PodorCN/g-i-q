@@ -1,0 +1,867 @@
+{
+  "schemaVersion": 1,
+  "id": "demo-illustrative",
+  "asOf": "2026-11-13T15:46:57.351Z",
+  "generatedAt": "2026-11-13T15:46:57.351Z",
+  "region": "US",
+  "demo": true,
+  "methodologyVersion": "1.0.0",
+  "points": [
+    {
+      "id": "hard-data",
+      "institution": "Hard data composite",
+      "shortName": "Hard data",
+      "color": "#16314b",
+      "kind": "data",
+      "x": 0.32,
+      "y": 0.63,
+      "xRange": {
+        "low": -0.18,
+        "high": 0.71
+      },
+      "yRange": {
+        "low": 0.3,
+        "high": 0.91
+      },
+      "rangeKind": "bootstrap_80",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo",
+      "title": "Illustrative data composite",
+      "summary": "Fictional numbers for demonstrating the interface. Not a current market assessment.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "",
+          "interpretation": "Nonfarm payrolls: -0.70 (2026-11); Private aggregate weekly hours: -0.70 (2026-11); Unemployment, inverted: +0.70 (2026-11)"
+        },
+        {
+          "axis": "inflation",
+          "quote": "",
+          "interpretation": "Headline CPI: -0.70 (2026-11); Core CPI: -0.70 (2026-11)"
+        }
+      ],
+      "method": "data",
+      "sampleSize": 5
+    },
+    {
+      "id": "northstar",
+      "institution": "Northstar Macro (fictional demo)",
+      "shortName": "Northstar Macro",
+      "color": "#287b78",
+      "kind": "institution",
+      "x": 0.62,
+      "y": 0.62,
+      "xRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "yRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#northstar",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth accelerating.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation rising.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "meridian",
+      "institution": "Meridian Research (fictional demo)",
+      "shortName": "Meridian Research",
+      "color": "#4268ca",
+      "kind": "institution",
+      "x": 0.62,
+      "y": -0.62,
+      "xRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "yRange": {
+        "low": -1.06,
+        "high": -0.18
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#meridian",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth accelerating.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation cooling.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "harbor",
+      "institution": "Harbor Strategy (fictional demo)",
+      "shortName": "Harbor Strategy",
+      "color": "#b77a44",
+      "kind": "institution",
+      "x": -0.62,
+      "y": 0.62,
+      "xRange": {
+        "low": -1.06,
+        "high": -0.18
+      },
+      "yRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#harbor",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth slowing.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation rising.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "atlas",
+      "institution": "Atlas Economics (fictional demo)",
+      "shortName": "Atlas Economics",
+      "color": "#8870af",
+      "kind": "institution",
+      "x": -0.62,
+      "y": -0.62,
+      "xRange": {
+        "low": -1.06,
+        "high": -0.18
+      },
+      "yRange": {
+        "low": -1.06,
+        "high": -0.18
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#atlas",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth slowing.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation cooling.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "cedar",
+      "institution": "Cedar Research (fictional demo)",
+      "shortName": "Cedar Research",
+      "color": "#8d6d7f",
+      "kind": "institution",
+      "x": 0.62,
+      "y": 0.62,
+      "xRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "yRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "current",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#cedar",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth accelerating.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation rising.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    },
+    {
+      "id": "outlook",
+      "institution": "Northstar Macro (fictional demo)",
+      "shortName": "Northstar Macro",
+      "color": "#287b78",
+      "kind": "institution",
+      "x": 0.62,
+      "y": -0.62,
+      "xRange": {
+        "low": 0.18,
+        "high": 1.06
+      },
+      "yRange": {
+        "low": -1.06,
+        "high": -0.18
+      },
+      "rangeKind": "model_range",
+      "confidence": "medium",
+      "horizon": "outlook",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "sourceUrl": "https://example.com/giq-demo#outlook",
+      "title": "Illustrative macro commentary",
+      "summary": "Fictional research for testing attribution, overlapping points, filters and uncertainty displays.",
+      "evidence": [
+        {
+          "axis": "growth",
+          "quote": "Our illustrative base case has growth accelerating.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        },
+        {
+          "axis": "inflation",
+          "quote": "Our illustrative base case has inflation cooling.",
+          "interpretation": "Demo text only; not a real institution’s view."
+        }
+      ],
+      "method": "reviewed"
+    }
+  ],
+  "indicators": [
+    {
+      "id": "CES0000000001",
+      "name": "Nonfarm payrolls",
+      "axis": "growth",
+      "provider": "Illustrative data",
+      "sourceUrl": "https://example.com/giq-demo",
+      "period": "2025-12",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "value": 105.74354791547533,
+      "unit": "K jobs / month",
+      "currentMomentum": 0.15814258482936813,
+      "priorMomentum": 0.2830367747526357,
+      "acceleration": -0.12489418992326759,
+      "score": -0.703053905123926,
+      "transform": "Average monthly payroll additions over 3 months, minus the previous 3-month average.",
+      "history": [
+        {
+          "date": "2024-07-01",
+          "value": 102.64002910642363
+        },
+        {
+          "date": "2024-08-01",
+          "value": 102.8411671386884
+        },
+        {
+          "date": "2024-09-01",
+          "value": 103.11402497226317
+        },
+        {
+          "date": "2024-10-01",
+          "value": 103.41789433917418
+        },
+        {
+          "date": "2024-11-01",
+          "value": 103.70088098843402
+        },
+        {
+          "date": "2024-12-01",
+          "value": 103.91862314809758
+        },
+        {
+          "date": "2025-01-01",
+          "value": 104.05029299226644
+        },
+        {
+          "date": "2025-02-01",
+          "value": 104.10610932045837
+        },
+        {
+          "date": "2025-03-01",
+          "value": 104.12365159611083
+        },
+        {
+          "date": "2025-04-01",
+          "value": 104.15430488514242
+        },
+        {
+          "date": "2025-05-01",
+          "value": 104.24472505896979
+        },
+        {
+          "date": "2025-06-01",
+          "value": 104.42000983672932
+        },
+        {
+          "date": "2025-07-01",
+          "value": 104.67464593848958
+        },
+        {
+          "date": "2025-08-01",
+          "value": 104.97449774717889
+        },
+        {
+          "date": "2025-09-01",
+          "value": 105.26912016098723
+        },
+        {
+          "date": "2025-10-01",
+          "value": 105.50995434156906
+        },
+        {
+          "date": "2025-11-01",
+          "value": 105.66784307953685
+        },
+        {
+          "date": "2025-12-01",
+          "value": 105.74354791547533
+        }
+      ]
+    },
+    {
+      "id": "CES0500000034",
+      "name": "Private aggregate weekly hours",
+      "axis": "growth",
+      "provider": "Illustrative data",
+      "sourceUrl": "https://example.com/giq-demo",
+      "period": "2025-12",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "value": 211.48709583095066,
+      "unit": "% annualized",
+      "currentMomentum": 1.8149468081423814,
+      "priorMomentum": 3.2925629076643537,
+      "acceleration": -1.4776160995219723,
+      "score": -0.7001725129479676,
+      "transform": "3-month annualized rate, minus the previous non-overlapping 3-month annualized rate.",
+      "history": [
+        {
+          "date": "2024-07-01",
+          "value": 205.28005821284725
+        },
+        {
+          "date": "2024-08-01",
+          "value": 205.6823342773768
+        },
+        {
+          "date": "2024-09-01",
+          "value": 206.22804994452633
+        },
+        {
+          "date": "2024-10-01",
+          "value": 206.83578867834837
+        },
+        {
+          "date": "2024-11-01",
+          "value": 207.40176197686804
+        },
+        {
+          "date": "2024-12-01",
+          "value": 207.83724629619516
+        },
+        {
+          "date": "2025-01-01",
+          "value": 208.10058598453287
+        },
+        {
+          "date": "2025-02-01",
+          "value": 208.21221864091675
+        },
+        {
+          "date": "2025-03-01",
+          "value": 208.24730319222166
+        },
+        {
+          "date": "2025-04-01",
+          "value": 208.30860977028485
+        },
+        {
+          "date": "2025-05-01",
+          "value": 208.48945011793958
+        },
+        {
+          "date": "2025-06-01",
+          "value": 208.84001967345864
+        },
+        {
+          "date": "2025-07-01",
+          "value": 209.34929187697915
+        },
+        {
+          "date": "2025-08-01",
+          "value": 209.94899549435777
+        },
+        {
+          "date": "2025-09-01",
+          "value": 210.53824032197446
+        },
+        {
+          "date": "2025-10-01",
+          "value": 211.0199086831381
+        },
+        {
+          "date": "2025-11-01",
+          "value": 211.3356861590737
+        },
+        {
+          "date": "2025-12-01",
+          "value": 211.48709583095066
+        }
+      ]
+    },
+    {
+      "id": "LNS14000000",
+      "name": "Unemployment, inverted",
+      "axis": "growth",
+      "provider": "Illustrative data",
+      "sourceUrl": "https://example.com/giq-demo",
+      "period": "2025-12",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "value": 317.230643746426,
+      "unit": "pp / 3 months",
+      "currentMomentum": -1.4232832634642705,
+      "priorMomentum": -2.54733097277375,
+      "acceleration": 1.1240477093094796,
+      "score": 0.7030539051239516,
+      "transform": "Inverted 3-month change in unemployment, minus the previous 3-month change.",
+      "history": [
+        {
+          "date": "2024-07-01",
+          "value": 307.92008731927086
+        },
+        {
+          "date": "2024-08-01",
+          "value": 308.5235014160652
+        },
+        {
+          "date": "2024-09-01",
+          "value": 309.3420749167895
+        },
+        {
+          "date": "2024-10-01",
+          "value": 310.2536830175226
+        },
+        {
+          "date": "2024-11-01",
+          "value": 311.10264296530204
+        },
+        {
+          "date": "2024-12-01",
+          "value": 311.7558694442927
+        },
+        {
+          "date": "2025-01-01",
+          "value": 312.1508789767993
+        },
+        {
+          "date": "2025-02-01",
+          "value": 312.31832796137513
+        },
+        {
+          "date": "2025-03-01",
+          "value": 312.3709547883325
+        },
+        {
+          "date": "2025-04-01",
+          "value": 312.46291465542726
+        },
+        {
+          "date": "2025-05-01",
+          "value": 312.7341751769094
+        },
+        {
+          "date": "2025-06-01",
+          "value": 313.26002951018796
+        },
+        {
+          "date": "2025-07-01",
+          "value": 314.02393781546874
+        },
+        {
+          "date": "2025-08-01",
+          "value": 314.9234932415367
+        },
+        {
+          "date": "2025-09-01",
+          "value": 315.8073604829617
+        },
+        {
+          "date": "2025-10-01",
+          "value": 316.5298630247072
+        },
+        {
+          "date": "2025-11-01",
+          "value": 317.00352923861055
+        },
+        {
+          "date": "2025-12-01",
+          "value": 317.230643746426
+        }
+      ]
+    },
+    {
+      "id": "CUSR0000SA0",
+      "name": "Headline CPI",
+      "axis": "inflation",
+      "provider": "Illustrative data",
+      "sourceUrl": "https://example.com/giq-demo",
+      "period": "2025-12",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "value": 422.97419166190133,
+      "unit": "% annualized",
+      "currentMomentum": 1.8149468081423814,
+      "priorMomentum": 3.2925629076643537,
+      "acceleration": -1.4776160995219723,
+      "score": -0.7001725129479676,
+      "transform": "3-month annualized rate, minus the previous non-overlapping 3-month annualized rate.",
+      "history": [
+        {
+          "date": "2024-07-01",
+          "value": 410.5601164256945
+        },
+        {
+          "date": "2024-08-01",
+          "value": 411.3646685547536
+        },
+        {
+          "date": "2024-09-01",
+          "value": 412.45609988905267
+        },
+        {
+          "date": "2024-10-01",
+          "value": 413.67157735669673
+        },
+        {
+          "date": "2024-11-01",
+          "value": 414.8035239537361
+        },
+        {
+          "date": "2024-12-01",
+          "value": 415.6744925923903
+        },
+        {
+          "date": "2025-01-01",
+          "value": 416.20117196906574
+        },
+        {
+          "date": "2025-02-01",
+          "value": 416.4244372818335
+        },
+        {
+          "date": "2025-03-01",
+          "value": 416.49460638444333
+        },
+        {
+          "date": "2025-04-01",
+          "value": 416.6172195405697
+        },
+        {
+          "date": "2025-05-01",
+          "value": 416.97890023587917
+        },
+        {
+          "date": "2025-06-01",
+          "value": 417.6800393469173
+        },
+        {
+          "date": "2025-07-01",
+          "value": 418.6985837539583
+        },
+        {
+          "date": "2025-08-01",
+          "value": 419.89799098871555
+        },
+        {
+          "date": "2025-09-01",
+          "value": 421.0764806439489
+        },
+        {
+          "date": "2025-10-01",
+          "value": 422.0398173662762
+        },
+        {
+          "date": "2025-11-01",
+          "value": 422.6713723181474
+        },
+        {
+          "date": "2025-12-01",
+          "value": 422.97419166190133
+        }
+      ]
+    },
+    {
+      "id": "CUSR0000SA0L1E",
+      "name": "Core CPI",
+      "axis": "inflation",
+      "provider": "Illustrative data",
+      "sourceUrl": "https://example.com/giq-demo",
+      "period": "2025-12",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "value": 528.7177395773766,
+      "unit": "% annualized",
+      "currentMomentum": 1.8149468081422926,
+      "priorMomentum": 3.2925629076642426,
+      "acceleration": -1.47761609952195,
+      "score": -0.700172512947966,
+      "transform": "3-month annualized rate, minus the previous non-overlapping 3-month annualized rate.",
+      "history": [
+        {
+          "date": "2024-07-01",
+          "value": 513.2001455321181
+        },
+        {
+          "date": "2024-08-01",
+          "value": 514.205835693442
+        },
+        {
+          "date": "2024-09-01",
+          "value": 515.5701248613159
+        },
+        {
+          "date": "2024-10-01",
+          "value": 517.0894716958709
+        },
+        {
+          "date": "2024-11-01",
+          "value": 518.5044049421701
+        },
+        {
+          "date": "2024-12-01",
+          "value": 519.5931157404879
+        },
+        {
+          "date": "2025-01-01",
+          "value": 520.2514649613322
+        },
+        {
+          "date": "2025-02-01",
+          "value": 520.5305466022919
+        },
+        {
+          "date": "2025-03-01",
+          "value": 520.6182579805542
+        },
+        {
+          "date": "2025-04-01",
+          "value": 520.7715244257121
+        },
+        {
+          "date": "2025-05-01",
+          "value": 521.223625294849
+        },
+        {
+          "date": "2025-06-01",
+          "value": 522.1000491836467
+        },
+        {
+          "date": "2025-07-01",
+          "value": 523.3732296924479
+        },
+        {
+          "date": "2025-08-01",
+          "value": 524.8724887358944
+        },
+        {
+          "date": "2025-09-01",
+          "value": 526.3456008049361
+        },
+        {
+          "date": "2025-10-01",
+          "value": 527.5497717078453
+        },
+        {
+          "date": "2025-11-01",
+          "value": 528.3392153976843
+        },
+        {
+          "date": "2025-12-01",
+          "value": 528.7177395773766
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "northstar",
+      "institution": "Northstar Macro (fictional demo)",
+      "shortName": "Northstar Macro",
+      "color": "#287b78",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#northstar",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "meridian",
+      "institution": "Meridian Research (fictional demo)",
+      "shortName": "Meridian Research",
+      "color": "#4268ca",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#meridian",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "harbor",
+      "institution": "Harbor Strategy (fictional demo)",
+      "shortName": "Harbor Strategy",
+      "color": "#b77a44",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#harbor",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "atlas",
+      "institution": "Atlas Economics (fictional demo)",
+      "shortName": "Atlas Economics",
+      "color": "#8870af",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#atlas",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "cedar",
+      "institution": "Cedar Research (fictional demo)",
+      "shortName": "Cedar Research",
+      "color": "#8d6d7f",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#cedar",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    },
+    {
+      "id": "outlook",
+      "institution": "Northstar Macro (fictional demo)",
+      "shortName": "Northstar Macro",
+      "color": "#287b78",
+      "title": "Illustrative macro commentary",
+      "url": "https://example.com/giq-demo#outlook",
+      "publishedAt": "2026-11-13T15:46:57.351Z",
+      "retrievedAt": "2026-11-13T15:46:57.351Z",
+      "status": "scored",
+      "reason": "Illustrative demo: both axes are fictional.",
+      "type": "commentary",
+      "excerpt": ""
+    }
+  ],
+  "sources": [
+    {
+      "id": "northstar",
+      "name": "Northstar Macro (demo)",
+      "url": "https://example.com/giq-demo",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T15:46:57.351Z",
+      "message": "Fictional demonstration source."
+    },
+    {
+      "id": "meridian",
+      "name": "Meridian Research (demo)",
+      "url": "https://example.com/giq-demo",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T15:46:57.351Z",
+      "message": "Fictional demonstration source."
+    },
+    {
+      "id": "harbor",
+      "name": "Harbor Strategy (demo)",
+      "url": "https://example.com/giq-demo",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T15:46:57.351Z",
+      "message": "Fictional demonstration source."
+    },
+    {
+      "id": "atlas",
+      "name": "Atlas Economics (demo)",
+      "url": "https://example.com/giq-demo",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T15:46:57.351Z",
+      "message": "Fictional demonstration source."
+    },
+    {
+      "id": "cedar",
+      "name": "Cedar Research (demo)",
+      "url": "https://example.com/giq-demo",
+      "type": "commentary",
+      "status": "ok",
+      "checkedAt": "2026-11-13T15:46:57.351Z",
+      "message": "Fictional demonstration source."
+    }
+  ],
+  "warnings": [
+    "Every institution and number in this mode is illustrative.",
+    "Use the main research view for actually collected evidence."
+  ]
+}
