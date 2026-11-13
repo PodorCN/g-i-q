@@ -1628,8 +1628,33 @@ td.numeric,
   font-size: 12px;
   margin-bottom: 9px;
 }
-.outlook-summary dd {
-  text-transform: capitalize;
+.outlook-summary table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.outlook-summary th,
+.outlook-summary td {
+  padding: 7px 0;
+  border-bottom: 1px solid var(--line);
+  text-align: right;
+  font-weight: 500;
+}
+.outlook-summary th:first-child {
+  text-align: left;
+  color: var(--muted);
+}
+.outlook-summary thead th {
+  color: var(--muted);
+  font-size: 10px;
+}
+.outlook-path {
+  cursor: pointer;
+  outline: none;
+}
+.outlook-path:focus-visible .outlook-shaft {
+  stroke-width: 4;
 }
 .outlook-summary p {
   color: var(--muted);

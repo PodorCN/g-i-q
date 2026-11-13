@@ -11,6 +11,7 @@ import {
 import Chart from './Chart';
 import { useSnapshot } from './useSnapshot';
 import { rangeQuadrants } from '../shared/quadrants';
+import { outlookPath } from '../shared/outlookPaths';
 
 type Tab = 'map' | 'views' | 'data' | 'sources' | 'methodology';
 type Horizon = 'all' | 'current' | 'outlook';
@@ -83,6 +84,7 @@ function PointInspector({
   const anchors = snapshot.indicators.filter((i) => i.mode === 'level');
   const quadrants = rangeQuadrants(point);
   const outlook = point.outlookDirection;
+  const path = outlookPath(point, data);
   return (
     <aside className="point-inspector" aria-label="Selected point" key={point.id}>
       <div className="inspector-heading">
@@ -127,36 +129,55 @@ function PointInspector({
           </small>
         </div>
       )}
-      {!isData && (outlook || point.horizon === 'outlook') && (
+      {path && (
         <section className="outlook-summary">
-          <h3>Source outlook direction</h3>
-          {outlook ? (
-            <>
-              <dl>
-                <div>
-                  <dt>Growth</dt>
-                  <dd>{outlook.growth === 'unspecified' ? 'Not specified' : outlook.growth}</dd>
-                </div>
-                <div>
-                  <dt>Inflation</dt>
-                  <dd>
-                    {outlook.inflation === 'unspecified' ? 'Not specified' : outlook.inflation}
-                  </dd>
-                </div>
-              </dl>
-              <p>{outlook.horizonLabel}</p>
-              <small>
-                Arrow direction only. Length is not a forecast magnitude; an unspecified axis is not
-                a forecast of no change.
-              </small>
-            </>
-          ) : (
-            <p>
-              No explicit rate-change direction verified in this article. A level forecast alone
-              does not determine an arrow.
-            </p>
-          )}
+          <h3>Data → outlook</h3>
+          <table aria-label="Arrow coordinates">
+            <thead>
+              <tr>
+                <th>Gap, pp</th>
+                <th>Data</th>
+                <th>{point.shortName}</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th>Growth</th>
+                <td>{number(path.from.x)}</td>
+                <td>
+                  {point.growthBasis === 'inferred' ? '≈ ' : ''}
+                  {number(point.x)}
+                </td>
+              </tr>
+              <tr>
+                <th>Inflation</th>
+                <td>{number(path.from.y)}</td>
+                <td>
+                  {point.inflationBasis === 'inferred' ? '≈ ' : ''}
+                  {number(point.y)}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <p className="path-difference">
+            Growth {number(path.dx)} pp · Inflation {number(path.dy)} pp vs data
+          </p>
+          <p>End: {point.horizonLabel || 'Forecast horizon not specified'}</p>
+          <small>
+            {path.inferred
+              ? 'Dashed: endpoint includes our interpretation. '
+              : 'Solid: both endpoint rates are published forecasts. '}
+            Data is a shared reference, not this house’s current assessment. Periods differ.
+          </small>
         </section>
+      )}
+      {!isData && !path && (
+        <p className="quiet-copy">
+          No two-axis outlook path:{' '}
+          {point.horizon === 'current'
+            ? 'this point describes current conditions.'
+            : 'a comparable endpoint or data reference is unavailable.'}
+        </p>
       )}
       {isData ? (
         <div className="anchor-list">
@@ -170,7 +191,8 @@ function PointInspector({
             </div>
           ))}
           <p className="quiet-copy">
-            GDP & GDPNow cover different quarters. The anchor blends both.
+            GDP & GDPNow cover different quarters. The anchor blends both. Outlook arrows run from
+            this reference to each house’s forecast position.
           </p>
         </div>
       ) : (
@@ -206,7 +228,12 @@ function PointInspector({
           <p>{point.summary}</p>
           {outlook && (
             <section className="direction-evidence">
-              <h3>Direction evidence</h3>
+              <h3>Source’s directional statements</h3>
+              <p>{outlook.horizonLabel}</p>
+              <p>
+                Growth: {outlook.growth}. Inflation: {outlook.inflation}. These statements may
+                concern a different horizon from the plotted endpoint.
+              </p>
               {outlook.evidence.map((e) => (
                 <div key={e.axis}>
                   <blockquote>“{e.quote}”</blockquote>
@@ -322,11 +349,20 @@ function Methodology() {
       <section>
         <h2>What the arrows mean</h2>
         <p>
-          Arrows beside house labels show rate-change directions explicitly supported by the source,
-          at the horizon shown in the inspector. They are schematic symbols, not numerical endpoints
-          or paths from the data anchor. Missing directions remain unspecified, not steady. An
-          article may describe a later horizon than the plotted point; that date is preserved
-          separately.
+          Arrows run from the current hard-data reference to a house’s forward-looking point. Both
+          ends use the plotted coordinates: the direction comes from the growth and inflation gaps
+          together, and the arrowhead points to the forecast endpoint. Dashed arrows include at
+          least one interpreted endpoint rate; solid arrows use two published forecast rates.
+          Current-only views have no outlook arrow.
+        </p>
+        <p>
+          This is a comparison with a shared reference, not the institution’s own current-to-future
+          forecast path. GDP/GDPNow and house forecasts can cover different periods and rate
+          definitions, so the coordinate difference is not a measured change over time. The
+          endpoint’s range remains uncertain; an arrow crossing an axis does not establish a regime
+          transition. Later directional statements retain their own horizons in Analysis &
+          assumptions and do not move the plotted endpoint. Thin lines between dots and names are
+          label connectors.
         </p>
       </section>
       <section>
@@ -489,7 +525,7 @@ export default function App() {
     return value === 'current' || value === 'outlook' ? value : 'all';
   });
   const [rangeMode, setRangeMode] = useState<'selected' | 'all' | 'none'>('selected');
-  const [showOutlooks, setShowOutlooks] = useState(true);
+  const [outlookMode, setOutlookMode] = useState<'focused' | 'all' | 'none'>('focused');
   const [showLabels, setShowLabels] = useState(
     () => !window.matchMedia('(max-width: 600px)').matches,
   );
@@ -729,13 +765,17 @@ export default function App() {
                               <option value="none">Hidden</option>
                             </select>
                           </label>
-                          <label className="checkbox-label">
-                            <input
-                              type="checkbox"
-                              checked={showOutlooks}
-                              onChange={(e) => setShowOutlooks(e.target.checked)}
-                            />
-                            Source outlook arrows
+                          <label>
+                            Outlook paths
+                            <select
+                              aria-label="Outlook paths"
+                              value={outlookMode}
+                              onChange={(e) => setOutlookMode(e.target.value as typeof outlookMode)}
+                            >
+                              <option value="focused">Focus selected view</option>
+                              <option value="all">All views</option>
+                              <option value="none">Hidden</option>
+                            </select>
                           </label>
                           <label className="checkbox-label">
                             <input
@@ -759,7 +799,8 @@ export default function App() {
                       showRanges={rangeMode !== 'none'}
                       rangeMode={rangeMode === 'all' ? 'all' : 'selected'}
                       showLabels={showLabels}
-                      showOutlooks={showOutlooks}
+                      showOutlooks={outlookMode !== 'none'}
+                      outlookMode={outlookMode === 'all' ? 'all' : 'focused'}
                     />
                     <div className="mobile-house-list" aria-label="Select a house view">
                       {visiblePoints.map((point) => (
@@ -775,7 +816,8 @@ export default function App() {
                     </div>
                     <div className="map-caption">
                       <span>
-                        Arrows: stated direction only. Hollow dots: mapping spans quadrants.
+                        Arrows: data → outlook. Dashed: inferred endpoint. Hollow dots: uncertain
+                        quadrant.
                       </span>
                       <button className="text-button" onClick={() => changeTab('methodology')}>
                         How to read this <ArrowUpRight size={13} aria-hidden="true" />

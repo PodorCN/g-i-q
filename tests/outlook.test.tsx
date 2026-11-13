@@ -1,10 +1,8 @@
 import { readFileSync } from 'node:fs';
-import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { verifiedSnippet } from '../backend/analysis';
 import { verifiedOutlook } from '../backend/outlook';
-import Chart from '../frontend/Chart';
-import { outlookVector, rangeQuadrants } from '../shared/quadrants';
+import { rangeQuadrants } from '../shared/quadrants';
 import { axisSupport, OutlookDirectionSchema, SnapshotSchema, type Point } from '../shared/schema';
 
 const snapshot = SnapshotSchema.parse(JSON.parse(readFileSync('data/latest.json', 'utf8')));
@@ -55,7 +53,6 @@ describe('Outlook arrows require evidence and preserve unknown directions', () =
     expect(result.growth).toBe('unspecified');
     expect(result.inflation).toBe('falling');
     expect(result.evidence[0].quote).toBe(assessment.inflationOutlookQuote);
-    expect(outlookVector({ ...house, outlookDirection: result })).toEqual({ x: 0, y: -1 });
   });
 
   it('rejects invented direction quotations and missing horizons', () => {
@@ -83,13 +80,6 @@ describe('Outlook arrows require evidence and preserve unknown directions', () =
     );
   });
 
-  it('does not infer a vector from a forecast horizon or distance from the hard-data anchor', () => {
-    expect(outlookVector({ ...house, horizon: 'outlook' })).toBeNull();
-    expect(
-      outlookVector({ ...data, outlookDirection: verifiedOutlook(text, assessment) }),
-    ).toBeNull();
-  });
-
   it('keeps the entire short directional quote, including its verb and qualification', () => {
     const passage =
       'By April 2027, core inflation as measured by the Personal Consumption Expenditures price index should decline from current levels';
@@ -106,32 +96,5 @@ describe('Outlook arrows require evidence and preserve unknown directions', () =
     const passage = 'Our forecast is kind of 2.5% real growth plus minus.';
     expect(verifiedSnippet(passage, passage, 'growth')).toContain('2.5%');
     expect(verifiedSnippet(passage, '5% real growth plus minus', 'growth')).toBe('');
-  });
-
-  it('draws only sourced arrows and lets the reader hide them without losing points', () => {
-    const points = [
-      data,
-      { ...house, outlookDirection: verifiedOutlook(text, assessment) },
-      { ...house, id: 'no-direction', shortName: 'No direction' },
-    ];
-    const render = (showOutlooks: boolean) =>
-      renderToStaticMarkup(
-        <Chart
-          points={points}
-          selectedId={house.id}
-          onSelect={() => {}}
-          showRanges
-          showLabels
-          showOutlooks={showOutlooks}
-        />,
-      );
-    const visible = render(true),
-      hidden = render(false);
-    expect(visible.match(/class="outlook-arrow"/g) || []).toHaveLength(1);
-    expect(hidden).not.toContain('class="outlook-arrow"');
-    for (const svg of [visible, hidden]) {
-      expect(svg.match(/class="scatter-point/g) || []).toHaveLength(3);
-      expect(svg).toContain('Mapping range spans multiple quadrants');
-    }
   });
 });

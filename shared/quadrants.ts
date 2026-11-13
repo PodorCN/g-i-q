@@ -25,13 +25,3 @@ export function rangeQuadrants(point: Pick<Point, 'xRange' | 'yRange' | 'rangeKi
     return distance < 1 - EPSILON;
   }).map((q) => q.name);
 }
-
-export function outlookVector(point: Point): { x: number; y: number } | null {
-  const outlook = point.outlookDirection;
-  if (point.kind !== 'institution' || !outlook) return null;
-  const sign = (direction: string) =>
-    direction === 'rising' ? 1 : direction === 'falling' ? -1 : 0;
-  const x = sign(outlook.growth),
-    y = sign(outlook.inflation);
-  return x || y ? { x, y } : null;
-}

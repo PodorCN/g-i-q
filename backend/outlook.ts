@@ -30,7 +30,7 @@ export function verifiedOutlook(
     result.evidence.push({
       axis,
       quote,
-      interpretation: `${axis === 'growth' ? 'Growth' : 'Inflation'}: ${direction}. Qualitative direction only; arrow length is not a forecast magnitude.`,
+      interpretation: `${axis === 'growth' ? 'Growth' : 'Inflation'}: ${direction}. Qualitative statement; its horizon may differ from the plotted two-axis forecast endpoint.`,
     });
   }
   const parsed = OutlookDirectionSchema.safeParse(result);

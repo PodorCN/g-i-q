@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "2026-11-13-outlooks-reviewed-mwfa0d99",
-  "asOf": "2026-11-13T17:54:10.845Z",
-  "generatedAt": "2026-11-13T17:54:10.845Z",
+  "id": "2026-11-13-paths-reviewed-mwfc08jh",
+  "asOf": "2026-11-13T18:50:03.965Z",
+  "generatedAt": "2026-11-13T18:50:03.965Z",
   "region": "US",
   "demo": false,
   "methodologyVersion": "1.0.0",
@@ -404,7 +404,7 @@
           {
             "axis": "inflation",
             "quote": "By April 2027, that mechanical effect alone should bring core inflation as measured by the Personal Consumption Expenditures price index toward 2.5%, a meaningful decline from current levels",
-            "interpretation": "Vanguard describes a decline toward 2.5% core PCE by April 2027. Its plotted level forecast is 3.2% for year-end 2026. The arrow marks direction only; these two horizons stay separate."
+            "interpretation": "Vanguard describes a decline toward 2.5% core PCE by April 2027. Its plotted endpoint is 3.2% for year-end 2026; this later directional statement does not determine that endpoint’s arrow."
           }
         ]
       },

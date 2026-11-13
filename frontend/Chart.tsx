@@ -1,7 +1,8 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Point } from '../shared/schema';
 import { fitAxis } from './chartScale';
-import { outlookVector, rangeQuadrants } from '../shared/quadrants';
+import { rangeQuadrants } from '../shared/quadrants';
+import { arrowSegment, outlookPath } from '../shared/outlookPaths';
 
 const WIDTH = 850;
 type Layout = {
@@ -16,7 +17,7 @@ function Labels({
   sx,
   sy,
   layout,
-  showOutlooks,
+  anchor,
 }: {
   points: Point[];
   selectedId: string;
@@ -24,7 +25,7 @@ function Labels({
   sx: (value: number) => number;
   sy: (value: number) => number;
   layout: Layout;
-  showOutlooks: boolean;
+  anchor?: Point;
 }) {
   const { height: HEIGHT, margin: M } = layout;
   const labels = useMemo(() => {
@@ -32,9 +33,12 @@ function Labels({
     return [...points]
       .sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId))
       .map((point) => {
-        const arrow = showOutlooks ? outlookVector(point) : null;
-        const width = Math.min(310, (point.shortName.length * 7.7 + 18 + (arrow ? 25 : 0)) * scale);
-        const columns = [sx(point.x) + 14 * scale, sx(point.x) - width - 12 * scale].map((x) =>
+        const width = Math.min(310, (point.shortName.length * 7.7 + 18) * scale);
+        const path = outlookPath(point, anchor);
+        const left = sx(point.x) - width - 12 * scale;
+        const right = sx(point.x) + 14 * scale;
+        // Keep the name away from the incoming outlook arrowhead.
+        const columns = (path && path.dx < 0 ? [left, right] : [right, left]).map((x) =>
           Math.max(M.left + 6, Math.min(WIDTH - M.right - width - 6, x)),
         );
         let x = columns[0],
@@ -62,12 +66,12 @@ function Labels({
         }
         y = Math.max(M.top + 21 * scale, Math.min(HEIGHT - M.bottom - 10 * scale, y));
         occupied.push({ x, y, width });
-        return { point, x, y, width, arrow };
+        return { point, x, y, width };
       });
-  }, [points, selectedId, scale, sx, sy, layout, showOutlooks]);
+  }, [points, selectedId, scale, sx, sy, layout, anchor]);
   return (
     <g aria-hidden="true">
-      {labels.map(({ point, x, y, width, arrow }) => (
+      {labels.map(({ point, x, y, width }) => (
         <g key={point.id} className="point-label">
           <line
             x1={sx(point.x)}
@@ -95,29 +99,6 @@ function Labels({
           >
             {point.shortName}
           </text>
-          {arrow && (
-            <g
-              className="outlook-arrow"
-              transform={`translate(${x + width - 14 * scale} ${y - 6 * scale})`}
-            >
-              <title>{`Source outlook: growth ${point.outlookDirection!.growth}, inflation ${point.outlookDirection!.inflation}. ${point.outlookDirection!.horizonLabel}. Direction only; no numerical destination.`}</title>
-              <path
-                d={(() => {
-                  const length = Math.hypot(arrow.x, arrow.y),
-                    dx = arrow.x / length,
-                    dy = -arrow.y / length;
-                  const endX = dx * 6 * scale,
-                    endY = dy * 6 * scale;
-                  return `M${-endX},${-endY}L${endX},${endY} M${endX - dx * 4 * scale - dy * 3 * scale},${endY - dy * 4 * scale + dx * 3 * scale}L${endX},${endY}L${endX - dx * 4 * scale + dy * 3 * scale},${endY - dy * 4 * scale - dx * 3 * scale}`;
-                })()}
-                stroke={point.id === selectedId ? '#fff' : point.color}
-                strokeWidth={1.6 * scale}
-                fill="none"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
-          )}
         </g>
       ))}
     </g>
@@ -132,6 +113,7 @@ export default function Chart({
   showLabels,
   rangeMode = 'all',
   showOutlooks = true,
+  outlookMode = 'focused',
 }: {
   points: Point[];
   selectedId: string;
@@ -140,6 +122,7 @@ export default function Chart({
   showLabels: boolean;
   rangeMode?: 'all' | 'selected';
   showOutlooks?: boolean;
+  outlookMode?: 'focused' | 'all';
 }) {
   const clip = useId().replace(/:/g, '');
   const container = useRef<HTMLDivElement>(null);
@@ -181,6 +164,19 @@ export default function Chart({
     return () => observer.disconnect();
   }, []);
   const selected = points.find((point) => point.id === selectedId);
+  const dataPoint = points.find((point) => point.kind === 'data');
+  const paths = showOutlooks
+    ? points.flatMap((point) => {
+        if (
+          outlookMode === 'focused' &&
+          selected?.kind === 'institution' &&
+          point.id !== selectedId
+        )
+          return [];
+        const path = outlookPath(point, dataPoint);
+        return path ? [path] : [];
+      })
+    : [];
   return (
     <div
       className="chart-wrap"
@@ -292,13 +288,80 @@ export default function Chart({
                   </g>
                 );
               })}
+          {paths.map(({ from, to, dx, dy, inferred }) => {
+            const arrowScale = Math.min(1.8, Math.sqrt(labelScale));
+            const line = arrowSegment(
+              { x: sx(from.x), y: sy(from.y) },
+              { x: sx(to.x), y: sy(to.y) },
+              10 * arrowScale,
+            );
+            if (!line) return null;
+            const active = to.id === selectedId;
+            const head = (active ? 9 : 8) * arrowScale;
+            const headPath = `M${line.x2 - line.ux * head - line.uy * head * 0.55},${line.y2 - line.uy * head + line.ux * head * 0.55}L${line.x2},${line.y2}L${line.x2 - line.ux * head + line.uy * head * 0.55},${line.y2 - line.uy * head - line.ux * head * 0.55}`;
+            const description = `Current data reference to ${to.shortName}, ${to.horizonLabel || 'forecast horizon not specified'}. Growth gap difference ${dx.toFixed(2)} pp; inflation gap difference ${dy.toFixed(2)} pp. ${inferred ? 'Dashed: endpoint includes our interpretation.' : 'Both endpoint rates are published forecasts.'} Periods may differ; this is not the house's own current assessment.`;
+            return (
+              <g
+                key={`outlook-${to.id}`}
+                className="outlook-path"
+                data-point-id={to.id}
+                data-from-x={from.x}
+                data-from-y={from.y}
+                data-to-x={to.x}
+                data-to-y={to.y}
+                role="button"
+                tabIndex={0}
+                aria-label={description}
+                onClick={() => onSelect(to.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onSelect(to.id);
+                  }
+                }}
+                opacity={selected?.kind === 'institution' && !active ? 0.3 : 1}
+              >
+                <title>{description}</title>
+                <path
+                  d={`M${line.x1},${line.y1}L${line.x2},${line.y2}`}
+                  stroke="transparent"
+                  strokeWidth="14"
+                  fill="none"
+                />
+                <path
+                  d={`M${line.x1},${line.y1}L${line.x2},${line.y2}`}
+                  stroke="white"
+                  strokeWidth={active ? 5 : 4}
+                  strokeOpacity=".85"
+                  fill="none"
+                />
+                <path
+                  className="outlook-shaft"
+                  d={`M${line.x1},${line.y1}L${line.x2},${line.y2}`}
+                  stroke={to.color}
+                  strokeWidth={(active ? 2.5 : 1.8) * arrowScale}
+                  strokeDasharray={inferred ? '6 4' : undefined}
+                  fill="none"
+                />
+                <path
+                  className="outlook-arrowhead"
+                  d={headPath}
+                  stroke={to.color}
+                  strokeWidth={(active ? 2.5 : 1.8) * arrowScale}
+                  strokeLinejoin="round"
+                  strokeLinecap="round"
+                  fill="none"
+                />
+              </g>
+            );
+          })}
           {points.map((point) => (
             <g
               key={point.id}
               role="button"
               tabIndex={0}
               className={`scatter-point ${selectedId === point.id ? 'selected-point' : ''}`}
-              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${rangeQuadrants(point).length > 1 ? 'Mapping range spans multiple quadrants. ' : ''}${point.outlookDirection ? `Source outlook: growth ${point.outlookDirection.growth}, inflation ${point.outlookDirection.inflation}. ` : ''}Select to inspect evidence.`}
+              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${rangeQuadrants(point).length > 1 ? 'Mapping range spans multiple quadrants. ' : ''}${outlookPath(point, dataPoint) ? 'Outlook endpoint relative to the shared current data reference. ' : ''}Select to inspect evidence.`}
               aria-pressed={selectedId === point.id}
               onClick={() => onSelect(point.id)}
               onKeyDown={(event) => {
@@ -357,7 +420,7 @@ export default function Chart({
             sx={sx}
             sy={sy}
             layout={layout}
-            showOutlooks={showOutlooks}
+            anchor={dataPoint}
           />
         </g>
         <g className="tick-labels" aria-hidden="true">
