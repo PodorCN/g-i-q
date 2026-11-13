@@ -73,6 +73,14 @@ export const PointSchema = z
     xRange: RangeSchema,
     yRange: RangeSchema,
     rangeKind: z.enum(['none', 'model_range', 'bootstrap_80']),
+    rangePolicy: z.literal('quadrant-constrained-v1').optional(),
+    rangeEstimate: z
+      .object({
+        growthRadius: z.number().min(0.05).max(3),
+        inflationRadius: z.number().min(0.05).max(3),
+        rationale: z.string().min(1).max(900),
+      })
+      .optional(),
     reportedScenarios: z.array(ReportedScenarioSchema).max(3).optional(),
     scenarioReviewVersion: z.literal('source-scenarios-v1').optional(),
     confidence: z.enum(['low', 'medium', 'high']),

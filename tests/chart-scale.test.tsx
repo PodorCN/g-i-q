@@ -54,7 +54,7 @@ describe('Chart bounds follow the data and complete uncertainty ranges', () => {
           frame = Object.fromEntries(
             Object.entries(attrs).map(([key, value]) => [key, Number(value)]),
           );
-        if (name === 'ellipse')
+        if (name === 'ellipse' && attrs['data-range-kind'] === 'data')
           ellipses.push(
             Object.fromEntries(Object.entries(attrs).map(([key, value]) => [key, Number(value)])),
           );

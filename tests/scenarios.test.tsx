@@ -2,9 +2,13 @@ import { readFileSync } from 'node:fs';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { buildSnapshot } from '../backend/collect';
-import { sourceOnlyRanges, verifiedScenarios } from '../backend/scenarios';
+import { verifiedScenarios } from '../backend/scenarios';
 import Chart from '../frontend/Chart';
-import { reportedAlternatives } from '../shared/quadrants';
+import {
+  reportedAlternatives,
+  withInterpretationRange,
+  constrainedRange,
+} from '../shared/quadrants';
 import { axisSupport, SnapshotSchema, type ReportedScenario } from '../shared/schema';
 
 const snapshot = SnapshotSchema.parse(JSON.parse(readFileSync('data/latest.json', 'utf8')));
@@ -33,7 +37,7 @@ const render = (point = house) =>
   );
 
 describe('Only report-backed scenarios can extend a house view', () => {
-  it('never displays a legacy mapper ellipse, even if its widths cover all four quadrants', () => {
+  it('clips a legacy mapper ellipse to its own quadrant without requiring an alternative scenario', () => {
     const old = {
       ...house,
       rangeKind: 'model_range' as const,
@@ -41,17 +45,18 @@ describe('Only report-backed scenarios can extend a house view', () => {
       yRange: { low: -3, high: 3 },
     };
     const svg = render(old);
-    expect(svg).not.toContain('<ellipse');
+    expect(svg).toContain('<ellipse');
     expect(svg).not.toContain('reported-scenario-region');
     expect(reportedAlternatives(old)).toEqual([]);
+    expect(constrainedRange(old).slices.map((s) => s.quadrant)).toEqual(['Overheating']);
   });
   it('normalizes cached house ranges without collapsing the separate data sensitivity range', () => {
     const old = { ...house, rangeKind: 'model_range' as const, xRange: { low: -3, high: 3 } };
-    expect(sourceOnlyRanges(old)).toMatchObject({
-      rangeKind: 'none',
-      xRange: { low: old.x, high: old.x },
+    expect(withInterpretationRange(old)).toMatchObject({
+      rangeKind: 'model_range',
+      rangePolicy: 'quadrant-constrained-v1',
     });
-    expect(sourceOnlyRanges(data)).toBe(data);
+    expect(withInterpretationRange(data)).toBe(data);
   });
   it('accepts a sourced two-axis conditional risk and preserves its horizon', () => {
     expect(verifiedScenarios(text, [scenario], house)).toMatchObject([
@@ -122,7 +127,7 @@ describe('Only report-backed scenarios can extend a house view', () => {
       ),
     ).toEqual([]);
   });
-  it('shades only the named alternative and draws no ellipse bridging unmentioned quadrants', () => {
+  it('clips the interpreted ellipse to the central quadrant and sourced alternative', () => {
     const point = {
       ...house,
       reportedScenarios: verifiedScenarios(text, [scenario], house),
@@ -138,14 +143,14 @@ describe('Only report-backed scenarios can extend a house view', () => {
         rangeMode="selected"
       />,
     );
-    expect(svg.match(/class="reported-scenario-region"/g)).toHaveLength(1);
-    expect(svg).toContain('data-quadrant="Stagflation"');
-    expect(svg).not.toContain('data-quadrant="Goldilocks"');
-    expect(svg).not.toContain('<ellipse');
-    expect(svg).toContain('no numeric bounds');
+    expect(svg.match(/class="interpretation-range"/g)).toHaveLength(1);
+    expect(svg).toContain('data-range-quadrant="Stagflation"');
+    expect(svg).not.toContain('data-range-quadrant="Goldilocks"');
+    expect(svg).toContain('<ellipse');
+    expect(svg).toContain('quadrant constrained');
     expect(axisSupport(point, data, 'growth')).toBe('Report includes opposing scenario');
   });
-  it('keeps a two-axis scenario through collection while leaving numerical bounds unset', async () => {
+  it('keeps source permissions while restoring interpretive ranges during collection', async () => {
     const base = 'We forecast real GDP growth of 2.5%. Core PCE inflation should be 3%.';
     const html = `<article><time datetime="2026-11-13">November 13, 2026</time>${base} ${text} ${'Additional macro research. '.repeat(20)}</article>`;
     const fetcher = (async (input: RequestInfo | URL) =>
@@ -183,8 +188,8 @@ describe('Only report-backed scenarios can extend a house view', () => {
       }),
     });
     expect(result.points[0]).toMatchObject({
-      rangeKind: 'none',
-      xRange: { low: 0.5, high: 0.5 },
+      rangeKind: 'model_range',
+      rangePolicy: 'quadrant-constrained-v1',
       reportedScenarios: [{ quadrant: 'Stagflation' }],
     });
   });

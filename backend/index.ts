@@ -43,6 +43,9 @@ export function createAssessor(env: Env): Assess | undefined {
     const properties = {
       growthRate: { type: 'number', minimum: -1, maximum: 5 },
       coreInflationRate: { type: 'number', minimum: 0, maximum: 5 },
+      growthRangeWidth: { type: 'number', minimum: 0.15, maximum: 2 },
+      inflationRangeWidth: { type: 'number', minimum: 0.15, maximum: 2 },
+      rangeRationale: { type: 'string', maxLength: 900 },
       forwardGuidance: {
         type: 'array',
         maxItems: 1,

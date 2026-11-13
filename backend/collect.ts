@@ -31,7 +31,8 @@ import {
 import { readPublic, type Fetcher } from './http';
 import { collectLevels, levelDataPoint } from './levels';
 import { verifiedOutlook } from './outlook';
-import { sourceOnlyRanges, verifiedScenarios } from './scenarios';
+import { verifiedScenarios } from './scenarios';
+import { withInterpretationRange } from '../shared/quadrants';
 import { verifiedForwardGuidance } from './guidance';
 
 export type Assess = (text: string, title: string) => Promise<Assessment>;
@@ -54,6 +55,9 @@ export const AssessmentSchema = z.object({
   coreInflationRate: z.number().min(0).max(5).optional(),
   growthSigma: z.number().min(0.15).max(2).optional(),
   inflationSigma: z.number().min(0.15).max(2).optional(),
+  growthRangeWidth: z.number().min(0.15).max(2).optional(),
+  inflationRangeWidth: z.number().min(0.15).max(2).optional(),
+  rangeRationale: z.string().max(900).optional(),
   growthOutlook: z.enum(['rising', 'falling', 'steady', 'unspecified']).optional(),
   inflationOutlook: z.enum(['rising', 'falling', 'steady', 'unspecified']).optional(),
   growthOutlookQuote: z.string().max(650).optional(),
@@ -506,6 +510,17 @@ export async function buildSnapshot(
                 x: gx,
                 y: iy,
                 rangeKind: 'none',
+                rangeEstimate:
+                  assessment.growthRangeWidth !== undefined &&
+                  assessment.inflationRangeWidth !== undefined
+                    ? {
+                        growthRadius: assessment.growthRangeWidth,
+                        inflationRadius: assessment.inflationRangeWidth,
+                        rationale:
+                          assessment.rangeRationale ||
+                          'Interpretive widths; permitted quadrants are independently constrained by report evidence.',
+                      }
+                    : undefined,
                 xRange: { low: gx, high: gx },
                 yRange: { low: iy, high: iy },
                 growthRate: assessment.growthRate,
@@ -651,7 +666,7 @@ export async function buildSnapshot(
     region: 'US',
     demo: false,
     methodologyVersion: '1.0.0',
-    points: options.axisMode === 'levels' ? points.map(sourceOnlyRanges) : points,
+    points: options.axisMode === 'levels' ? points.map(withInterpretationRange) : points,
     indicators,
     documents,
     sources,

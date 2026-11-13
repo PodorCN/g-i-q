@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Point } from '../shared/schema';
 import { fitAxis } from './chartScale';
-import { reportedAlternatives } from '../shared/quadrants';
+import { reportedAlternatives, constrainedRange } from '../shared/quadrants';
 import { arrowSegment, outlookPath } from '../shared/outlookPaths';
 
 const WIDTH = 850;
@@ -146,19 +146,25 @@ export default function Chart({
   const PW = WIDTH - M.left - M.right,
     PH = HEIGHT - M.top - M.bottom;
   const { xAxis, yAxis, sx, sy } = useMemo(() => {
-    // Only data has numeric sensitivity bounds. Legacy house widths are ignored.
-    const extents = points.map((p) => ({ point: p, path: outlookPath(p) }));
+    // Fit the visible clipped ranges as well as published guidance endpoints.
+    const extents = points.map((p) => ({
+      point: p,
+      path: outlookPath(p),
+      range: p.kind === 'data' ? p : constrainedRange(p),
+    }));
     const xAxis = fitAxis(
-      extents.flatMap(({ point: p, path }) => [
+      extents.flatMap(({ point: p, path, range }) => [
         p.x,
-        ...(p.kind === 'data' ? [p.xRange.low, p.xRange.high] : []),
+        range.xRange.low,
+        range.xRange.high,
         ...(path ? [path.from.x, path.to.x] : []),
       ]),
     );
     const yAxis = fitAxis(
-      extents.flatMap(({ point: p, path }) => [
+      extents.flatMap(({ point: p, path, range }) => [
         p.y,
-        ...(p.kind === 'data' ? [p.yRange.low, p.yRange.high] : []),
+        range.yRange.low,
+        range.yRange.high,
         ...(path ? [path.from.y, path.to.y] : []),
       ]),
     );
@@ -181,7 +187,10 @@ export default function Chart({
   }, []);
   const selected = points.find((point) => point.id === selectedId);
   const rangePoints = points.filter((p) => rangeMode === 'all' || p.id === selectedId);
-  const hasScenarioRegion = rangePoints.some((p) => reportedAlternatives(p).length > 0);
+  const hasHouseRange = rangePoints.some(
+    (p) => p.kind === 'institution' && constrainedRange(p).slices.length > 0,
+  );
+  const rangeClip = (point: Point) => `${clip}-range-${points.indexOf(point)}`;
   const hasDataRange = rangePoints.some((p) => p.kind === 'data');
   const paths = showOutlooks
     ? points.flatMap((point) => {
@@ -211,6 +220,22 @@ export default function Chart({
           <clipPath id={clip}>
             <rect x={M.left} y={M.top} width={PW} height={PH} rx="6" />
           </clipPath>
+          {points
+            .filter((p) => p.kind === 'institution')
+            .map((point) => (
+              <clipPath key={point.id} id={rangeClip(point)}>
+                {constrainedRange(point).slices.map((slice) => (
+                  <rect
+                    key={slice.quadrant}
+                    data-range-quadrant={slice.quadrant}
+                    x={sx(slice.xRange.low)}
+                    y={sy(slice.yRange.high)}
+                    width={sx(slice.xRange.high) - sx(slice.xRange.low)}
+                    height={sy(slice.yRange.low) - sy(slice.yRange.high)}
+                  />
+                ))}
+              </clipPath>
+            ))}
         </defs>
         <g clipPath={`url(#${clip})`}>
           <rect x={M.left} y={M.top} width={zeroX - M.left} height={zeroY - M.top} fill="#faf1e7" />
@@ -269,40 +294,41 @@ export default function Chart({
             </text>
           </g>
           {showRanges &&
-            rangePoints.flatMap((point) =>
-              reportedAlternatives(point).map((scenario) => {
-                const right = ['Overheating', 'Goldilocks'].includes(scenario.quadrant);
-                const top = ['Overheating', 'Stagflation'].includes(scenario.quadrant);
-                const x1 = right ? zeroX : M.left,
-                  x2 = right ? M.left + PW : zeroX;
-                const y1 = top ? M.top : zeroY,
-                  y2 = top ? zeroY : M.top + PH;
+            rangePoints
+              .filter((p) => p.kind === 'institution')
+              .map((point) => {
+                const range = constrainedRange(point);
+                if (!range.slices.length) return null;
                 return (
-                  <rect
-                    key={`${point.id}-${scenario.quadrant}`}
-                    className="reported-scenario-region"
+                  <g
+                    key={`house-range-${point.id}`}
+                    className="interpretation-range"
                     data-point-id={point.id}
-                    data-quadrant={scenario.quadrant}
-                    x={x1 + 2}
-                    y={y1 + 2}
-                    width={Math.max(0, x2 - x1 - 4)}
-                    height={Math.max(0, y2 - y1 - 4)}
-                    fill={point.color}
-                    fillOpacity=".075"
-                    stroke={point.color}
-                    strokeOpacity=".65"
-                    strokeDasharray="4 5"
+                    data-covered-quadrants={range.slices.map((s) => s.quadrant).join('|')}
+                    clipPath={`url(#${rangeClip(point)})`}
                     pointerEvents="none"
                   >
-                    <title>
-                      {point.shortName}: reported {scenario.quadrant} scenario.{' '}
-                      {scenario.horizonLabel}. Qualitative region; no numerical bounds or
-                      probability.
-                    </title>
-                  </rect>
+                    <ellipse
+                      data-range-kind="interpretation"
+                      cx={sx(point.x)}
+                      cy={sy(point.y)}
+                      rx={Math.abs(sx(point.x + range.estimate.growthRadius) - sx(point.x))}
+                      ry={Math.abs(sy(point.y + range.estimate.inflationRadius) - sy(point.y))}
+                      fill={point.color}
+                      fillOpacity={point.id === selectedId ? '.09' : '.025'}
+                      stroke={point.color}
+                      strokeDasharray="5 5"
+                      strokeOpacity={point.id === selectedId ? '.65' : '.22'}
+                    >
+                      <title>
+                        {point.shortName}: interpreted range, restricted to{' '}
+                        {range.slices.map((s) => s.quadrant).join(', ')}. Not a statistical
+                        confidence interval.
+                      </title>
+                    </ellipse>
+                  </g>
                 );
-              }),
-            )}
+              })}
           {showRanges &&
             points
               .filter(
@@ -323,6 +349,7 @@ export default function Chart({
                   >
                     {point.rangeKind === 'model_range' && (
                       <ellipse
+                        data-range-kind="data"
                         cx={(x1 + x2) / 2}
                         cy={(y1 + y2) / 2}
                         rx={(x2 - x1) / 2}
@@ -549,9 +576,9 @@ export default function Chart({
             Data sensitivity range
           </span>
         )}
-        {showRanges && hasScenarioRegion && (
+        {showRanges && hasHouseRange && (
           <span>
-            <i className="range-icon" /> Report scenario · no numeric bounds
+            <i className="range-icon" /> Interpreted range · quadrant constrained
           </span>
         )}
       </div>

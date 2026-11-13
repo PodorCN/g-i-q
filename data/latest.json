@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "2026-11-13-house-guidance-mwfdqu5x",
-  "asOf": "2026-11-13T19:38:39.695Z",
-  "generatedAt": "2026-11-13T19:38:39.695Z",
+  "id": "2026-11-13-constrained-ranges-mwfe7811",
+  "asOf": "2026-11-13T19:51:29.124Z",
+  "generatedAt": "2026-11-13T19:51:29.124Z",
   "region": "US",
   "demo": false,
   "methodologyVersion": "1.0.0",
@@ -61,14 +61,20 @@
       "x": 0.2999999999999998,
       "y": 1.1,
       "xRange": {
-        "low": 0.2999999999999998,
-        "high": 0.2999999999999998
+        "low": 0,
+        "high": 1.1999999999999997
       },
       "yRange": {
-        "low": 1.1,
-        "high": 1.1
+        "low": 0.40000000000000013,
+        "high": 1.8
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.9,
+        "inflationRadius": 0.7,
+        "rationale": "Interpretive half-widths: growth ±0.90pp (qualitative mapping), inflation ±0.70pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 6–12m tactical view. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -112,14 +118,20 @@
       "x": 0.6000000000000001,
       "y": 1,
       "xRange": {
-        "low": 0.6000000000000001,
-        "high": 0.6000000000000001
+        "low": 0,
+        "high": 1.4000000000000001
       },
       "yRange": {
-        "low": 1,
-        "high": 1
+        "low": 0.30000000000000004,
+        "high": 1.7
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.7,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.70pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Current conditions, November weekly outlook. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -163,14 +175,20 @@
       "x": 0.5,
       "y": 1,
       "xRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0,
+        "high": 1.3
       },
       "yRange": {
-        "low": 1,
-        "high": 1
+        "low": 0.19999999999999996,
+        "high": 1.8
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; October macro backdrop / November review. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -214,14 +232,20 @@
       "x": 0.3999999999999999,
       "y": 0.6000000000000001,
       "xRange": {
-        "low": 0.3999999999999999,
-        "high": 0.3999999999999999
+        "low": 0,
+        "high": 1.0999999999999999
       },
       "yRange": {
-        "low": 0.6000000000000001,
-        "high": 0.6000000000000001
+        "low": 0,
+        "high": 1.3
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.7,
+        "inflationRadius": 0.7,
+        "rationale": "Interpretive half-widths: growth ±0.70pp (qualitative mapping), inflation ±0.70pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Next 6–12 months. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -277,14 +301,20 @@
       "x": 0.5,
       "y": 0.7999999999999998,
       "xRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0,
+        "high": 1
       },
       "yRange": {
-        "low": 0.7999999999999998,
-        "high": 0.7999999999999998
+        "low": 0,
+        "high": 1.5999999999999999
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.5,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.50pp (explicit source rate), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Near-term / 2027 planning outlook. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "medium",
@@ -340,14 +370,20 @@
       "x": 0.25,
       "y": 0.7000000000000002,
       "xRange": {
-        "low": 0.25,
-        "high": 0.25
+        "low": -0.25,
+        "high": 0.75
       },
       "yRange": {
-        "low": 0.7000000000000002,
-        "high": 0.7000000000000002
+        "low": 2.220446049250313e-16,
+        "high": 1.4000000000000001
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.5,
+        "inflationRadius": 0.7,
+        "rationale": "Interpretive half-widths: growth ±0.50pp (explicit source rate), inflation ±0.70pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 2027 baseline / next couple of years. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [
         {
           "quadrant": "Stagflation",
@@ -410,14 +446,20 @@
       "x": 0.2999999999999998,
       "y": 1.2000000000000002,
       "xRange": {
-        "low": 0.2999999999999998,
-        "high": 0.2999999999999998
+        "low": 0,
+        "high": 1.2999999999999998
       },
       "yRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.8500000000000001,
+        "high": 1.5500000000000003
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 1,
+        "inflationRadius": 0.3500000000000001,
+        "rationale": "Interpretive half-widths: growth ±1.00pp (qualitative mapping), inflation ±0.35pp (explicit core PCE rate). Retained from the reviewed report mapping; Year-end 2026 inflation / near-term growth. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "medium",
@@ -473,14 +515,20 @@
       "x": 0.75,
       "y": 0.8999999999999999,
       "xRange": {
-        "low": 0.75,
-        "high": 0.75
+        "low": 0,
+        "high": 1.55
       },
       "yRange": {
-        "low": 0.8999999999999999,
-        "high": 0.8999999999999999
+        "low": 0.09999999999999987,
+        "high": 1.7
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Current conditions. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -524,14 +572,20 @@
       "x": 0.2999999999999998,
       "y": 1.2000000000000002,
       "xRange": {
-        "low": 0.2999999999999998,
-        "high": 0.2999999999999998
+        "low": 0,
+        "high": 1.2999999999999998
       },
       "yRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.30000000000000016,
+        "high": 2.1
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 1,
+        "inflationRadius": 0.9,
+        "rationale": "Interpretive half-widths: growth ±1.00pp (qualitative mapping), inflation ±0.90pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Coming quarters; qualitative outlook. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -575,14 +629,20 @@
       "x": 0.2999999999999998,
       "y": 0.7000000000000002,
       "xRange": {
-        "low": 0.2999999999999998,
-        "high": 0.2999999999999998
+        "low": 0,
+        "high": 1.1999999999999997
       },
       "yRange": {
-        "low": 0.7000000000000002,
-        "high": 0.7000000000000002
+        "low": 0,
+        "high": 1.5000000000000002
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.9,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.90pp (qualitative mapping), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 2027; qualitative CIO outlook. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -626,14 +686,20 @@
       "x": 0.5,
       "y": 1.1,
       "xRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0,
+        "high": 1.4
       },
       "yRange": {
-        "low": 1.1,
-        "high": 1.1
+        "low": 0.20000000000000007,
+        "high": 2
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.9,
+        "inflationRadius": 0.9,
+        "rationale": "Interpretive half-widths: growth ±0.90pp (qualitative mapping), inflation ±0.90pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 2027 growth / near-term price pressure. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -677,14 +743,20 @@
       "x": 0.5,
       "y": 1.2000000000000002,
       "xRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0,
+        "high": 1.3
       },
       "yRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.5000000000000002,
+        "high": 1.9000000000000001
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.7,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.70pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Current conditions; November weekly review. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -728,14 +800,20 @@
       "x": 0.5,
       "y": 1.2000000000000002,
       "xRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0.09999999999999998,
+        "high": 0.9
       },
       "yRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.8500000000000001,
+        "high": 1.5500000000000003
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.4,
+        "inflationRadius": 0.3500000000000001,
+        "rationale": "Interpretive half-widths: growth ±0.40pp (explicit source rate), inflation ±0.35pp (explicit core PCE rate). Retained from the reviewed report mapping; Q4 2026; GDP Q4/Q4, core PCE y/y. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "medium",
@@ -797,14 +875,20 @@
       "x": 0.2999999999999998,
       "y": 0.3999999999999999,
       "xRange": {
-        "low": 0.2999999999999998,
-        "high": 0.2999999999999998
+        "low": 0,
+        "high": 1.0999999999999999
       },
       "yRange": {
-        "low": 0.3999999999999999,
-        "high": 0.3999999999999999
+        "low": 0,
+        "high": 0.8999999999999999
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.5,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.50pp (explicit core PCE rate). Retained from the reviewed report mapping; 2027 growth / end-2027 core PCE. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -848,14 +932,20 @@
       "x": 0.25,
       "y": 1,
       "xRange": {
-        "low": 0.25,
-        "high": 0.25
+        "low": 0,
+        "high": 1.25
       },
       "yRange": {
-        "low": 1,
-        "high": 1
+        "low": 0,
+        "high": 2
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 1,
+        "inflationRadius": 1,
+        "rationale": "Interpretive half-widths: growth ±1.00pp (qualitative mapping), inflation ±1.00pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Current conditions; November assessment. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -899,14 +989,20 @@
       "x": 0.25,
       "y": 1,
       "xRange": {
-        "low": 0.25,
-        "high": 0.25
+        "low": 0,
+        "high": 0.75
       },
       "yRange": {
-        "low": 1,
-        "high": 1
+        "low": 0.19999999999999996,
+        "high": 1.8
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.5,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.50pp (explicit source rate), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 2026–27 growth / end-2026 inflation. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -950,14 +1046,20 @@
       "x": 0.25,
       "y": 1,
       "xRange": {
-        "low": 0.25,
-        "high": 0.25
+        "low": 0,
+        "high": 0.75
       },
       "yRange": {
-        "low": 1,
-        "high": 1
+        "low": 0.5,
+        "high": 1.5
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.5,
+        "inflationRadius": 0.5,
+        "rationale": "Interpretive half-widths: growth ±0.50pp (explicit source rate), inflation ±0.50pp (explicit core PCE rate). Retained from the reviewed report mapping; 2026–27 growth / coming-months core PCE. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "medium",
@@ -1001,14 +1103,20 @@
       "x": 1.2000000000000002,
       "y": 1.2000000000000002,
       "xRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.40000000000000013,
+        "high": 2
       },
       "yRange": {
-        "low": 1.2000000000000002,
-        "high": 1.2000000000000002
+        "low": 0.40000000000000013,
+        "high": 2
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.8,
+        "inflationRadius": 0.8,
+        "rationale": "Interpretive half-widths: growth ±0.80pp (qualitative mapping), inflation ±0.80pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; Current conditions; Q3 GDP / October prices. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",
@@ -1052,14 +1160,20 @@
       "x": 0.20000000000000018,
       "y": 0.5,
       "xRange": {
-        "low": 0.20000000000000018,
-        "high": 0.20000000000000018
+        "low": 0,
+        "high": 0.8000000000000002
       },
       "yRange": {
-        "low": 0.5,
-        "high": 0.5
+        "low": 0,
+        "high": 1
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.6,
+        "inflationRadius": 0.5,
+        "rationale": "Interpretive half-widths: growth ±0.60pp (explicit source rate), inflation ±0.50pp (explicit core PCE rate). Retained from the reviewed report mapping; Q4/Q4 2027; annual forecast table. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "medium",
@@ -1121,14 +1235,20 @@
       "x": 0.10000000000000009,
       "y": 0.7000000000000002,
       "xRange": {
-        "low": 0.10000000000000009,
-        "high": 0.10000000000000009
+        "low": 0,
+        "high": 0.7000000000000001
       },
       "yRange": {
-        "low": 0.7000000000000002,
-        "high": 0.7000000000000002
+        "low": 0,
+        "high": 1.6
       },
-      "rangeKind": "none",
+      "rangeKind": "model_range",
+      "rangePolicy": "quadrant-constrained-v1",
+      "rangeEstimate": {
+        "growthRadius": 0.6,
+        "inflationRadius": 0.9,
+        "rationale": "Interpretive half-widths: growth ±0.60pp (explicit source rate), inflation ±0.90pp (inferred core-PCE-equivalent). Retained from the reviewed report mapping; 2027–28 growth / 2027 inflation interpretation. Cross-quadrant coverage is separately limited to explicit report evidence. These widths are not a statistical confidence interval."
+      },
       "reportedScenarios": [],
       "scenarioReviewVersion": "source-scenarios-v1",
       "confidence": "low",

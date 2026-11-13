@@ -10,7 +10,7 @@ import {
 } from '../shared/schema';
 import Chart from './Chart';
 import { useSnapshot } from './useSnapshot';
-import { rangeQuadrants, reportedAlternatives } from '../shared/quadrants';
+import { rangeQuadrants, reportedAlternatives, constrainedRange } from '../shared/quadrants';
 import { outlookPath } from '../shared/outlookPaths';
 
 type Tab = 'map' | 'views' | 'data' | 'sources' | 'methodology';
@@ -94,6 +94,7 @@ function PointInspector({
   const anchors = snapshot.indicators.filter((i) => i.mode === 'level');
   const quadrants = isData ? rangeQuadrants(point) : [];
   const scenarios = reportedAlternatives(point);
+  const houseRange = isData ? undefined : constrainedRange(point);
   const outlook = point.outlookDirection;
   const path = outlookPath(point);
   return (
@@ -150,12 +151,16 @@ function PointInspector({
               </details>
             ))}
             <small>
-              Shading marks only the stated alternative quadrant. It is not a numeric range,
-              probability or change to the base case.
+              The interpreted range may enter only these report-backed alternative quadrants. Its
+              width is our judgment, not the institution’s probability distribution.
             </small>
           </section>
         ) : (
-          <p className="point-only-note">No sourced alternative-risk quadrant mapped.</p>
+          <p className="point-only-note">
+            {houseRange?.slices.length
+              ? `Interpreted range stays in ${houseRange.slices.map((s) => s.quadrant).join(', ')}.`
+              : 'On a benchmark; no adjoining quadrant is authorized for a shaded range.'}
+          </p>
         ))}
       {path && (
         <section className="outlook-summary">
@@ -313,15 +318,31 @@ function PointInspector({
             </>
           ) : (
             <>
-              <h3>Source-grounded scenarios</h3>
+              <h3>Interpreted range</h3>
+              <dl className="range-values">
+                <div>
+                  <dt>Growth</dt>
+                  <dd>
+                    {number(houseRange!.xRange.low)} to {number(houseRange!.xRange.high)} pp
+                  </dd>
+                </div>
+                <div>
+                  <dt>Inflation</dt>
+                  <dd>
+                    {number(houseRange!.yRange.low)} to {number(houseRange!.yRange.high)} pp
+                  </dd>
+                </div>
+              </dl>
+              <p>{houseRange!.estimate.rationale}</p>
               <p>
-                Only alternatives supported by this report’s own growth and inflation discussion can
-                extend beyond the point’s quadrant. Interpretation confidence never widens the
-                plotted view.
+                Before clipping: ±{houseRange!.estimate.growthRadius.toFixed(2)} pp growth, ±
+                {houseRange!.estimate.inflationRadius.toFixed(2)} pp inflation. These are
+                interpretive half-widths, not statistical confidence intervals.
               </p>
               <p>
-                No shaded alternative means insufficient two-axis scenario evidence was mapped; it
-                does not mean the institution assigns zero risk or that the point is exact.
+                The ellipse is clipped to the mapped quadrant and explicitly supported alternatives.
+                Unmentioned quadrants are excluded. The displayed marginal bounds do not authorize
+                every combination inside their bounding box.
               </p>
             </>
           )}
@@ -376,26 +397,33 @@ function Methodology() {
         </p>
       </section>
       <section>
-        <h2>When a view can extend into another quadrant</h2>
+        <h2>Interpreted ranges, with evidence-controlled crossings</h2>
         <p>
-          A house is a point unless its report explicitly supports an alternative growth–inflation
-          regime. Our uncertainty about interpreting its language does not create an ellipse or
-          authorize another quadrant. Inferred coordinates stay labeled “Our interpretation.”
+          A range can reflect our interpretation of the report even when it discusses only one
+          quadrant. Its width depends on the specificity, horizon and strength of the evidence; it
+          is not a calibrated confidence interval or a probability distribution.
         </p>
         <p>
-          When the report discusses another regime, the chart shades only that scenario’s quadrant
-          and the inspector shows the supporting passages and horizon. Qualitative scenarios have no
-          invented numerical bounds, connecting ellipse or probability. A recession risk alone
-          cannot determine inflation; falling inflation alone does not mean it falls below 2%.
+          The range starts as an ellipse centered on the house point. We clip it to that point’s
+          quadrant. Only explicit report evidence can authorize entry into another named quadrant,
+          with the original passages available in the inspector. A wide ellipse alone never
+          authorizes a crossing.
         </p>
         <p>
-          A hollow dot indicates a sourced alternative, not low mapping confidence. A filled dot
-          means no alternative quadrant has been mapped, not certainty. Reports may contain risks
-          that cannot be assigned to both axes.
+          If the source supports Stagflation but not Goldilocks or Slowdown, only the Stagflation
+          portion can extend beyond an Overheating point. With several supported alternatives, we
+          use their exact union; an unsupported fourth quadrant remains excluded. Clipping preserves
+          the original ellipse center and widths, so the visible edge can be flat at a benchmark.
         </p>
         <p>
-          The hard-data ellipse is separate: ±0.6 pp growth and ±0.25 pp inflation are model
-          sensitivity assumptions, not a broker view or a calibrated confidence interval.
+          A hollow dot signals a report-backed alternative. A filled dot can still have a range
+          within its quadrant. Excluding an unsupported quadrant is a display constraint, not a
+          claim of zero real-world probability. A point exactly on a benchmark gets no adjoining
+          area without explicit supporting evidence.
+        </p>
+        <p>
+          The hard-data ellipse remains a separate sensitivity assumption: ±0.6 pp growth and ±0.25
+          pp inflation. These widths do not determine institutional ranges or quadrant permissions.
         </p>
       </section>
       <section>
@@ -822,7 +850,7 @@ export default function App() {
                         </summary>
                         <div className="display-popover">
                           <label>
-                            Scenarios & data range
+                            Ranges
                             <select
                               aria-label="Range display"
                               value={rangeMode}
@@ -854,8 +882,8 @@ export default function App() {
                             All institution labels
                           </label>
                           <p>
-                            House shading requires a report-backed alternative. The data ellipse
-                            shows model sensitivity. Neither implies probabilities.
+                            House ranges reflect interpretation; crossings require report evidence.
+                            The data ellipse shows separate model sensitivity.
                           </p>
                         </div>
                       </details>

@@ -75,16 +75,3 @@ export function verifiedScenarios(
   }
   return result.slice(0, 3);
 }
-
-/** Retired mapper widths must not survive through retained/cached institution points. */
-export function sourceOnlyRanges(point: Point): Point {
-  return point.kind === 'data'
-    ? point
-    : {
-        ...point,
-        rangeKind: 'none',
-        xRange: { low: point.x, high: point.x },
-        yRange: { low: point.y, high: point.y },
-        reportedScenarios: point.reportedScenarios || [],
-      };
-}

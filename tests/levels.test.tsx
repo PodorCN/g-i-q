@@ -124,7 +124,7 @@ describe('Publisher evidence and the live chart', () => {
     expect(result).toContain(inflationQuote);
   });
 
-  it('renders every real house with only the data sensitivity ellipse', () => {
+  it('renders house interpretation ranges and the separate data sensitivity ellipse', () => {
     const snapshot = SnapshotSchema.parse(JSON.parse(readFileSync('data/latest.json', 'utf8')));
     const houses = snapshot.points.filter((p) => p.kind === 'institution');
     expect(houses.length).toBeGreaterThanOrEqual(7);
@@ -140,9 +140,7 @@ describe('Publisher evidence and the live chart', () => {
     for (const house of houses) expect(svg).toContain(house.shortName);
     expect(svg).toContain('Growth vs 2% trend');
     expect(svg).toContain('Core inflation vs 2% target');
-    expect((svg.match(/<ellipse/g) || []).length).toBe(
-      snapshot.points.filter((p) => p.kind === 'data').length,
-    );
+    expect((svg.match(/<ellipse/g) || []).length).toBe(snapshot.points.length);
     expect(snapshot.demo).toBe(false);
   });
 });
