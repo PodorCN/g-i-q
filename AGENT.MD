@@ -239,15 +239,19 @@ For new research, also inspect the actual source and source-to-point differences
 
 Configured production resources as of the review date:
 
-| Resource                     | Value                                                     |
-| ---------------------------- | --------------------------------------------------------- |
-| Repository                   | `https://github.com/PodorCN/g-i-q`                        |
-| Maintained production branch | `main`                                                    |
-| Pages                        | `https://g-i-q.pages.dev/` — project `g-i-q`              |
-| Worker                       | `https://giq-api.zixiao-cab.workers.dev` — name `giq-api` |
-| D1                           | `giq`, ID `5e51ea3d-37fd-49b2-9643-67a046ee8275`          |
+| Resource                     | Value                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------- |
+| Repository                   | `https://github.com/PodorCN/g-i-q`                                           |
+| Maintained production branch | `main`                                                                       |
+| Pages                        | `https://giq.podor.org/` — project `g-i-q`; alias `https://g-i-q.pages.dev/` |
+| Worker                       | `https://giq-api.zixiao-cab.workers.dev` — name `giq-api`                    |
+| D1                           | `giq`, ID `5e51ea3d-37fd-49b2-9643-67a046ee8275`                             |
 
 Verify current config before using these values. The separate user branch `claude/brave-sagan-mw1xd4` is not the maintained Cloudflare implementation; leave it alone unless the user specifically asks to work on it. Do not force-push or assume the repository default branch is `main`.
+
+The custom hostname `giq.podor.org` has a Pages domain association and a proxied CNAME to `g-i-q.pages.dev` in the `podor.org` zone. Preserve both. It uses the existing same-origin `/api` proxy; no separate frontend deployment, Worker URL or database is needed for this hostname. See [the domain setup](docs/deployment.md#existing-custom-domain).
+
+The domain was confirmed active, including HTTPS, on November 13. Its existing Cloudflare **Block OpenAI personal AI agent** managed rule prevented this agent's direct HTTP/browser checks. This setting was left intact. A future 403 needs diagnosis via the actual security event; do not call it a DNS failure or disable protection just to obtain a green check. Report the distinction between verified Cloudflare configuration and any blocked end-to-end verification.
 
 Normal delivery commands, once authorized and verified:
 

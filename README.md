@@ -1,6 +1,6 @@
 # g / i / q
 
-Live: [g-i-q.pages.dev](https://g-i-q.pages.dev/) · API: [giq-api.zixiao-cab.workers.dev](https://giq-api.zixiao-cab.workers.dev/api/health)
+Live: [giq.podor.org](https://giq.podor.org/) · Pages alias: [g-i-q.pages.dev](https://g-i-q.pages.dev/) · API: [giq-api.zixiao-cab.workers.dev](https://giq-api.zixiao-cab.workers.dev/api/health)
 
 An evidence-led **U.S. growth–inflation observatory**. Compare attributable institutional commentary with a reproducible hard-data estimate, inspect the evidence behind every point, and keep the frontend unchanged when the research updates.
 

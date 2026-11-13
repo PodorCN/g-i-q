@@ -1,6 +1,14 @@
 # Cloudflare deployment
 
-This project uses **your Cloudflare account**: a Pages project for the frontend, a separate Worker for API/collection, and a D1 database. The configured production deployment is [g-i-q.pages.dev](https://g-i-q.pages.dev/), with [Worker health](https://giq-api.zixiao-cab.workers.dev/api/health). The setup instructions below are for reproducing it in another account; do not recreate the existing database during routine updates.
+This project uses **your Cloudflare account**: a Pages project for the frontend, a separate Worker for API/collection, and a D1 database. The configured production deployment is [giq.podor.org](https://giq.podor.org/), also available at [g-i-q.pages.dev](https://g-i-q.pages.dev/), with [Worker health](https://giq-api.zixiao-cab.workers.dev/api/health). The setup instructions below are for reproducing it in another account; do not recreate the existing database during routine updates.
+
+## Existing custom domain
+
+`giq.podor.org` is attached to the existing Pages project `g-i-q`. In the Cloudflare `podor.org` zone, its proxied CNAME targets `g-i-q.pages.dev` with automatic TTL. Keep both the Pages custom-domain association and the DNS record; a CNAME alone is not a complete Pages binding. Cloudflare manages HTTPS validation and certificates.
+
+The custom domain uses the same Pages deployment and same-origin `/api/*` proxy. It needs no separate frontend build, Worker URL change, D1 copy or direct-browser CORS change. Verify `https://giq.podor.org/` and `/api/snapshot` after a domain change. The `pages.dev` alias remains available.
+
+On November 13, Cloudflare reported the domain association, verification and HTTPS validation as `active`. Automated requests from this agent received HTTP 403; Cloudflare security events identified the existing managed rule **Block OpenAI personal AI agent** (`5b57914e9fd641dd83284f170dbfd889`). This restriction was preserved. An agent-specific block is not evidence of a DNS failure or that ordinary visitors are blocked. Inspect the actual event before changing anything, and distinguish successful domain configuration from a completed browser check. Do not disable existing security controls merely to make an automated check pass.
 
 ## One-time setup
 
