@@ -86,8 +86,8 @@ function PointInspector({
   if (!point)
     return (
       <aside className="point-inspector">
-        <h2>Explore a house view</h2>
-        <p>Select a named point to see its horizon and the evidence behind it.</p>
+        <h2>Compare house views</h2>
+        <p>Select a broker to focus its range and evidence. Click it again to show all ranges.</p>
       </aside>
     );
   const isData = point.kind === 'data';
@@ -606,7 +606,9 @@ export default function App() {
     const value = new URLSearchParams(window.location.search).get('horizon');
     return value === 'current' || value === 'outlook' ? value : 'all';
   });
-  const [rangeMode, setRangeMode] = useState<'selected' | 'all' | 'none'>('selected');
+  const [rangeMode, setRangeMode] = useState<'selected' | 'all' | 'none'>(() =>
+    selectedId === 'all' ? 'all' : 'selected',
+  );
   const [outlookMode, setOutlookMode] = useState<'focused' | 'all' | 'none'>('focused');
   const [showLabels, setShowLabels] = useState<boolean | null>(null);
   const [houseQuery, setHouseQuery] = useState('');
@@ -652,7 +654,10 @@ export default function App() {
   const visiblePoints = [...(dataPoint ? [dataPoint] : []), ...filteredHouses];
   const labelsVisible =
     showLabels ?? (visiblePoints.length <= 14 && !window.matchMedia('(max-width: 600px)').matches);
-  const selected = visiblePoints.find((p) => p.id === selectedId) || visiblePoints[0];
+  const selected =
+    selectedId === 'all'
+      ? undefined
+      : visiblePoints.find((p) => p.id === selectedId) || visiblePoints[0];
   const houseResults = filteredHouses.filter((p) =>
     `${p.institution} ${p.title}`.toLowerCase().includes(houseQuery.toLowerCase()),
   );
@@ -683,7 +688,13 @@ export default function App() {
   }
   function inspect(point: Point) {
     setSelectedId(point.id);
+    setRangeMode('selected');
     changeTab('map');
+  }
+  function selectPoint(id: string) {
+    const next = id === selected?.id ? 'all' : id;
+    setSelectedId(next);
+    setRangeMode(next === 'all' ? 'all' : 'selected');
   }
   function exportSnapshot() {
     if (!snapshot) return;
@@ -833,9 +844,10 @@ export default function App() {
                         <select
                           className="house-picker"
                           aria-label="Select institution"
-                          value={selected?.id || ''}
-                          onChange={(e) => setSelectedId(e.target.value)}
+                          value={selected?.id || 'all'}
+                          onChange={(e) => selectPoint(e.target.value)}
                         >
+                          <option value="all">All brokers</option>
                           {visiblePoints.map((p) => (
                             <option key={p.id} value={p.id}>
                               {p.shortName}
@@ -856,7 +868,9 @@ export default function App() {
                               value={rangeMode}
                               onChange={(e) => setRangeMode(e.target.value as typeof rangeMode)}
                             >
-                              <option value="selected">Selected point</option>
+                              <option value="selected" disabled={!selected}>
+                                Selected point
+                              </option>
                               <option value="all">All points</option>
                               <option value="none">Hidden</option>
                             </select>
@@ -891,7 +905,7 @@ export default function App() {
                     <Chart
                       points={visiblePoints}
                       selectedId={selected?.id || ''}
-                      onSelect={setSelectedId}
+                      onSelect={selectPoint}
                       showRanges={rangeMode !== 'none'}
                       rangeMode={rangeMode === 'all' ? 'all' : 'selected'}
                       showLabels={labelsVisible}
@@ -903,7 +917,7 @@ export default function App() {
                         <button
                           key={point.id}
                           aria-pressed={selected?.id === point.id}
-                          onClick={() => setSelectedId(point.id)}
+                          onClick={() => selectPoint(point.id)}
                         >
                           <span style={{ background: point.color }} />
                           {point.shortName}

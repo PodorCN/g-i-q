@@ -461,7 +461,7 @@ export default function Chart({
               role="button"
               tabIndex={0}
               className={`scatter-point ${selectedId === point.id ? 'selected-point' : ''}`}
-              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${reportedAlternatives(point).length ? 'Report explicitly discusses an alternative quadrant. ' : ''}${outlookPath(point) ? 'Published forward guidance from this institution. ' : ''}Select to inspect evidence.`}
+              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${reportedAlternatives(point).length ? 'Report explicitly discusses an alternative quadrant. ' : ''}${outlookPath(point) ? 'Published forward guidance from this institution. ' : ''}${selectedId === point.id ? 'Deselect to show all ranges.' : 'Select to inspect evidence.'}`}
               aria-pressed={selectedId === point.id}
               onClick={() => onSelect(point.id)}
               onKeyDown={(event) => {
