@@ -1,30 +1,32 @@
-# Interface direction
+# Interface design
 
-The primary task is comparing the macro data with named institutions, then inspecting what supports a point. The plot is the workspace, not a decorative summary chart.
+The task is to compare named institutional macro views with the data, then inspect one view's source and horizon. The interface supports reading and comparison; it is not a monitoring console.
 
-- Ink `#16314B`: navigation, chart axes, data estimate.
-- Paper `#F5F8FB`: work surface.
-- Cobalt `#4268CA`: selected state and disinflationary growth.
-- Lagoon `#27877F`: growth and reflation.
-- Copper `#BD7A4E`: inflation and stagflation.
-- Heather `#8B78AC`: disinflationary slowdown.
+## Information hierarchy
 
-Self-hosted Manrope provides a calm, readable research interface. Tabular numerals align observations. The layout stays left aligned; the scatter plot occupies the main column, with a selected institution's source and argument beside it. A full-width evidence ledger follows the chart. Navigation separates the map, hard data, coverage, and methodology.
+- **Map:** the scatter plot and one selected-point inspector. No repeated summary cards, evidence feed or institution table below it.
+- **House views:** the complete comparison table, a horizon filter, institution search, and links back to individual points.
+- **Data:** the three published GDP/PCE anchors, their periods, and an explanation of the data point. Supporting labor/CPI indicators and raw histories expand on demand.
+- **Sources:** searchable articles and official releases. Collection status and detailed failure messages live in a coverage disclosure.
+- **Methodology:** a focused reading page linked from the plot, inspector and footer. Definitions and range limitations remain available without filling the main workspace.
 
-```
-G/I/Q   Observatory                        United States | updated | refresh
-Map / Hard data / Sources / Methodology
+The plot shows all recent house views by default. Only the selected point's range is drawn; Display allows all ranges or none. Axis domains always include every full range, regardless of visibility, so the setting does not move the points. Direct forecasts and inferred coordinates remain labeled. Current and forward-looking views remain explicit, with actual author horizons in the inspector and table.
 
-Where do the data and the street meet?     snapshot selector
-Quadrant distribution + data regime
-+---------------------------------------------------------+
-| Quadrant scatter / ranges / horizon | Selected source    |
-|                                    | Date / horizon      |
-| Named points + data diamond        | Growth evidence     |
-|                                    | Inflation evidence  |
-|                                    | Data comparison     |
-+---------------------------------------------------------+
-Institution ledger / evidence / coverage exceptions
-```
+## Visual system
 
-Review against the brief: use quadrant tints only to encode economic regimes. Do not add asset-return recommendations, ornamental financial tickers, fake live status, or untraceable consensus numbers. Keep source age, horizons, and range definitions within the reading flow. Mobile retains a square plot and moves the inspector below it.
+Use self-hosted Manrope, restrained green-gray neutrals, a white plotting surface and soft quadrant colors. The chart carries the color; ordinary controls stay quiet. One border defines the plot/inspector workspace. Avoid nested cards, repeated metric strips, decorative icons and colored status dashboards.
+
+Core tokens: ink `#25372E`, secondary text `#647066`, accent `#315B47`, background `#F7F8F5`, content `#FFFFFF`, border `#DFE5DD`. Body text is 14px; large headings are 28px on desktop and 23px on mobile. Numerals use tabular spacing. Focus states are visible and motion respects reduced-motion preferences.
+
+## Responsive behavior
+
+At tablet widths the inspector moves below the chart. On phones the chart gains vertical space and wider axis margins; the selected label stays visible, and compact institution buttons make every point easy to select. All labels can still be enabled in Display. Tables scroll within their own container, never the page. Secondary detail remains collapsed until requested.
+
+## Skills used
+
+- [Anthropic frontend-design](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md): a coherent visual direction with intentional typography, spacing and restrained decoration.
+- [Impeccable](https://github.com/pbakaus/impeccable/blob/main/plugin/skills/impeccable/SKILL.md), specifically [distill](https://github.com/pbakaus/impeccable/blob/main/plugin/skills/impeccable/reference/distill.md): remove repetition, use progressive disclosure, retain important functionality.
+- [Impeccable clarify](https://github.com/pbakaus/impeccable/blob/main/plugin/skills/impeccable/reference/clarify.md): distinguish horizons, sources and inferred values in plain interface language.
+- [Vercel Web Design Guidelines](https://github.com/vercel-labs/agent-skills/blob/main/skills/web-design-guidelines/SKILL.md): keyboard operation, focus, semantic controls, contrast, responsive overflow, loading/error states and shareable filter state.
+
+This is a simplification of the existing research application. The public-source dataset, mapping methodology, API and daily backend schedule remain the existing product contract.

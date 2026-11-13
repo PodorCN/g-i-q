@@ -22,7 +22,9 @@ export default defineConfig({
           res.setHeader('Cache-Control', 'no-store');
           if (req.url?.startsWith('/history'))
             return res.end(
-              JSON.stringify({ snapshots: [{ id: snapshot.id, asOf: snapshot.asOf }] }),
+              JSON.stringify({
+                snapshots: [{ id: snapshot.id, asOf: snapshot.asOf, axisMode: snapshot.axisMode }],
+              }),
             );
           if (req.url?.startsWith('/snapshot')) return res.end(JSON.stringify(snapshot));
           return next();
