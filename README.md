@@ -10,7 +10,7 @@ An evidence-led **U.S. growth–inflation observatory**. Compare attributable in
 
 - Explore the four-quadrant scatter plot; select a named institution to inspect its source, date, horizon, supporting quotes, and position compared with the data.
 - Toggle sourced scenario regions, data sensitivity and labels; show all house views by default, or filter current assessments and outlooks while preserving each author’s actual horizon.
-- Follow two-axis arrows from the current data reference to each dated house outlook. Dashed arrows identify interpreted endpoints; these are coordinate comparisons, not matched-horizon forecast changes. Hollow dots flag report-backed alternative scenarios; they do not encode probabilities.
+- Show arrows only for a house’s explicitly published, comparable two-axis forward guidance. Both endpoints come from its report; the hard-data anchor never supplies a missing starting point. Partial guidance remains sourced text. Hollow dots flag report-backed alternative scenarios; they do not encode probabilities.
 - Inspect individual data series, reference months, raw history, transformations, and component scores.
 - Read unscored commentary, official news, and collection failures. Missing evidence never becomes an invented point.
 - Select historical snapshots and export the complete research JSON.

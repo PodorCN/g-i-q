@@ -8,8 +8,9 @@ import { SnapshotSchema, type Point } from '../shared/schema';
 
 const snapshot = SnapshotSchema.parse(JSON.parse(readFileSync('data/latest.json', 'utf8')));
 const data = snapshot.points.find((p) => p.kind === 'data')!;
+const bank = snapshot.points.find((p) => p.shortName === 'U.S. Bank')!;
+const pnc = snapshot.points.find((p) => p.shortName === 'PNC')!;
 const ing = snapshot.points.find((p) => p.shortName === 'ING')!;
-const vanguard = snapshot.points.find((p) => p.shortName === 'Vanguard')!;
 const render = (
   selectedId = data.id,
   showOutlooks = true,
@@ -28,88 +29,94 @@ const render = (
     />,
   );
 
-describe('Outlook paths use both coordinates at the plotted horizon', () => {
-  it('points ING left and down relative to the reference, without inventing a new endpoint', () => {
-    const path = outlookPath(ing, data)!;
-    expect(path.dx).toBeCloseTo(-1.2);
-    expect(path.dy).toBeCloseTo(-0.4);
-    expect(path.to).toBe(ing);
-    expect(path.from).toBe(data);
-    expect(path.inferred).toBe(true);
+describe('Arrows require the house’s own two-axis forward guidance', () => {
+  it('uses U.S. Bank’s 2026 and 2027 forecasts, independently of the hard-data anchor', () => {
+    const path = outlookPath(bank)!;
+    expect(path.from).toMatchObject({ period: '2026-Q4', x: 0.5 });
+    expect(path.from.y).toBeCloseTo(1.2);
+    expect(path.to.x).toBeCloseTo(0);
+    expect(path.to.y).toBeCloseTo(0.5);
+    expect(path.dx).toBeCloseTo(-0.5);
+    expect(path.dy).toBeCloseTo(-0.7);
+    expect(path.point).toBe(bank);
+    expect(path.from.x).not.toBe(data.x);
   });
-
-  it('keeps Vanguard’s year-end arrow upward despite its later disinflation statement', () => {
-    expect(vanguard.outlookDirection?.inflation).toBe('falling');
-    const path = outlookPath(vanguard, data)!;
-    expect(path.dx).toBeLessThan(0);
-    expect(path.dy).toBeCloseTo(0.1);
-    expect(path.to.horizonLabel).toContain('2026');
+  it('can end at the plotted house forecast when the earlier endpoint is also sourced', () => {
+    const path = outlookPath(pnc)!;
+    expect(path.to.x).toBeCloseTo(pnc.x);
+    expect(path.to.y).toBeCloseTo(pnc.y);
+    expect(path.from.period).toBe('2026-Q4');
+    expect(path.to.period).toBe('2027-Q4');
   });
-
-  it('requires a two-axis forecast, common units and a data reference', () => {
-    expect(outlookPath(ing)).toBeNull();
-    expect(outlookPath({ ...ing, horizon: 'current' }, data)).toBeNull();
-    expect(outlookPath({ ...ing, growthBasis: 'unclear' }, data)).toBeNull();
-    expect(outlookPath({ ...ing, axisMode: 'momentum' }, data)).toBeNull();
-    expect(outlookPath({ ...ing, inflationBenchmark: 3 }, data)).toBeNull();
-    expect(outlookPath(ing, ing)).toBeNull();
+  it('never manufactures a trajectory from a forward-looking label or partial direction', () => {
+    for (const name of ['ING', 'PIMCO', 'Vanguard', 'BlackRock'])
+      expect(outlookPath(snapshot.points.find((p) => p.shortName === name)!)).toBeNull();
+    expect(outlookPath({ ...bank, forwardGuidance: undefined })).toBeNull();
+    expect(outlookPath({ ...bank, guidanceReviewVersion: undefined })).toBeNull();
+    expect(outlookPath(data)).toBeNull();
+  });
+  it('requires an anchored point, published axes and ordered comparable periods', () => {
+    expect(outlookPath({ ...bank, x: 1 })).toBeNull();
+    expect(outlookPath({ ...bank, growthBasis: 'inferred' })).toBeNull();
+    expect(outlookPath({ ...bank, axisMode: 'momentum' })).toBeNull();
+    const g = bank.forwardGuidance!;
     expect(
-      outlookPath({ ...ing, growthBasis: 'direct', inflationBasis: 'direct' }, data)?.inferred,
-    ).toBe(false);
+      outlookPath({ ...bank, forwardGuidance: { ...g, to: { ...g.to, period: '2025-Q4' } } }),
+    ).toBeNull();
+    expect(
+      outlookPath({ ...bank, forwardGuidance: { ...g, to: { ...g.to, period: '2027' } } }),
+    ).toBeNull();
   });
-
-  it('preserves a diagonal direction and leaves space for both endpoint markers', () => {
+  it('preserves a diagonal direction and leaves space for endpoint markers', () => {
     const from = { x: 700, y: 200 },
-      to = { x: 300, y: 400 };
-    const line = arrowSegment(from, to)!;
+      to = { x: 300, y: 400 },
+      line = arrowSegment(from, to)!;
     expect(line.x2).toBeLessThan(line.x1);
     expect(line.y2).toBeGreaterThan(line.y1);
     expect((line.y2 - line.y1) / (line.x2 - line.x1)).toBeCloseTo(-0.5);
     expect(Math.hypot(line.x1 - from.x, line.y1 - from.y)).toBeCloseTo(10);
-    expect(Math.hypot(line.x2 - to.x, line.y2 - to.y)).toBeCloseTo(10);
     expect(arrowSegment(from, from)).toBeNull();
     expect(arrowSegment(from, { x: 701, y: 200 })).toBeNull();
   });
-
-  it('draws eligible reference-to-outlook paths, focuses one, and can hide them', () => {
-    const eligible = snapshot.points.filter((p) => outlookPath(p, data)).length;
-    expect(render().match(/class="outlook-path"/g) || []).toHaveLength(eligible);
-    expect(render(ing.id).match(/class="outlook-path"/g) || []).toHaveLength(1);
-    expect(render(ing.id, true, 'all').match(/class="outlook-path"/g) || []).toHaveLength(eligible);
-    expect(render(ing.id, false)).not.toContain('class="outlook-path"');
-    const current = snapshot.points.find(
-      (p) => p.kind === 'institution' && p.horizon === 'current',
-    )!;
-    expect(render(current.id)).not.toContain('class="outlook-path"');
-    expect(render()).not.toContain('class="outlook-arrow"');
-    expect(render()).toContain('Dashed: endpoint includes our interpretation');
+  it('draws only qualifying guidance, supports focus/all/hidden, and never starts at hard data', () => {
+    const eligible = snapshot.points.filter((p) => outlookPath(p)).length;
+    expect(eligible).toBe(2);
+    expect(render().match(/class="outlook-path"/g)).toHaveLength(eligible);
+    expect(render(bank.id).match(/class="outlook-path"/g)).toHaveLength(1);
+    expect(render(ing.id)).not.toContain('class="outlook-path"');
+    expect(render(ing.id, true, 'all').match(/class="outlook-path"/g)).toHaveLength(eligible);
+    expect(render(bank.id, false)).not.toContain('class="outlook-path"');
+    expect(render()).not.toContain('Current data reference to');
+    expect(render()).toContain('published forward guidance');
   });
-
-  it('renders an arrow to a Stagflation endpoint using the SVG axes, rather than an up/down glyph', () => {
-    const stagflation: Point = {
-      ...ing,
-      id: 'stagflation-test',
-      x: -0.5,
-      y: 1.8,
-      xRange: { low: -0.8, high: -0.2 },
-      yRange: { low: 1.4, high: 2.2 },
+  it('points left and up when a published two-axis endpoint approaches stagflation', () => {
+    const point: Point = {
+      ...bank,
+      id: 'stagflation-guidance',
+      forwardGuidance: {
+        ...bank.forwardGuidance!,
+        to: { period: '2027-Q4', growthRate: 1.5, coreInflationRate: 3.8 },
+      },
     };
-    const svg = render(stagflation.id, true, 'focused', [data, stagflation]);
+    const svg = render(point.id, true, 'focused', [data, point]);
     let shaft = '',
       head = '';
     new Parser({
-      onopentag(name, attrs) {
-        if (name === 'path' && attrs.class === 'outlook-shaft') shaft = attrs.d;
-        if (name === 'path' && attrs.class === 'outlook-arrowhead') head = attrs.d;
+      onopentag(name, a) {
+        if (name === 'path' && a.class === 'outlook-shaft') shaft = a.d;
+        if (name === 'path' && a.class === 'outlook-arrowhead') head = a.d;
       },
     }).end(svg);
     const [x1, y1, x2, y2] = shaft.match(/-?\d+(?:\.\d+)?/g)!.map(Number);
-    // Negative x points left; higher inflation has a smaller SVG y.
     expect(x2).toBeLessThan(x1);
     expect(y2).toBeLessThan(y1);
-    const vertices = head.match(/-?\d+(?:\.\d+)?/g)!.map(Number);
-    expect(vertices.slice(2, 4)).toEqual([x2, y2]);
+    expect(
+      head
+        .match(/-?\d+(?:\.\d+)?/g)!
+        .map(Number)
+        .slice(2, 4),
+    ).toEqual([x2, y2]);
     expect(svg).toContain('data-to-x="-0.5"');
-    expect(svg).toContain('data-to-y="1.8"');
+    expect(svg).toContain('class="guidance-endpoint"');
   });
 });

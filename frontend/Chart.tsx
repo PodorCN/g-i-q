@@ -17,7 +17,6 @@ function Labels({
   sx,
   sy,
   layout,
-  anchor,
 }: {
   points: Point[];
   selectedId: string;
@@ -25,7 +24,6 @@ function Labels({
   sx: (value: number) => number;
   sy: (value: number) => number;
   layout: Layout;
-  anchor?: Point;
 }) {
   const { height: HEIGHT, margin: M } = layout;
   const labels = useMemo(() => {
@@ -34,11 +32,16 @@ function Labels({
       .sort((a, b) => Number(b.id === selectedId) - Number(a.id === selectedId))
       .map((point) => {
         const width = Math.min(310, (point.shortName.length * 7.7 + 18) * scale);
-        const path = outlookPath(point, anchor);
+        const path = outlookPath(point);
         const left = sx(point.x) - width - 12 * scale;
         const right = sx(point.x) + 14 * scale;
         // Keep the name away from the incoming outlook arrowhead.
-        const columns = (path && path.dx < 0 ? [left, right] : [right, left]).map((x) =>
+        const arrowOnRight =
+          path &&
+          (Math.abs(point.x - path.from.x) < 1e-6 && Math.abs(point.y - path.from.y) < 1e-6
+            ? path.dx > 0
+            : path.dx < 0);
+        const columns = (arrowOnRight ? [left, right] : [right, left]).map((x) =>
           Math.max(M.left + 6, Math.min(WIDTH - M.right - width - 6, x)),
         );
         let x = columns[0],
@@ -68,7 +71,7 @@ function Labels({
         occupied.push({ x, y, width });
         return { point, x, y, width };
       });
-  }, [points, selectedId, scale, sx, sy, layout, anchor]);
+  }, [points, selectedId, scale, sx, sy, layout]);
   return (
     <g aria-hidden="true">
       {labels.map(({ point, x, y, width }) => (
@@ -144,11 +147,20 @@ export default function Chart({
     PH = HEIGHT - M.top - M.bottom;
   const { xAxis, yAxis, sx, sy } = useMemo(() => {
     // Only data has numeric sensitivity bounds. Legacy house widths are ignored.
+    const extents = points.map((p) => ({ point: p, path: outlookPath(p) }));
     const xAxis = fitAxis(
-      points.flatMap((p) => (p.kind === 'data' ? [p.x, p.xRange.low, p.xRange.high] : [p.x])),
+      extents.flatMap(({ point: p, path }) => [
+        p.x,
+        ...(p.kind === 'data' ? [p.xRange.low, p.xRange.high] : []),
+        ...(path ? [path.from.x, path.to.x] : []),
+      ]),
     );
     const yAxis = fitAxis(
-      points.flatMap((p) => (p.kind === 'data' ? [p.y, p.yRange.low, p.yRange.high] : [p.y])),
+      extents.flatMap(({ point: p, path }) => [
+        p.y,
+        ...(p.kind === 'data' ? [p.yRange.low, p.yRange.high] : []),
+        ...(path ? [path.from.y, path.to.y] : []),
+      ]),
     );
     return {
       xAxis,
@@ -171,7 +183,6 @@ export default function Chart({
   const rangePoints = points.filter((p) => rangeMode === 'all' || p.id === selectedId);
   const hasScenarioRegion = rangePoints.some((p) => reportedAlternatives(p).length > 0);
   const hasDataRange = rangePoints.some((p) => p.kind === 'data');
-  const dataPoint = points.find((point) => point.kind === 'data');
   const paths = showOutlooks
     ? points.flatMap((point) => {
         if (
@@ -180,7 +191,7 @@ export default function Chart({
           point.id !== selectedId
         )
           return [];
-        const path = outlookPath(point, dataPoint);
+        const path = outlookPath(point);
         return path ? [path] : [];
       })
     : [];
@@ -333,7 +344,7 @@ export default function Chart({
                   </g>
                 );
               })}
-          {paths.map(({ from, to, dx, dy, inferred }) => {
+          {paths.map(({ point, from, to, dx, dy }) => {
             const arrowScale = Math.min(1.8, Math.sqrt(labelScale));
             const line = arrowSegment(
               { x: sx(from.x), y: sy(from.y) },
@@ -341,15 +352,17 @@ export default function Chart({
               10 * arrowScale,
             );
             if (!line) return null;
-            const active = to.id === selectedId;
+            const active = point.id === selectedId;
             const head = (active ? 9 : 8) * arrowScale;
             const headPath = `M${line.x2 - line.ux * head - line.uy * head * 0.55},${line.y2 - line.uy * head + line.ux * head * 0.55}L${line.x2},${line.y2}L${line.x2 - line.ux * head + line.uy * head * 0.55},${line.y2 - line.uy * head - line.ux * head * 0.55}`;
-            const description = `Current data reference to ${to.shortName}, ${to.horizonLabel || 'forecast horizon not specified'}. Growth gap difference ${dx.toFixed(2)} pp; inflation gap difference ${dy.toFixed(2)} pp. ${inferred ? 'Dashed: endpoint includes our interpretation.' : 'Both endpoint rates are published forecasts.'} Periods may differ; this is not the house's own current assessment.`;
+            const description = `${point.shortName} published forward guidance: ${from.period} → ${to.period}. Real GDP ${from.growthRate}% → ${to.growthRate}%; core PCE ${from.coreInflationRate}% → ${to.coreInflationRate}%. Both endpoints come from this report. Growth change ${dx.toFixed(2)} pp; inflation change ${dy.toFixed(2)} pp.`;
+            const extra =
+              Math.abs(point.x - from.x) < 1e-6 && Math.abs(point.y - from.y) < 1e-6 ? to : from;
             return (
               <g
-                key={`outlook-${to.id}`}
+                key={`outlook-${point.id}`}
                 className="outlook-path"
-                data-point-id={to.id}
+                data-point-id={point.id}
                 data-from-x={from.x}
                 data-from-y={from.y}
                 data-to-x={to.x}
@@ -357,16 +370,32 @@ export default function Chart({
                 role="button"
                 tabIndex={0}
                 aria-label={description}
-                onClick={() => onSelect(to.id)}
+                onClick={() => onSelect(point.id)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' || event.key === ' ') {
                     event.preventDefault();
-                    onSelect(to.id);
+                    onSelect(point.id);
                   }
                 }}
                 opacity={selected?.kind === 'institution' && !active ? 0.3 : 1}
               >
                 <title>{description}</title>
+                <rect
+                  className="guidance-endpoint"
+                  x={sx(extra.x) - 4}
+                  y={sy(extra.y) - 4}
+                  width="8"
+                  height="8"
+                  rx="1"
+                  fill="white"
+                  stroke={point.color}
+                  strokeWidth="1.5"
+                >
+                  <title>
+                    {point.shortName}: {extra.period}, GDP {extra.growthRate}%, core PCE{' '}
+                    {extra.coreInflationRate}%
+                  </title>
+                </rect>
                 <path
                   d={`M${line.x1},${line.y1}L${line.x2},${line.y2}`}
                   stroke="transparent"
@@ -383,15 +412,14 @@ export default function Chart({
                 <path
                   className="outlook-shaft"
                   d={`M${line.x1},${line.y1}L${line.x2},${line.y2}`}
-                  stroke={to.color}
+                  stroke={point.color}
                   strokeWidth={(active ? 2.5 : 1.8) * arrowScale}
-                  strokeDasharray={inferred ? '6 4' : undefined}
                   fill="none"
                 />
                 <path
                   className="outlook-arrowhead"
                   d={headPath}
-                  stroke={to.color}
+                  stroke={point.color}
                   strokeWidth={(active ? 2.5 : 1.8) * arrowScale}
                   strokeLinejoin="round"
                   strokeLinecap="round"
@@ -406,7 +434,7 @@ export default function Chart({
               role="button"
               tabIndex={0}
               className={`scatter-point ${selectedId === point.id ? 'selected-point' : ''}`}
-              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${reportedAlternatives(point).length ? 'Report explicitly discusses an alternative quadrant. ' : ''}${outlookPath(point, dataPoint) ? 'Outlook endpoint relative to the shared current data reference. ' : ''}Select to inspect evidence.`}
+              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${reportedAlternatives(point).length ? 'Report explicitly discusses an alternative quadrant. ' : ''}${outlookPath(point) ? 'Published forward guidance from this institution. ' : ''}Select to inspect evidence.`}
               aria-pressed={selectedId === point.id}
               onClick={() => onSelect(point.id)}
               onKeyDown={(event) => {
@@ -465,7 +493,6 @@ export default function Chart({
             sx={sx}
             sy={sy}
             layout={layout}
-            anchor={dataPoint}
           />
         </g>
         <g className="tick-labels" aria-hidden="true">
@@ -508,6 +535,14 @@ export default function Chart({
         <span>
           <i className="circle-icon" /> House view
         </span>
+        {paths.length > 0 && (
+          <span>
+            <svg width="14" height="12" viewBox="0 0 14 12" aria-hidden="true">
+              <path d="M1 10L12 1M6 1h6v6" fill="none" stroke="currentColor" strokeWidth="1.4" />
+            </svg>{' '}
+            House’s published forward guidance
+          </span>
+        )}
         {showRanges && hasDataRange && (
           <span>
             <i className="range-icon" />

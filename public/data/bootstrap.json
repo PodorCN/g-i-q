@@ -1,8 +1,8 @@
 {
   "schemaVersion": 1,
-  "id": "2026-11-13-source-scenarios-mwfd9jl5",
-  "asOf": "2026-11-13T19:25:17.786Z",
-  "generatedAt": "2026-11-13T19:25:17.786Z",
+  "id": "2026-11-13-house-guidance-mwfdqu5x",
+  "asOf": "2026-11-13T19:38:39.695Z",
+  "generatedAt": "2026-11-13T19:38:39.695Z",
   "region": "US",
   "demo": false,
   "methodologyVersion": "1.0.0",
@@ -74,6 +74,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "6–12m tactical view",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 35,
@@ -124,6 +125,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "Current conditions, November weekly outlook",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 35,
@@ -174,6 +176,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "October macro backdrop / November review",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,
@@ -236,6 +239,7 @@
           }
         ]
       },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 90,
@@ -298,6 +302,7 @@
           }
         ]
       },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "inferred",
       "maxAgeDays": 90,
@@ -367,6 +372,7 @@
           }
         ]
       },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,
@@ -425,10 +431,11 @@
           {
             "axis": "inflation",
             "quote": "By April 2027, that mechanical effect alone should bring core inflation as measured by the Personal Consumption Expenditures price index toward 2.5%, a meaningful decline from current levels",
-            "interpretation": "Vanguard describes a decline toward 2.5% core PCE by April 2027. Its plotted endpoint is 3.2% for year-end 2026; this later directional statement does not determine that endpoint’s arrow."
+            "interpretation": "Vanguard describes core PCE declining toward 2.5% by April 2027. The report does not establish a matching growth endpoint for this period, so this remains a one-axis statement with no two-axis arrow."
           }
         ]
       },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "direct",
       "maxAgeDays": 60,
@@ -479,6 +486,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "Current conditions",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 45,
@@ -529,6 +537,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "Coming quarters; qualitative outlook",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,
@@ -579,6 +588,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "2027; qualitative CIO outlook",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 45,
@@ -629,6 +639,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "2027 growth / near-term price pressure",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 45,
@@ -679,6 +690,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "Current conditions; November weekly review",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 35,
@@ -729,6 +741,24 @@
       "confidence": "medium",
       "horizon": "outlook",
       "horizonLabel": "Q4 2026; GDP Q4/Q4, core PCE y/y",
+      "forwardGuidance": {
+        "from": {
+          "period": "2026-Q4",
+          "growthRate": 2.5,
+          "coreInflationRate": 3.2
+        },
+        "to": {
+          "period": "2027-Q4",
+          "growthRate": 2,
+          "coreInflationRate": 2.5
+        },
+        "growthMeasure": "real-gdp-q4q4",
+        "inflationMeasure": "core-pce-yoy",
+        "growthQuote": "Real GDP growth is forecast at 2.5% Q4-over-Q4 in 2026 (2.4% annual average) and 2.0% in 2027 (2.2% annual average).",
+        "inflationQuote": "We expect core personal consumption expenditures (PCE) inflation to average 3.2% year-over-year in Q4 2026 before moderating to 2.5% by the end of 2027",
+        "periodQuote": "Real GDP growth is forecast at 2.5% Q4-over-Q4 in 2026 (2.4% annual average) and 2.0% in 2027 (2.2% annual average)."
+      },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "direct",
       "maxAgeDays": 60,
@@ -780,6 +810,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "2027 growth / end-2027 core PCE",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "direct",
       "maxAgeDays": 90,
@@ -830,6 +861,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "Current conditions; November assessment",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,
@@ -880,6 +912,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "2026–27 growth / end-2026 inflation",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,
@@ -930,6 +963,7 @@
       "confidence": "medium",
       "horizon": "outlook",
       "horizonLabel": "2026–27 growth / coming-months core PCE",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "direct",
       "maxAgeDays": 60,
@@ -980,6 +1014,7 @@
       "confidence": "low",
       "horizon": "current",
       "horizonLabel": "Current conditions; Q3 GDP / October prices",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "inferred",
       "inflationBasis": "inferred",
       "maxAgeDays": 45,
@@ -1030,6 +1065,24 @@
       "confidence": "medium",
       "horizon": "outlook",
       "horizonLabel": "Q4/Q4 2027; annual forecast table",
+      "forwardGuidance": {
+        "from": {
+          "period": "2026-Q4",
+          "growthRate": 2.5,
+          "coreInflationRate": 3.2
+        },
+        "to": {
+          "period": "2027-Q4",
+          "growthRate": 2.2,
+          "coreInflationRate": 2.5
+        },
+        "growthMeasure": "real-gdp-q4q4",
+        "inflationMeasure": "core-pce-yoy",
+        "growthQuote": "Real GDP (Q4/Q4 %) 2.0% 2.5% 2.2%",
+        "inflationQuote": "Core PCE (Q4/Q4 %) 2.8% 3.2% 2.5%",
+        "periodQuote": "Annual (Q4/Q4) Indicator 2025 2026f 2027f"
+      },
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "direct",
       "maxAgeDays": 60,
@@ -1081,6 +1134,7 @@
       "confidence": "low",
       "horizon": "outlook",
       "horizonLabel": "2027–28 growth / 2027 inflation interpretation",
+      "guidanceReviewVersion": "source-guidance-v1",
       "growthBasis": "direct",
       "inflationBasis": "inferred",
       "maxAgeDays": 60,

@@ -1730,3 +1730,17 @@ td.numeric,
 .point-only-note {
   margin-top: 10px;
 }
+
+.guidance-quotes {
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.guidance-quotes summary {
+  cursor: pointer;
+  color: var(--ink);
+}
+.guidance-quotes blockquote {
+  margin: 12px 0;
+  line-height: 1.7;
+}

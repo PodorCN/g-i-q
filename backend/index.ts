@@ -43,6 +43,53 @@ export function createAssessor(env: Env): Assess | undefined {
     const properties = {
       growthRate: { type: 'number', minimum: -1, maximum: 5 },
       coreInflationRate: { type: 'number', minimum: 0, maximum: 5 },
+      forwardGuidance: {
+        type: 'array',
+        maxItems: 1,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            from: {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                period: { type: 'string' },
+                growthRate: { type: 'number' },
+                coreInflationRate: { type: 'number' },
+              },
+              required: ['period', 'growthRate', 'coreInflationRate'],
+            },
+            to: {
+              type: 'object',
+              additionalProperties: false,
+              properties: {
+                period: { type: 'string' },
+                growthRate: { type: 'number' },
+                coreInflationRate: { type: 'number' },
+              },
+              required: ['period', 'growthRate', 'coreInflationRate'],
+            },
+            growthMeasure: {
+              type: 'string',
+              enum: ['real-gdp-q4q4', 'real-gdp-annual-average', 'real-gdp-qoq-annualized'],
+            },
+            inflationMeasure: { type: 'string', enum: ['core-pce-yoy'] },
+            growthQuote: { type: 'string', maxLength: 240 },
+            inflationQuote: { type: 'string', maxLength: 240 },
+            periodQuote: { type: 'string', maxLength: 240 },
+          },
+          required: [
+            'from',
+            'to',
+            'growthMeasure',
+            'inflationMeasure',
+            'growthQuote',
+            'inflationQuote',
+            'periodQuote',
+          ],
+        },
+      },
       reportedScenarios: {
         type: 'array',
         maxItems: 3,
@@ -80,7 +127,7 @@ export function createAssessor(env: Env): Assess | undefined {
         { role: 'system', content: LEVELS_PROMPT },
         { role: 'user', content: JSON.stringify({ title, article: text.slice(0, 24000) }) },
       ],
-      max_tokens: 2000,
+      max_tokens: 2600,
       response_format: {
         type: 'json_schema',
         json_schema: {

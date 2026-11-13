@@ -18,6 +18,25 @@ export const ReportedScenarioSchema = z.object({
   inflationQuote: z.string().min(1).max(240),
   horizonLabel: z.string().min(1).max(160),
 });
+export const GuidanceEndpointSchema = z.object({
+  period: z.string().regex(/^20\d{2}(?:-Q[1-4])?$/),
+  growthRate: z.number().min(-10).max(15),
+  coreInflationRate: z.number().min(-5).max(15),
+});
+export const ForwardGuidanceSchema = z
+  .object({
+    from: GuidanceEndpointSchema,
+    to: GuidanceEndpointSchema,
+    growthMeasure: z.enum(['real-gdp-q4q4', 'real-gdp-annual-average', 'real-gdp-qoq-annualized']),
+    inflationMeasure: z.literal('core-pce-yoy'),
+    growthQuote: z.string().min(1).max(240),
+    inflationQuote: z.string().min(1).max(240),
+    periodQuote: z.string().min(1).max(240),
+  })
+  .refine(
+    (g) => g.from.period.length === g.to.period.length && g.to.period > g.from.period,
+    'Guidance needs comparable periods in chronological order',
+  );
 export const OutlookDirectionSchema = z
   .object({
     growth: z.enum(['rising', 'falling', 'steady', 'unspecified']),
@@ -60,6 +79,8 @@ export const PointSchema = z
     horizon: z.enum(['current', 'outlook']),
     horizonLabel: z.string().optional(),
     outlookDirection: OutlookDirectionSchema.optional(),
+    forwardGuidance: ForwardGuidanceSchema.optional(),
+    guidanceReviewVersion: z.literal('source-guidance-v1').optional(),
     growthDirection: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).optional(),
     inflationDirection: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).optional(),
     growthBasis: z.enum(['direct', 'inferred', 'unclear']).optional(),
@@ -167,6 +188,7 @@ export type ResearchDocument = z.infer<typeof DocumentSchema>;
 export type SourceStatus = z.infer<typeof SourceStatusSchema>;
 export type Axis = 'growth' | 'inflation';
 export type ReportedScenario = z.infer<typeof ReportedScenarioSchema>;
+export type ForwardGuidance = z.infer<typeof ForwardGuidanceSchema>;
 
 export function regime(x: number, y: number): string {
   if (Math.abs(x) < 0.08 || Math.abs(y) < 0.08) return 'At the boundary';

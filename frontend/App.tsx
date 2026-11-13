@@ -95,7 +95,7 @@ function PointInspector({
   const quadrants = isData ? rangeQuadrants(point) : [];
   const scenarios = reportedAlternatives(point);
   const outlook = point.outlookDirection;
-  const path = outlookPath(point, data);
+  const path = outlookPath(point);
   return (
     <aside className="point-inspector" aria-label="Selected point" key={point.id}>
       <div className="inspector-heading">
@@ -155,56 +155,58 @@ function PointInspector({
             </small>
           </section>
         ) : (
-          <p className="point-only-note">Point only · no sourced alternative quadrant mapped.</p>
+          <p className="point-only-note">No sourced alternative-risk quadrant mapped.</p>
         ))}
       {path && (
         <section className="outlook-summary">
-          <h3>Data → outlook</h3>
-          <table aria-label="Arrow coordinates">
+          <h3>House forward guidance</h3>
+          <table aria-label="Published guidance endpoints">
             <thead>
               <tr>
-                <th>Gap, pp</th>
-                <th>Data</th>
-                <th>{point.shortName}</th>
+                <th>Rate, %</th>
+                <th>{path.from.period}</th>
+                <th>{path.to.period}</th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <th>Growth</th>
-                <td>{number(path.from.x)}</td>
-                <td>
-                  {point.growthBasis === 'inferred' ? '≈ ' : ''}
-                  {number(point.x)}
-                </td>
+                <th>Real GDP</th>
+                <td>{rate(path.from.growthRate)}</td>
+                <td>{rate(path.to.growthRate)}</td>
               </tr>
               <tr>
-                <th>Inflation</th>
-                <td>{number(path.from.y)}</td>
-                <td>
-                  {point.inflationBasis === 'inferred' ? '≈ ' : ''}
-                  {number(point.y)}
-                </td>
+                <th>Core PCE</th>
+                <td>{rate(path.from.coreInflationRate)}</td>
+                <td>{rate(path.to.coreInflationRate)}</td>
               </tr>
             </tbody>
           </table>
-          <p className="path-difference">
-            Growth {number(path.dx)} pp · Inflation {number(path.dy)} pp vs data
+          <p>
+            Growth {number(path.dx)} pp · Inflation {number(path.dy)} pp between these periods.
           </p>
-          <p>End: {point.horizonLabel || 'Forecast horizon not specified'}</p>
           <small>
-            {path.inferred
-              ? 'Dashed: endpoint includes our interpretation. '
-              : 'Solid: both endpoint rates are published forecasts. '}
-            Data is a shared reference, not this house’s current assessment. Periods differ.
+            Both endpoints are this house’s published forecasts. GDP basis:{' '}
+            {path.guidance.growthMeasure.replace('real-gdp-', '')}; core PCE: year over year. The
+            square marks the other dated endpoint.
           </small>
+          <details className="guidance-quotes">
+            <summary>Read the forward guidance</summary>
+            <blockquote>“{path.guidance.growthQuote}”</blockquote>
+            <blockquote>“{path.guidance.inflationQuote}”</blockquote>
+            <p>{path.guidance.periodQuote}</p>
+          </details>
         </section>
       )}
       {!isData && !path && (
         <p className="quiet-copy">
-          No two-axis outlook path:{' '}
-          {point.horizon === 'current'
-            ? 'this point describes current conditions.'
-            : 'a comparable endpoint or data reference is unavailable.'}
+          {outlook
+            ? `Reported direction: ${(['growth', 'inflation'] as const)
+                .filter((axis) => outlook[axis] !== 'unspecified')
+                .map((axis) => `${axis} ${outlook[axis]}`)
+                .join('; ')}. ${outlook.horizonLabel}. `
+            : ''}
+          No arrow: comparable two-axis forward guidance has not been established. Missing direction
+          is not treated as unchanged.
         </p>
       )}
       {isData ? (
@@ -219,8 +221,8 @@ function PointInspector({
             </div>
           ))}
           <p className="quiet-copy">
-            GDP & GDPNow cover different quarters. The anchor blends both. Outlook arrows run from
-            this reference to each house’s forecast position.
+            GDP & GDPNow cover different quarters. The anchor blends both. Institution arrows use
+            only their own published forward guidance; this data point is not their starting point.
           </p>
         </div>
       ) : (
@@ -399,20 +401,22 @@ function Methodology() {
       <section>
         <h2>What the arrows mean</h2>
         <p>
-          Arrows run from the current hard-data reference to a house’s forward-looking point. Both
-          ends use the plotted coordinates: the direction comes from the growth and inflation gaps
-          together, and the arrowhead points to the forecast endpoint. Dashed arrows include at
-          least one interpreted endpoint rate; solid arrows use two published forecast rates.
-          Current-only views have no outlook arrow.
+          An arrow appears only when the institution publishes comparable real-GDP and core-PCE
+          forecasts for an earlier and a later period. Both endpoints come from the same report and
+          use consistent measures. One endpoint must match the plotted house view. A square
+          identifies the other dated forecast endpoint.
         </p>
         <p>
-          This is a comparison with a shared reference, not the institution’s own current-to-future
-          forecast path. GDP/GDPNow and house forecasts can cover different periods and rate
-          definitions, so the coordinate difference is not a measured change over time. The endpoint
-          can remain an interpretation; an arrow crossing an axis does not establish a regime
-          transition. Later directional statements retain their own horizons in Analysis &
-          assumptions and do not move the plotted endpoint. Thin lines between dots and names are
-          label connectors.
+          The direction and length follow those published coordinates in both dimensions. The arrow
+          does not start at Hard data, and a point labeled “Forward-looking” alone does not qualify.
+          A single future forecast or an inflation-only statement cannot establish a two-axis
+          trajectory.
+        </p>
+        <p>
+          Partial and qualitative guidance stays in the inspector with its source and actual
+          horizon. Unknown growth or inflation is never replaced with a zero change to make an
+          arrow. Alternative risk scenarios remain separate from base-case guidance. An arrow
+          connects dated forecasts; it does not imply a linear path, speed or probability.
         </p>
       </section>
       <section>
@@ -830,9 +834,9 @@ export default function App() {
                             </select>
                           </label>
                           <label>
-                            Outlook paths
+                            Forward guidance
                             <select
-                              aria-label="Outlook paths"
+                              aria-label="Forward guidance"
                               value={outlookMode}
                               onChange={(e) => setOutlookMode(e.target.value as typeof outlookMode)}
                             >
@@ -880,8 +884,8 @@ export default function App() {
                     </div>
                     <div className="map-caption">
                       <span>
-                        Arrows: data → outlook. Dashed: interpreted endpoint. Hollow dots: sourced
-                        alternative scenario.
+                        Arrows: house’s own forward guidance. Square: other forecast endpoint.
+                        Hollow dots: sourced alternative scenario.
                       </span>
                       <button className="text-button" onClick={() => changeTab('methodology')}>
                         How to read this <ArrowUpRight size={13} aria-hidden="true" />

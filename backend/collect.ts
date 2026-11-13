@@ -2,6 +2,7 @@ import { z } from 'zod';
 import {
   SnapshotSchema,
   ReportedScenarioSchema,
+  ForwardGuidanceSchema,
   isStale,
   type Snapshot,
   type Point,
@@ -31,10 +32,12 @@ import { readPublic, type Fetcher } from './http';
 import { collectLevels, levelDataPoint } from './levels';
 import { verifiedOutlook } from './outlook';
 import { sourceOnlyRanges, verifiedScenarios } from './scenarios';
+import { verifiedForwardGuidance } from './guidance';
 
 export type Assess = (text: string, title: string) => Promise<Assessment>;
 export const AssessmentSchema = z.object({
   reportedScenarios: z.array(ReportedScenarioSchema).max(3).optional(),
+  forwardGuidance: z.array(ForwardGuidanceSchema).max(1).optional(),
   growth: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).default('unclear'),
   inflation: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).default('unclear'),
   horizon: z.enum(['current', 'outlook']),
@@ -519,6 +522,12 @@ export async function buildSnapshot(
                 }),
                 scenarioReviewVersion: 'source-scenarios-v1',
                 outlookDirection: verifiedOutlook(evidenceText, assessment),
+                forwardGuidance: verifiedForwardGuidance(
+                  evidenceText,
+                  assessment.forwardGuidance?.[0],
+                  meta.date,
+                ),
+                guidanceReviewVersion: 'source-guidance-v1',
                 evidence: [
                   {
                     axis: 'growth',

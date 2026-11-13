@@ -1,26 +1,40 @@
 import type { Point } from './schema';
 
-/** A reference-to-forecast comparison, not the house's own current-to-future trajectory. */
-export function outlookPath(point: Point, data?: Point) {
+/** Only a house's own sourced, comparable earlier/later forecasts can form a path. */
+export function outlookPath(point: Point) {
+  const guidance = point.forwardGuidance;
   if (
-    !data ||
-    data.kind !== 'data' ||
     point.kind !== 'institution' ||
-    point.horizon !== 'outlook' ||
     point.axisMode !== 'levels' ||
-    data.axisMode !== 'levels' ||
-    !['direct', 'inferred'].includes(point.growthBasis || '') ||
-    !['direct', 'inferred'].includes(point.inflationBasis || '') ||
-    (point.growthBenchmark ?? 2) !== (data.growthBenchmark ?? 2) ||
-    (point.inflationBenchmark ?? 2) !== (data.inflationBenchmark ?? 2)
+    !guidance ||
+    point.guidanceReviewVersion !== 'source-guidance-v1' ||
+    point.growthBasis !== 'direct' ||
+    point.inflationBasis !== 'direct' ||
+    !guidance.growthQuote ||
+    !guidance.inflationQuote ||
+    !guidance.periodQuote ||
+    guidance.to.period <= guidance.from.period ||
+    guidance.from.period.length !== guidance.to.period.length
   )
     return null;
+  const coordinate = (endpoint: typeof guidance.from) => ({
+    ...endpoint,
+    x: endpoint.growthRate - (point.growthBenchmark ?? 2),
+    y: endpoint.coreInflationRate - (point.inflationBenchmark ?? 2),
+  });
+  const from = coordinate(guidance.from),
+    to = coordinate(guidance.to);
+  const matches = (end: typeof from) =>
+    Math.abs(point.x - end.x) < 1e-6 && Math.abs(point.y - end.y) < 1e-6;
+  // Do not attach a published trajectory to an unrelated interpreted dot.
+  if ((!matches(from) && !matches(to)) || (from.x === to.x && from.y === to.y)) return null;
   return {
-    from: data,
-    to: point,
-    dx: point.x - data.x,
-    dy: point.y - data.y,
-    inferred: point.growthBasis !== 'direct' || point.inflationBasis !== 'direct',
+    point,
+    guidance,
+    from,
+    to,
+    dx: to.x - from.x,
+    dy: to.y - from.y,
   };
 }
 
