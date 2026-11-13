@@ -66,7 +66,12 @@ export function verifiedScenarios(
         (point.y > 0 || /above[- ]target/i.test(inflationQuote))
       : lowInflation.test(inflationQuote);
     if (!name.test(quotes) && !(growthSupported && inflationSupported)) continue;
-    result.push({ ...candidate, growthQuote, inflationQuote });
+    // A year elsewhere in the report may belong to its base case, not this risk scenario.
+    const statedYears = candidate.horizonLabel.match(/\b20\d{2}\b/g) || [];
+    const horizonLabel = statedYears.every((year) => context.includes(year))
+      ? candidate.horizonLabel
+      : 'Conditional scenario; timing not verified in the cited passages';
+    result.push({ ...candidate, growthQuote, inflationQuote, horizonLabel });
   }
   return result.slice(0, 3);
 }

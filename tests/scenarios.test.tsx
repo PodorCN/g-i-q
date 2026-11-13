@@ -66,6 +66,12 @@ describe('Only report-backed scenarios can extend a house view', () => {
         .inflationQuote,
     ).toBe(inflationQuote);
   });
+  it('does not borrow a year from an unrelated baseline paragraph for a risk scenario', () => {
+    const candidate = { ...scenario, horizonLabel: '2027' };
+    expect(
+      verifiedScenarios('Our 2027 baseline is strong. ' + text, [candidate], house)[0].horizonLabel,
+    ).toContain('timing not verified');
+  });
   it('retains an explicitly possible regime in cannot-rule-out wording', () => {
     const quote = 'We cannot rule out a U.S. stagflation scenario next year.';
     const candidate = { ...scenario, growthQuote: quote, inflationQuote: quote };
