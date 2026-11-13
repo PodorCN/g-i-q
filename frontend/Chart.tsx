@@ -1,7 +1,7 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import type { Point } from '../shared/schema';
 import { fitAxis } from './chartScale';
-import { rangeQuadrants } from '../shared/quadrants';
+import { reportedAlternatives } from '../shared/quadrants';
 import { arrowSegment, outlookPath } from '../shared/outlookPaths';
 
 const WIDTH = 850;
@@ -143,9 +143,13 @@ export default function Chart({
   const PW = WIDTH - M.left - M.right,
     PH = HEIGHT - M.top - M.bottom;
   const { xAxis, yAxis, sx, sy } = useMemo(() => {
-    // Include ranges even when hidden so toggling them does not move the points.
-    const xAxis = fitAxis(points.flatMap((p) => [p.x, p.xRange.low, p.xRange.high]));
-    const yAxis = fitAxis(points.flatMap((p) => [p.y, p.yRange.low, p.yRange.high]));
+    // Only data has numeric sensitivity bounds. Legacy house widths are ignored.
+    const xAxis = fitAxis(
+      points.flatMap((p) => (p.kind === 'data' ? [p.x, p.xRange.low, p.xRange.high] : [p.x])),
+    );
+    const yAxis = fitAxis(
+      points.flatMap((p) => (p.kind === 'data' ? [p.y, p.yRange.low, p.yRange.high] : [p.y])),
+    );
     return {
       xAxis,
       yAxis,
@@ -164,6 +168,9 @@ export default function Chart({
     return () => observer.disconnect();
   }, []);
   const selected = points.find((point) => point.id === selectedId);
+  const rangePoints = points.filter((p) => rangeMode === 'all' || p.id === selectedId);
+  const hasScenarioRegion = rangePoints.some((p) => reportedAlternatives(p).length > 0);
+  const hasDataRange = rangePoints.some((p) => p.kind === 'data');
   const dataPoint = points.find((point) => point.kind === 'data');
   const paths = showOutlooks
     ? points.flatMap((point) => {
@@ -251,8 +258,46 @@ export default function Chart({
             </text>
           </g>
           {showRanges &&
+            rangePoints.flatMap((point) =>
+              reportedAlternatives(point).map((scenario) => {
+                const right = ['Overheating', 'Goldilocks'].includes(scenario.quadrant);
+                const top = ['Overheating', 'Stagflation'].includes(scenario.quadrant);
+                const x1 = right ? zeroX : M.left,
+                  x2 = right ? M.left + PW : zeroX;
+                const y1 = top ? M.top : zeroY,
+                  y2 = top ? zeroY : M.top + PH;
+                return (
+                  <rect
+                    key={`${point.id}-${scenario.quadrant}`}
+                    className="reported-scenario-region"
+                    data-point-id={point.id}
+                    data-quadrant={scenario.quadrant}
+                    x={x1 + 2}
+                    y={y1 + 2}
+                    width={Math.max(0, x2 - x1 - 4)}
+                    height={Math.max(0, y2 - y1 - 4)}
+                    fill={point.color}
+                    fillOpacity=".075"
+                    stroke={point.color}
+                    strokeOpacity=".65"
+                    strokeDasharray="4 5"
+                    pointerEvents="none"
+                  >
+                    <title>
+                      {point.shortName}: reported {scenario.quadrant} scenario.{' '}
+                      {scenario.horizonLabel}. Qualitative region; no numerical bounds or
+                      probability.
+                    </title>
+                  </rect>
+                );
+              }),
+            )}
+          {showRanges &&
             points
-              .filter((point) => rangeMode === 'all' || point.id === selectedId)
+              .filter(
+                (point) =>
+                  point.kind === 'data' && (rangeMode === 'all' || point.id === selectedId),
+              )
               .map((point) => {
                 const x1 = sx(point.xRange.low),
                   x2 = sx(point.xRange.high),
@@ -361,7 +406,7 @@ export default function Chart({
               role="button"
               tabIndex={0}
               className={`scatter-point ${selectedId === point.id ? 'selected-point' : ''}`}
-              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${rangeQuadrants(point).length > 1 ? 'Mapping range spans multiple quadrants. ' : ''}${outlookPath(point, dataPoint) ? 'Outlook endpoint relative to the shared current data reference. ' : ''}Select to inspect evidence.`}
+              aria-label={`${point.institution}, ${point.horizonLabel || point.horizon}, growth ${point.growthDirection === 'unclear' ? 'unresolved' : point.x.toFixed(2)}, inflation ${point.inflationDirection === 'unclear' ? 'unresolved' : point.y.toFixed(2)}. ${reportedAlternatives(point).length ? 'Report explicitly discusses an alternative quadrant. ' : ''}${outlookPath(point, dataPoint) ? 'Outlook endpoint relative to the shared current data reference. ' : ''}Select to inspect evidence.`}
               aria-pressed={selectedId === point.id}
               onClick={() => onSelect(point.id)}
               onKeyDown={(event) => {
@@ -406,8 +451,8 @@ export default function Chart({
                   cx={sx(point.x)}
                   cy={sy(point.y)}
                   r="6.5"
-                  fill={rangeQuadrants(point).length > 1 ? 'white' : point.color}
-                  stroke={rangeQuadrants(point).length > 1 ? point.color : 'white'}
+                  fill={reportedAlternatives(point).length ? 'white' : point.color}
+                  stroke={reportedAlternatives(point).length ? point.color : 'white'}
                   strokeWidth="2"
                 />
               )}
@@ -463,14 +508,15 @@ export default function Chart({
         <span>
           <i className="circle-icon" /> House view
         </span>
-        {showRanges && (
+        {showRanges && hasDataRange && (
           <span>
             <i className="range-icon" />
-            {rangeMode === 'all'
-              ? 'Model ranges'
-              : selected?.kind === 'institution'
-                ? 'Selected view’s range'
-                : 'Data sensitivity range'}
+            Data sensitivity range
+          </span>
+        )}
+        {showRanges && hasScenarioRegion && (
+          <span>
+            <i className="range-icon" /> Report scenario · no numeric bounds
           </span>
         )}
       </div>

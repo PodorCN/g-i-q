@@ -43,8 +43,24 @@ export function createAssessor(env: Env): Assess | undefined {
     const properties = {
       growthRate: { type: 'number', minimum: -1, maximum: 5 },
       coreInflationRate: { type: 'number', minimum: 0, maximum: 5 },
-      growthSigma: { type: 'number', minimum: 0.15, maximum: 2 },
-      inflationSigma: { type: 'number', minimum: 0.15, maximum: 2 },
+      reportedScenarios: {
+        type: 'array',
+        maxItems: 3,
+        items: {
+          type: 'object',
+          additionalProperties: false,
+          properties: {
+            quadrant: {
+              type: 'string',
+              enum: ['Overheating', 'Stagflation', 'Goldilocks', 'Disinflationary slowdown'],
+            },
+            growthQuote: { type: 'string', maxLength: 240 },
+            inflationQuote: { type: 'string', maxLength: 240 },
+            horizonLabel: { type: 'string', maxLength: 160 },
+          },
+          required: ['quadrant', 'growthQuote', 'inflationQuote', 'horizonLabel'],
+        },
+      },
       growthBasis: { type: 'string', enum: ['direct', 'inferred'] },
       inflationBasis: { type: 'string', enum: ['direct', 'inferred'] },
       horizon: { type: 'string', enum: ['current', 'outlook'] },
@@ -64,7 +80,7 @@ export function createAssessor(env: Env): Assess | undefined {
         { role: 'system', content: LEVELS_PROMPT },
         { role: 'user', content: JSON.stringify({ title, article: text.slice(0, 24000) }) },
       ],
-      max_tokens: 1400,
+      max_tokens: 2000,
       response_format: {
         type: 'json_schema',
         json_schema: {

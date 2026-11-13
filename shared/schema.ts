@@ -12,6 +12,12 @@ export const EvidenceSchema = z.object({
   quote: z.string().max(240),
   interpretation: z.string(),
 });
+export const ReportedScenarioSchema = z.object({
+  quadrant: z.enum(['Overheating', 'Stagflation', 'Goldilocks', 'Disinflationary slowdown']),
+  growthQuote: z.string().min(1).max(240),
+  inflationQuote: z.string().min(1).max(240),
+  horizonLabel: z.string().min(1).max(160),
+});
 export const OutlookDirectionSchema = z
   .object({
     growth: z.enum(['rising', 'falling', 'steady', 'unspecified']),
@@ -47,7 +53,9 @@ export const PointSchema = z
     y: z.number().min(-3).max(3),
     xRange: RangeSchema,
     yRange: RangeSchema,
-    rangeKind: z.enum(['model_range', 'bootstrap_80']),
+    rangeKind: z.enum(['none', 'model_range', 'bootstrap_80']),
+    reportedScenarios: z.array(ReportedScenarioSchema).max(3).optional(),
+    scenarioReviewVersion: z.literal('source-scenarios-v1').optional(),
     confidence: z.enum(['low', 'medium', 'high']),
     horizon: z.enum(['current', 'outlook']),
     horizonLabel: z.string().optional(),
@@ -158,6 +166,7 @@ export type Indicator = z.infer<typeof IndicatorSchema>;
 export type ResearchDocument = z.infer<typeof DocumentSchema>;
 export type SourceStatus = z.infer<typeof SourceStatusSchema>;
 export type Axis = 'growth' | 'inflation';
+export type ReportedScenario = z.infer<typeof ReportedScenarioSchema>;
 
 export function regime(x: number, y: number): string {
   if (Math.abs(x) < 0.08 || Math.abs(y) < 0.08) return 'At the boundary';
@@ -176,13 +185,21 @@ export function isStale(date: string, asOf: string, days = 35): boolean {
 export function axisSupport(view: Point, data: Point, axis: Axis): string {
   const direction = axis === 'growth' ? view.growthDirection : view.inflationDirection;
   if (direction === 'unclear') return 'View unresolved';
-  const viewRange = axis === 'growth' ? view.xRange : view.yRange;
-  if (viewRange.low < -1e-9 && viewRange.high > 1e-9) return 'View inconclusive';
-  if (Math.abs(viewRange.low) < 1e-9 || Math.abs(viewRange.high) < 1e-9) return 'Near boundary';
+  const center = axis === 'growth' ? view.x : view.y;
+  if (
+    view.reportedScenarios?.some((s) => {
+      const positive =
+        axis === 'growth'
+          ? ['Overheating', 'Goldilocks'].includes(s.quadrant)
+          : ['Overheating', 'Stagflation'].includes(s.quadrant);
+      return positive !== center > 0;
+    })
+  )
+    return 'Report includes opposing scenario';
   const range = axis === 'growth' ? data.xRange : data.yRange;
   if (range.low <= 0 && range.high >= 0) return 'Data inconclusive';
   const a = axis === 'growth' ? view.x : view.y,
     b = axis === 'growth' ? data.x : data.y;
   if (Math.abs(a) < 0.08 || Math.abs(b) < 0.08) return 'Near boundary';
-  return a * b > 0 ? 'Aligned' : 'Diverges';
+  return a * b > 0 ? 'Mapped center aligned' : 'Mapped center diverges';
 }

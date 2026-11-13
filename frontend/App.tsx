@@ -10,7 +10,7 @@ import {
 } from '../shared/schema';
 import Chart from './Chart';
 import { useSnapshot } from './useSnapshot';
-import { rangeQuadrants } from '../shared/quadrants';
+import { rangeQuadrants, reportedAlternatives } from '../shared/quadrants';
 import { outlookPath } from '../shared/outlookPaths';
 
 type Tab = 'map' | 'views' | 'data' | 'sources' | 'methodology';
@@ -92,7 +92,8 @@ function PointInspector({
     );
   const isData = point.kind === 'data';
   const anchors = snapshot.indicators.filter((i) => i.mode === 'level');
-  const quadrants = rangeQuadrants(point);
+  const quadrants = isData ? rangeQuadrants(point) : [];
+  const scenarios = reportedAlternatives(point);
   const outlook = point.outlookDirection;
   const path = outlookPath(point, data);
   return (
@@ -126,19 +127,36 @@ function PointInspector({
         <span className="small-cross" aria-hidden="true" />
         Center: {regime(point.x, point.y)}
       </p>
-      {quadrants.length > 1 && (
+      {isData && quadrants.length > 1 && (
         <div className="quadrant-caution">
-          <strong>Single quadrant unresolved</strong>
-          <p>The model range overlaps {quadrants.join(', ')}.</p>
-          <small>
-            {point.kind === 'data'
-              ? 'Sensitivity to our assumptions; no quadrant probabilities.'
-              : point.horizon === 'outlook'
-                ? 'Our uncertainty about this outlook’s mapping, not the house’s odds for today’s economy.'
-                : 'Our mapping uncertainty, not probabilities assigned by the institution.'}
-          </small>
+          <strong>Data sensitivity crosses a boundary</strong>
+          <p>The data assumptions span {quadrants.join(', ')}; no probabilities are implied.</p>
         </div>
       )}
+      {!isData &&
+        (scenarios.length ? (
+          <section className="report-scenarios">
+            <h3>Other scenarios in the report</h3>
+            {scenarios.map((scenario) => (
+              <details key={scenario.quadrant}>
+                <summary>
+                  {scenario.quadrant} <ChevronDown size={14} aria-hidden="true" />
+                </summary>
+                <p>{scenario.horizonLabel}</p>
+                <blockquote>“{scenario.growthQuote}”</blockquote>
+                {scenario.inflationQuote !== scenario.growthQuote && (
+                  <blockquote>“{scenario.inflationQuote}”</blockquote>
+                )}
+              </details>
+            ))}
+            <small>
+              Shading marks only the stated alternative quadrant. It is not a numeric range,
+              probability or change to the base case.
+            </small>
+          </section>
+        ) : (
+          <p className="point-only-note">Point only · no sourced alternative quadrant mapped.</p>
+        ))}
       {path && (
         <section className="outlook-summary">
           <h3>Data → outlook</h3>
@@ -269,25 +287,42 @@ function PointInspector({
               </p>
             </div>
           )}
-          <h3>Model ranges</h3>
-          <dl className="range-values">
-            <div>
-              <dt>Growth</dt>
-              <dd>
-                {number(point.xRange.low)} to {number(point.xRange.high)} pp
-              </dd>
-            </div>
-            <div>
-              <dt>Inflation</dt>
-              <dd>
-                {number(point.yRange.low)} to {number(point.yRange.high)} pp
-              </dd>
-            </div>
-          </dl>
-          <p>
-            Assumed ranges, without calibrated probability coverage. They are not the institution’s
-            confidence intervals.
-          </p>
+          {isData ? (
+            <>
+              <h3>Data sensitivity range</h3>
+              <dl className="range-values">
+                <div>
+                  <dt>Growth</dt>
+                  <dd>
+                    {number(point.xRange.low)} to {number(point.xRange.high)} pp
+                  </dd>
+                </div>
+                <div>
+                  <dt>Inflation</dt>
+                  <dd>
+                    {number(point.yRange.low)} to {number(point.yRange.high)} pp
+                  </dd>
+                </div>
+              </dl>
+              <p>
+                Assumed sensitivity widths for the data model, not an institutional range or a
+                calibrated confidence interval.
+              </p>
+            </>
+          ) : (
+            <>
+              <h3>Source-grounded scenarios</h3>
+              <p>
+                Only alternatives supported by this report’s own growth and inflation discussion can
+                extend beyond the point’s quadrant. Interpretation confidence never widens the
+                plotted view.
+              </p>
+              <p>
+                No shaded alternative means insufficient two-axis scenario evidence was mapped; it
+                does not mean the institution assigns zero risk or that the point is exact.
+              </p>
+            </>
+          )}
           <button className="text-button" onClick={onMethodology}>
             How the mapping works <ArrowUpRight size={14} aria-hidden="true" />
           </button>
@@ -339,22 +374,26 @@ function Methodology() {
         </p>
       </section>
       <section>
-        <h2>What the ranges mean</h2>
+        <h2>When a view can extend into another quadrant</h2>
         <p>
-          The ellipses show subjective model ranges, not statistically calibrated confidence
-          intervals. They have no 68% or 90% coverage meaning.
+          A house is a point unless its report explicitly supports an alternative growth–inflation
+          regime. Our uncertainty about interpreting its language does not create an ellipse or
+          authorize another quadrant. Inferred coordinates stay labeled “Our interpretation.”
         </p>
         <p>
-          House ranges use assumed half-widths, generally ±0.3–0.6 pp for explicit near-term
-          forecasts and ±0.7–1.2 pp for qualitative or longer-term interpretation. The data anchor
-          uses fixed sensitivity widths of ±0.6 pp for growth and ±0.25 pp for inflation. No
-          growth–inflation covariance or historical coverage has been estimated.
+          When the report discusses another regime, the chart shades only that scenario’s quadrant
+          and the inspector shows the supporting passages and horizon. Qualitative scenarios have no
+          invented numerical bounds, connecting ellipse or probability. A recession risk alone
+          cannot determine inflation; falling inflation alone does not mean it falls below 2%.
         </p>
         <p>
-          A range crossing a quadrant boundary makes the mapping inconclusive. The listed overlaps
-          follow the actual ellipse, not its rectangular bounding box. They are neither
-          probabilities nor alternate scenarios endorsed by the institution. An outlook range
-          concerns that outlook’s horizon, not today.
+          A hollow dot indicates a sourced alternative, not low mapping confidence. A filled dot
+          means no alternative quadrant has been mapped, not certainty. Reports may contain risks
+          that cannot be assigned to both axes.
+        </p>
+        <p>
+          The hard-data ellipse is separate: ±0.6 pp growth and ±0.25 pp inflation are model
+          sensitivity assumptions, not a broker view or a calibrated confidence interval.
         </p>
       </section>
       <section>
@@ -369,8 +408,8 @@ function Methodology() {
         <p>
           This is a comparison with a shared reference, not the institution’s own current-to-future
           forecast path. GDP/GDPNow and house forecasts can cover different periods and rate
-          definitions, so the coordinate difference is not a measured change over time. The
-          endpoint’s range remains uncertain; an arrow crossing an axis does not establish a regime
+          definitions, so the coordinate difference is not a measured change over time. The endpoint
+          can remain an interpretation; an arrow crossing an axis does not establish a regime
           transition. Later directional statements retain their own horizons in Analysis &
           assumptions and do not move the plotted endpoint. Thin lines between dots and names are
           label connectors.
@@ -779,7 +818,7 @@ export default function App() {
                         </summary>
                         <div className="display-popover">
                           <label>
-                            Ranges
+                            Scenarios & data range
                             <select
                               aria-label="Range display"
                               value={rangeMode}
@@ -811,8 +850,8 @@ export default function App() {
                             All institution labels
                           </label>
                           <p>
-                            Ranges are subjective estimates, without calibrated probability
-                            coverage.
+                            House shading requires a report-backed alternative. The data ellipse
+                            shows model sensitivity. Neither implies probabilities.
                           </p>
                         </div>
                       </details>
@@ -841,8 +880,8 @@ export default function App() {
                     </div>
                     <div className="map-caption">
                       <span>
-                        Arrows: data → outlook. Dashed: inferred endpoint. Hollow dots: uncertain
-                        quadrant.
+                        Arrows: data → outlook. Dashed: interpreted endpoint. Hollow dots: sourced
+                        alternative scenario.
                       </span>
                       <button className="text-button" onClick={() => changeTab('methodology')}>
                         How to read this <ArrowUpRight size={13} aria-hidden="true" />

@@ -1691,3 +1691,42 @@ td.numeric,
     grid-column: 1 / -1;
   }
 }
+
+.report-scenarios {
+  margin: 18px 0;
+  padding: 16px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.report-scenarios h3 {
+  font-size: 12px;
+  margin-bottom: 10px;
+}
+.report-scenarios summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  font-size: 13px;
+}
+.report-scenarios details + details {
+  margin-top: 12px;
+}
+.report-scenarios p,
+.report-scenarios small,
+.point-only-note {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+.report-scenarios small {
+  display: block;
+  margin-top: 10px;
+}
+.report-scenarios blockquote {
+  margin: 10px 0;
+  font-size: 12px;
+}
+.point-only-note {
+  margin-top: 10px;
+}

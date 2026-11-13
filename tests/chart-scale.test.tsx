@@ -61,7 +61,7 @@ describe('Chart bounds follow the data and complete uncertainty ranges', () => {
       },
     });
     parser.end(markup);
-    expect(ellipses).toHaveLength(points.length);
+    expect(ellipses).toHaveLength(points.filter((p) => p.kind === 'data').length);
     for (const e of ellipses) {
       expect(e.cx - e.rx).toBeGreaterThan(frame!.x + 5);
       expect(e.cx + e.rx).toBeLessThan(frame!.x + frame!.width - 5);

@@ -9,8 +9,8 @@ An evidence-led **U.S. growth–inflation observatory**. Compare attributable in
 ## What you can do
 
 - Explore the four-quadrant scatter plot; select a named institution to inspect its source, date, horizon, supporting quotes, and position compared with the data.
-- Toggle uncertainty ranges and labels; show all house views by default, or filter current assessments and outlooks while preserving each author’s actual horizon.
-- Follow two-axis arrows from the current data reference to each dated house outlook. Dashed arrows identify interpreted endpoints; these are coordinate comparisons, not matched-horizon forecast changes. Hollow dots flag mappings spanning quadrants, without institution-assigned probabilities.
+- Toggle sourced scenario regions, data sensitivity and labels; show all house views by default, or filter current assessments and outlooks while preserving each author’s actual horizon.
+- Follow two-axis arrows from the current data reference to each dated house outlook. Dashed arrows identify interpreted endpoints; these are coordinate comparisons, not matched-horizon forecast changes. Hollow dots flag report-backed alternative scenarios; they do not encode probabilities.
 - Inspect individual data series, reference months, raw history, transformations, and component scores.
 - Read unscored commentary, official news, and collection failures. Missing evidence never becomes an invented point.
 - Select historical snapshots and export the complete research JSON.
@@ -68,7 +68,7 @@ The hard-data point averages the latest BEA annualized quarterly GDP rate and At
 
 The reviewed snapshot covers **20 research teams**, including UBS CIO, Citi Wealth CIO, BofA Private Bank CIO, Wells Fargo Investment Institute, TD Economics, U.S. Bank, ABN AMRO, HSBC AM, RBC Rochdale, UBP, BNP Paribas, PNC and Scotiabank alongside the original seven houses. The daily catalog monitors **23 teams**; Morgan Stanley, Barclays and BMO remain visible in coverage when their accessible material does not establish a usable two-axis house view. Team attribution is specific: wealth and asset-management views are not relabeled as an investment bank’s institutional research forecast. Explicit numerical forecasts are distinguished from our qualitative mappings. Each point preserves a real article, publication date, short verified quotations and the author's actual horizon. This is a monitored public-source sample, not comprehensive access to institutional research.
 
-Institution ellipses are **subjective model uncertainty ranges**, not published institutional confidence intervals. The hard-data range is an explicit sensitivity assumption. Neither has calibrated 68%/90% coverage; no probability is implied. [Methodology](docs/methodology.md) gives the definitions and limits.
+Institution views have **no assumed-width ellipses**. Only alternative quadrants explicitly supported by the report can be shaded, with growth/inflation quotes and a separate horizon. Qualitative scenario regions have no invented numerical bounds or probabilities. The hard-data ellipse remains a separate sensitivity assumption, without calibrated 68%/90% coverage. [Methodology](docs/methodology.md) gives the definitions and limits.
 
 ## Repository map
 

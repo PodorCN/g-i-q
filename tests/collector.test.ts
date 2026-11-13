@@ -181,7 +181,7 @@ describe('Level mapping evidence boundaries', () => {
       }),
     });
   };
-  it('does not label core CPI as a direct core PCE forecast or give it a narrow range', async () => {
+  it('does not label core CPI as a direct core PCE forecast or invent a range', async () => {
     const result = await run(
       'We forecast US real GDP growth of 2.5%.',
       'We forecast core CPI inflation of 2.6%.',
@@ -189,7 +189,8 @@ describe('Level mapping evidence boundaries', () => {
     const point = result.points.find((p) => p.kind === 'institution')!;
     expect(point.growthBasis).toBe('direct');
     expect(point.inflationBasis).toBe('inferred');
-    expect(point.yRange.high - point.y).toBeCloseTo(0.7);
+    expect(point.rangeKind).toBe('none');
+    expect(point.yRange).toEqual({ low: point.y, high: point.y });
   });
   it('rejects a conditional risk scenario as a base case', async () => {
     const result = await run(

@@ -1,4 +1,10 @@
-import type { Point } from './schema';
+import { regime, type Point } from './schema';
+
+export function reportedAlternatives(point: Point) {
+  if (point.kind !== 'institution' || point.scenarioReviewVersion !== 'source-scenarios-v1')
+    return [];
+  return (point.reportedScenarios || []).filter((s) => s.quadrant !== regime(point.x, point.y));
+}
 
 const EPSILON = 1e-9;
 const QUADRANTS = [

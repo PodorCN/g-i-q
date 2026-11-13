@@ -270,7 +270,12 @@ export function verifiedSnippet(
   const tokenStart = corpus.slice(0, position).trim().split(/\s+/).filter(Boolean).length;
   if (preservePassage) {
     const end = tokens[tokenStart + query.length - 1];
-    const passage = text.slice(tokens[tokenStart].index!, end.index! + end[0].length);
+    let endIndex = end.index! + end[0].length;
+    // Preserve a quoted terminal unit/qualification (notably 5% vs 5), and punctuation.
+    const suffix = quote.match(/[^\p{L}\p{N}]*$/u)?.[0] || '';
+    if (suffix && text.slice(endIndex, endIndex + suffix.length) === suffix)
+      endIndex += suffix.length;
+    const passage = text.slice(tokens[tokenStart].index!, endIndex);
     // Direction evidence must retain its verb and qualifications, not just an axis keyword.
     return passage.length <= 240 ? passage : '';
   }

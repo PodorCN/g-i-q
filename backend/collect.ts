@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import {
   SnapshotSchema,
+  ReportedScenarioSchema,
   isStale,
   type Snapshot,
   type Point,
@@ -29,9 +30,11 @@ import {
 import { readPublic, type Fetcher } from './http';
 import { collectLevels, levelDataPoint } from './levels';
 import { verifiedOutlook } from './outlook';
+import { sourceOnlyRanges, verifiedScenarios } from './scenarios';
 
 export type Assess = (text: string, title: string) => Promise<Assessment>;
 export const AssessmentSchema = z.object({
+  reportedScenarios: z.array(ReportedScenarioSchema).max(3).optional(),
   growth: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).default('unclear'),
   inflation: z.enum(['accelerating', 'decelerating', 'stable', 'unclear']).default('unclear'),
   horizon: z.enum(['current', 'outlook']),
@@ -495,24 +498,13 @@ export async function buildSnapshot(
                 assessment.inflationBasis = 'inferred';
               const gx = assessment.growthRate - 2,
                 iy = assessment.coreInflationRate - 2;
-              const widthX = Math.max(
-                  assessment.growthSigma || 0.9,
-                  assessment.growthBasis === 'direct' ? 0.15 : 0.7,
-                ),
-                widthY = Math.max(
-                  assessment.inflationSigma || 0.7,
-                  assessment.inflationBasis === 'direct' ? 0.15 : 0.7,
-                );
-              const bounded = (center: number, width: number) => ({
-                low: Math.max(-3, center - width),
-                high: Math.min(3, center + width),
-              });
               Object.assign(point, {
                 axisMode: 'levels',
                 x: gx,
                 y: iy,
-                xRange: bounded(gx, widthX),
-                yRange: bounded(iy, widthY),
+                rangeKind: 'none',
+                xRange: { low: gx, high: gx },
+                yRange: { low: iy, high: iy },
                 growthRate: assessment.growthRate,
                 inflationRate: assessment.coreInflationRate,
                 growthBenchmark: 2,
@@ -521,6 +513,11 @@ export async function buildSnapshot(
                 inflationDirection: undefined,
                 growthBasis: assessment.growthBasis || 'inferred',
                 inflationBasis: assessment.inflationBasis || 'inferred',
+                reportedScenarios: verifiedScenarios(evidenceText, assessment.reportedScenarios, {
+                  x: gx,
+                  y: iy,
+                }),
+                scenarioReviewVersion: 'source-scenarios-v1',
                 outlookDirection: verifiedOutlook(evidenceText, assessment),
                 evidence: [
                   {
@@ -645,7 +642,7 @@ export async function buildSnapshot(
     region: 'US',
     demo: false,
     methodologyVersion: '1.0.0',
-    points,
+    points: options.axisMode === 'levels' ? points.map(sourceOnlyRanges) : points,
     indicators,
     documents,
     sources,

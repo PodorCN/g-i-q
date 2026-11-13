@@ -10,6 +10,8 @@ const data = snapshot.points.find((p) => p.kind === 'data')!;
 const house: Point = {
   ...snapshot.points.find((p) => p.kind === 'institution')!,
   outlookDirection: undefined,
+  rangeKind: 'model_range',
+  reportedScenarios: [],
   x: 0.4,
   y: 0.6,
   xRange: { low: -0.3, high: 1.1 },
@@ -23,7 +25,7 @@ const assessment = {
   outlookHorizon: 'Next year',
 };
 
-describe('Quadrant overlap is mapping uncertainty, not institutional probabilities', () => {
+describe('Data sensitivity geometry and comparison semantics', () => {
   it('checks the ellipse instead of declaring all four quadrants from crossing marginal ranges', () => {
     expect(rangeQuadrants(house)).toEqual(['Overheating', 'Stagflation', 'Goldilocks']);
   });
@@ -38,12 +40,12 @@ describe('Quadrant overlap is mapping uncertainty, not institutional probabiliti
   it('does not treat a boundary touch or floating-point residue as entry', () => {
     const touching = { ...house, xRange: { low: 0, high: 1 }, yRange: { low: -2e-16, high: 1.6 } };
     expect(rangeQuadrants(touching)).toEqual(['Overheating']);
-    expect(axisSupport(touching, data, 'inflation')).toBe('Near boundary');
+    expect(axisSupport(touching, data, 'inflation')).toBe('Mapped center aligned');
   });
 
-  it('does not call a cross-boundary house range aligned just because its center matches the data', () => {
-    expect(axisSupport(house, data, 'growth')).toBe('View inconclusive');
-    expect(axisSupport(house, data, 'inflation')).toBe('View inconclusive');
+  it('does not use retired mapper widths to manufacture house disagreement', () => {
+    expect(axisSupport(house, data, 'growth')).toBe('Mapped center aligned');
+    expect(axisSupport(house, data, 'inflation')).toBe('Mapped center aligned');
   });
 });
 
