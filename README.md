@@ -6,6 +6,8 @@ An evidence-led **U.S. growth–inflation observatory**. Compare attributable in
 
 **Frontend:** React + TypeScript + Vite on Cloudflare Pages. **Backend:** a separate Cloudflare Worker with D1 snapshots and native Workers AI. **Schedule:** daily at 7 a.m. America/New_York, including daylight saving time.
 
+**Maintaining this dashboard:** start with [AGENTS.md](AGENTS.md) and the detailed [AGENT.MD maintenance handbook](AGENT.MD). They record the user-approved range, guidance, interaction and deployment rules for future agents.
+
 ## What you can do
 
 - Explore the four-quadrant scatter plot; select a named institution to inspect its source, date, horizon, supporting quotes, and position compared with the data.
