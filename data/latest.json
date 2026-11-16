@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "as_of": "2026-11-13",
- "generated_at": "2026-11-13T16:32:36+00:00",
+ "as_of": "2026-11-16",
+ "generated_at": "2026-11-16T15:05:16+00:00",
  "params": {
   "trend_growth": 2.0,
   "inflation_target": 2.0,
@@ -223,7 +223,7 @@
     "value": 2.226,
     "gap": -0.074,
     "weight": 0.5,
-    "observation_date": "2026-11-12",
+    "observation_date": "2026-11-13",
     "series": [
      "T10YIE"
     ],
@@ -235,10 +235,10 @@
     "axis": "inflation",
     "label": "5y5y forward breakeven (%)",
     "unit": "%",
-    "value": 2.18,
-    "gap": -0.12,
+    "value": 2.172,
+    "gap": -0.128,
     "weight": 0.5,
-    "observation_date": "2026-11-12",
+    "observation_date": "2026-11-13",
     "series": [
      "T5YIFR"
     ],
@@ -266,8 +266,8 @@
    "sd": 0.666
   },
   "inflation": {
-   "mean": 0.831,
-   "sd": 0.542
+   "mean": 0.83,
+   "sd": 0.543
   },
   "point": {
    "id": "data_model",
@@ -275,8 +275,8 @@
    "short": "Data",
    "x": 0.882,
    "sx": 0.666,
-   "y": 0.831,
-   "sy": 0.542,
+   "y": 0.83,
+   "sy": 0.543,
    "dx": 0.29,
    "dy": 0.2,
    "quadrant": "overheating"
@@ -454,10 +454,11 @@
    "scoring_rationale": "Growth 2.5% - 2.0 trend = +0.5 (explicit). No core PCE number; 'normalizing' from ~3.1% core PCE implies ~2.7% average over 12m -> +0.7 with qualitative sd 0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 8,
+   "age_days": 11,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "blackrock",
@@ -490,10 +491,11 @@
    "scoring_rationale": "Qualitative only. Inflation 'persistent/sticky above target' = +1.0. Growth resilient near term but stresses 2027 slowdown risk -> +0.3 with sd 0.8+0.2 for tail emphasis.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 4,
+   "age_days": 7,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "pimco",
@@ -532,10 +534,11 @@
    "scoring_rationale": "Qualitative. Resilient growth -> +0.4; 'moderating toward target' -> +0.6. sd widened (+0.2) because the piece stresses fat tails.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 38,
+   "age_days": 41,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "vanguard",
@@ -584,10 +587,11 @@
    "scoring_rationale": "Core PCE path 3.2% -> 2.5% averages ~2.8% over 12m -> +0.8 (explicit, sd 0.35). GDP 2.3%/3.0% figure could not be dated -> +0.6 with sd 0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 4,
+   "age_days": 7,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "usbank",
@@ -647,10 +651,11 @@
    "scoring_rationale": "Next-4-quarter growth ~2.15% -> +0.15; core PCE averaging ~2.85% over the horizon -> +0.85. Point forecasts (sd 0.3) widened on growth for the 25% recession tail.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 11,
+   "age_days": 14,
    "stale": false,
    "weight": 1.0,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "wells",
@@ -692,10 +697,11 @@
    "scoring_rationale": "CPI path minus 0.4 CPI/PCE wedge -> ~2.9% core-PCE-equivalent average -> +0.9. Growth from June WFII targets (older) -> +0.3 with sd 0.6. Publication date approximate.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 30,
+   "age_days": 33,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "ms",
@@ -738,10 +744,11 @@
    "scoring_rationale": "Growth from May outlook (2.25-2.5%) -> +0.35. Inflation 'persistent, more hikes needed' -> +1.1. Low confidence: latest view partly from secondary coverage.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 49,
+   "age_days": 52,
    "stale": false,
    "weight": 0.6,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "fed_board",
@@ -791,10 +798,11 @@
    "scoring_rationale": "One FOMC voter, not the Committee. Strong current growth but no forward number -> +0.5. Core PCE 3.3% falling 'closer to 2%' -> ~2.6% average -> +0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 3,
+   "age_days": 6,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "jpm",
@@ -836,10 +844,11 @@
    "scoring_rationale": "Stale (July). Midpoint 1.75% -> -0.25; core PCE 3.4% -> +1.4. Kept to show the drift of views; down-weighted automatically.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 127,
+   "age_days": 130,
    "stale": true,
    "weight": 0.21,
-   "quadrant": "stagflation"
+   "quadrant": "stagflation",
+   "carried_forward": true
   },
   {
    "id": "bofa",
@@ -867,10 +876,11 @@
    "scoring_rationale": "Stale, qualitative, secondary source. 'Reflation' -> above-trend growth (+0.6) and above-target inflation (+1.2), wide sd.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 164,
+   "age_days": 167,
    "stale": true,
    "weight": 0.21,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   }
  ],
  "blend": {
@@ -889,11 +899,11 @@
   "model": {
    "x": 0.882,
    "sx": 0.666,
-   "y": 0.831,
-   "sy": 0.542,
+   "y": 0.83,
+   "sy": 0.543,
    "probabilities": {
     "goldilocks": 0.055,
-    "overheating": 0.853,
+    "overheating": 0.852,
     "stagflation": 0.086,
     "slowdown": 0.006
    }
@@ -987,23 +997,12 @@
   }
  ],
  "synthesis": {
-  "headline": "Overheating: growth ~0.9pp above trend, core inflation ~0.8–1.1pp above target, and the Fed is hiking into it",
+  "headline": "Overheating / Reflation is the most likely regime (74% blended probability)",
   "regime_call": "overheating",
-  "data_supports": "The hard data sit clearly in the Overheating / Reflation quadrant (growth gap +0.88pp, inflation gap +0.83pp). Seven of nine growth indicators run above trend: GDPNow tracks Q4 at ~3.5% after a 3.4% Q3 print, payrolls average 137k over three months against an ~80k breakeven, unemployment is 0.2pp lower than six months ago, industrial production is up 4.4% annualized and financial conditions are loose (NFCI −0.47); real retail sales are the one soft spot. On inflation, core PCE is 3.1% y/y, core CPI is running 3.7% annualized over three months and headline CPI 3.1% over six months on the energy shock. What the data do NOT support is de-anchoring: 10y breakevens (2.2%) and the 5y5y forward (2.2%) are at target, so the overshoot reads as supply/energy-driven rather than a wage-price spiral.",
-  "consensus_vs_data": "Every current house view also lands in Overheating, but the consensus sits about 0.5pp lower on growth (+0.37pp) than the data: houses are forecasting the slowdown (rate hikes, AI-capex fatigue, energy drag) that the data have not shown yet. On inflation the houses and the data agree (~+0.8pp). The stagflation tail (≈19% blended) comes mostly from houses with lower growth and stickier inflation (J.P. Morgan's stale July view, BlackRock's AI-slowdown risk).",
-  "divergences": [
-   "Growth: U.S. Bank (+0.15pp, 25% recession odds) vs Vanguard (+0.6pp) and BofA's reflation call (+0.6pp, stale).",
-   "Inflation persistence: Morgan Stanley / BlackRock (+1.0 to +1.1pp, more hikes) vs PIMCO and Fed VC Bowman (+0.6pp, energy shock fades, core PCE 'closer to 2%' in 2027).",
-   "Fed path: GSAM/MS/U.S. Bank expect December and early-2027 hikes; BlackRock and PIMCO think market pricing of further hikes is excessive."
-  ],
-  "watch_list": [
-   "FOMC decision, Dec 8–9 (≈87% priced for +25bp to 4.00–4.25%; Waller floated 50bp)",
-   "October PCE / core PCE (late Nov, approx.) — Bowman estimates 3.3% y/y",
-   "November payrolls and CPI (early-to-mid Dec, approx.)",
-   "Oil / Strait of Hormuz developments — the main driver of headline inflation",
-   "2027 year-ahead outlooks from BofA, Goldman Sachs, J.P. Morgan, Morgan Stanley (late Nov–Dec)",
-   "AI capex guidance — the key growth downside risk flagged by BlackRock and PIMCO"
-  ],
-  "method": "manual"
+  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.88pp (±0.67), inflation gap +0.83pp (±0.54). 7 of 9 growth indicators are above trend and 1 below; 5 of 7 inflation indicators are above target and 0 below.",
+  "consensus_vs_data": "The house consensus sits at growth +0.37pp / inflation +0.84pp versus the data model at +0.88 / +0.83.",
+  "divergences": [],
+  "watch_list": [],
+  "method": "template"
  }
 }
