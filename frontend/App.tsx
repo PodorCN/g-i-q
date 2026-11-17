@@ -77,11 +77,13 @@ function PointInspector({
   data,
   snapshot,
   onMethodology,
+  onClear,
 }: {
   point?: Point;
   data?: Point;
   snapshot: Snapshot;
   onMethodology: () => void;
+  onClear: () => void;
 }) {
   if (!point)
     return (
@@ -99,6 +101,13 @@ function PointInspector({
   const path = outlookPath(point);
   return (
     <aside className="point-inspector" aria-label="Selected point" key={point.id}>
+      <button
+        className="inspector-close icon-button"
+        onClick={onClear}
+        aria-label="Close point details"
+      >
+        <X size={16} aria-hidden="true" />
+      </button>
       <div className="inspector-heading">
         <HorizonLabel point={point} />
         <h2>{isData ? 'The data anchor' : point.shortName}</h2>
@@ -600,7 +609,7 @@ export default function App() {
   const { snapshot, status, error, refreshing, history, historyId, load } = useSnapshot();
   const [tab, setTab] = useState<Tab>(initialTab);
   const [selectedId, setSelectedId] = useState(
-    () => new URLSearchParams(window.location.search).get('point') || 'hard-data',
+    () => new URLSearchParams(window.location.search).get('point') || 'all',
   );
   const [horizon, setHorizon] = useState<Horizon>(() => {
     const value = new URLSearchParams(window.location.search).get('horizon');
@@ -620,7 +629,7 @@ export default function App() {
     for (const [key, value, fallback] of [
       ['view', tab, 'map'],
       ['horizon', horizon, 'all'],
-      ['point', selectedId, 'hard-data'],
+      ['point', selectedId, 'all'],
     ]) {
       if (value === fallback) url.searchParams.delete(key);
       else url.searchParams.set(key, value);
@@ -655,9 +664,15 @@ export default function App() {
   const labelsVisible =
     showLabels ?? (visiblePoints.length <= 14 && !window.matchMedia('(max-width: 600px)').matches);
   const selected =
-    selectedId === 'all'
-      ? undefined
-      : visiblePoints.find((p) => p.id === selectedId) || visiblePoints[0];
+    selectedId === 'all' ? undefined : visiblePoints.find((p) => p.id === selectedId);
+  // A horizon or snapshot can remove the selected broker. Return to comparison
+  // instead of silently selecting the data anchor or showing no ranges.
+  useEffect(() => {
+    if (snapshot && selectedId !== 'all' && !selected) {
+      setSelectedId('all');
+      setRangeMode('all');
+    }
+  }, [snapshot, selectedId, selected]);
   const houseResults = filteredHouses.filter((p) =>
     `${p.institution} ${p.title}`.toLowerCase().includes(houseQuery.toLowerCase()),
   );
@@ -703,7 +718,7 @@ export default function App() {
     );
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = `giq-${snapshot.id}.json`;
+    anchor.download = `growth-inflation-quadrant-${snapshot.id}.json`;
     anchor.click();
     URL.revokeObjectURL(url);
   }
@@ -734,14 +749,25 @@ export default function App() {
       </a>
       <header className="site-header">
         <div className="header-inner">
-          <a className="brand" href="/" aria-label="G I Q home">
-            <span className="brand-mark" aria-hidden="true">
-              <i />
-              <i />
-              <i />
-              <i />
-            </span>
-            <strong>g / i / q</strong>
+          <a className="brand" href="/" aria-label="Growth Inflation Quadrant home">
+            <svg className="brand-mark" viewBox="0 0 40 40" aria-hidden="true">
+              <rect width="40" height="40" rx="8" fill="#edf3e9" />
+              <path d="M20 7v26M7 20h26" stroke="#9ab09d" strokeWidth="1" />
+              <ellipse
+                cx="27"
+                cy="13"
+                rx="8"
+                ry="5"
+                fill="none"
+                stroke="#315b47"
+                strokeOpacity=".45"
+              />
+              <circle cx="27" cy="13" r="3.5" fill="#315b47" />
+            </svg>
+            <strong>
+              <span>Growth Inflation</span>
+              <span>Quadrant</span>
+            </strong>
           </a>
           <nav aria-label="Research sections">
             {tabs.map((item) => (
@@ -758,20 +784,25 @@ export default function App() {
           <span className="header-region">United States</span>
         </div>
       </header>
-      <main id="main" tabIndex={-1}>
+      <main id="main" className={tab === 'map' ? 'map-main' : undefined} tabIndex={-1}>
         <div className="page-heading">
           <div>
             <h1>{titles[tab]}</h1>
             <p>
-              {tab === 'map'
-                ? `${houses.length} house views alongside US data & nowcasts.`
-                : tab === 'views'
-                  ? 'The source, horizon and interpretation behind every institution.'
-                  : tab === 'data'
-                    ? 'Published observations first. Supporting context one step deeper.'
-                    : tab === 'sources'
-                      ? 'Public commentary, official releases and collection coverage.'
-                      : 'Definitions, assumptions and the limits of the analysis.'}
+              {tab === 'map' ? (
+                <>
+                  {houses.length} house views
+                  <span className="heading-detail"> alongside US data & nowcasts.</span>
+                </>
+              ) : tab === 'views' ? (
+                'The source, horizon and interpretation behind every institution.'
+              ) : tab === 'data' ? (
+                'Published observations first. Supporting context one step deeper.'
+              ) : tab === 'sources' ? (
+                'Public commentary, official releases and collection coverage.'
+              ) : (
+                'Definitions, assumptions and the limits of the analysis.'
+              )}
             </p>
           </div>
           {snapshot && (
@@ -836,7 +867,10 @@ export default function App() {
           <>
             {tab === 'map' && (
               <>
-                <section className="map-workspace" aria-label="Quadrant research workspace">
+                <section
+                  className={`map-workspace${selected ? ' has-selection' : ''}`}
+                  aria-label="Quadrant research workspace"
+                >
                   <div className="chart-column">
                     <div className="chart-toolbar">
                       {horizonControl}
@@ -912,18 +946,6 @@ export default function App() {
                       showOutlooks={outlookMode !== 'none'}
                       outlookMode={outlookMode === 'all' ? 'all' : 'focused'}
                     />
-                    <div className="mobile-house-list" aria-label="Select a house view">
-                      {visiblePoints.map((point) => (
-                        <button
-                          key={point.id}
-                          aria-pressed={selected?.id === point.id}
-                          onClick={() => selectPoint(point.id)}
-                        >
-                          <span style={{ background: point.color }} />
-                          {point.shortName}
-                        </button>
-                      ))}
-                    </div>
                     <div className="map-caption">
                       <span>
                         Arrows: house’s own forward guidance. Square: other forecast endpoint.
@@ -947,8 +969,27 @@ export default function App() {
                     data={dataPoint}
                     snapshot={snapshot}
                     onMethodology={() => changeTab('methodology')}
+                    onClear={() => {
+                      document.querySelector<SVGGElement>('.scatter-point.selected-point')?.focus();
+                      selectPoint('all');
+                    }}
                   />
                 </section>
+                <div className="mobile-house-list" role="group" aria-label="Select a house view">
+                  <button aria-pressed={!selected} onClick={() => selectPoint('all')}>
+                    All brokers
+                  </button>
+                  {visiblePoints.map((point) => (
+                    <button
+                      key={point.id}
+                      aria-pressed={selected?.id === point.id}
+                      onClick={() => selectPoint(point.id)}
+                    >
+                      <span style={{ background: point.color }} />
+                      {point.shortName}
+                    </button>
+                  ))}
+                </div>
                 <div className="map-bottom">
                   <button className="text-button" onClick={() => changeTab('views')}>
                     Compare all {houses.length} house views{' '}

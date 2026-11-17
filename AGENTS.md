@@ -12,7 +12,7 @@ The user's latest explicit instructions take precedence. This file records accep
 4. Use `constrainedRange` in `shared/quadrants.ts`. Preserve the ellipse center and raw radii; the exact union of allowed quadrants must exclude every unsupported quadrant. Marginal bounds are not a replacement ellipse or a permitted rectangle.
 5. Ranges are **interpretations, not statistical confidence intervals or quadrant probabilities**. Hard-data sensitivity is a separate assumption.
 6. An arrow requires the house's own verified, comparable, two-axis forward guidance. Never originate it at the hard-data anchor, infer a missing axis as zero movement, or turn a conditional risk into a baseline trajectory.
-7. Clicking a selected broker again deselects it and shows all visible brokers' ranges. Selecting a broker focuses its range. Preserve mouse, keyboard, touch and `?point=all` reload behavior.
+7. The default map selects no point and shows all visible brokers' ranges. Clicking a selected broker again returns to this comparison state; selecting a broker focuses its range. Preserve mouse, keyboard, touch and `?point=all` reload behavior.
 8. Fit chart domains to visible clipped ranges, the full data range and valid guidance endpoints. Never move research points to make the chart attractive. Visibility toggles must not change the axis domain.
 9. Routine research updates write new D1 snapshots; they do **not** need a frontend deployment. Frontend, Worker, local JSON and production D1 are distinct artifacts.
 10. Keep snapshot IDs immutable, source dates honest, failures visible, production secrets private and fictional demo data out of production.

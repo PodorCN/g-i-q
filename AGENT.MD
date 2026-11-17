@@ -1,6 +1,6 @@
 # g-i-q maintenance handbook
 
-Last reviewed: 2026-11-13. Read this together with [AGENTS.md](AGENTS.md).
+Last reviewed: 2026-11-17. Read this together with [AGENTS.md](AGENTS.md).
 
 This guide is deliberately explicit. A technically working chart can still misrepresent a report. Preserve the meaning of the research, not just the appearance of the page. The user's latest instructions can change the contract; when they do, update this guide, implementation, tests and methodology together where relevant.
 
@@ -154,6 +154,8 @@ Partial or qualitative direction remains sourced text in `outlookDirection`, wit
 
 ## 7. Frontend interaction and design contract
 
+- Open the map with no point selected and **all visible brokers' ranges shown**. An explicit `?point=<id>` still focuses that point. If a horizon or snapshot removes the selection, return to comparison rather than silently choosing hard data.
+- Use the full **Growth Inflation Quadrant** wordmark and browser title; do not restore GIQ initials in the interface. The map fills the viewport without document scrolling. Evidence and secondary tabs scroll inside their own areas. On narrow screens the inspector overlays the plot with an accessible close control, while the horizontal house buttons remain available for selection/deselection. The chart key expands on demand on phones and short landscape screens.
 - Click a broker: select it, show its evidence, focus its range. Click the selected broker again: **no selected point**, all visible brokers' ranges. Selecting another broker restores its focused range.
 - Apply the same behavior to keyboard Enter/Space and mobile institution buttons. The picker offers **All brokers**.
 - `?point=all` is an explicit deselected state and survives reload. Do not let the fallback to `visiblePoints[0]` silently select hard data in this state.
