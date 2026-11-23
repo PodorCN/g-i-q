@@ -1,0 +1,1008 @@
+{
+ "schema_version": 1,
+ "as_of": "2026-11-23",
+ "generated_at": "2026-11-23T15:04:39+00:00",
+ "params": {
+  "trend_growth": 2.0,
+  "inflation_target": 2.0,
+  "stale_after_days": 60,
+  "stale_weight": 0.35,
+  "model_weight_share": 0.4,
+  "mc_draws": 40000,
+  "min_sigma": 0.25
+ },
+ "quadrants": {
+  "goldilocks": "Goldilocks (growth above trend, inflation below target)",
+  "overheating": "Overheating / Reflation (growth above trend, inflation above target)",
+  "stagflation": "Stagflation (growth below trend, inflation above target)",
+  "slowdown": "Disinflationary slowdown (growth below trend, inflation below target)"
+ },
+ "model": {
+  "indicators": [
+   {
+    "id": "gdpnow",
+    "axis": "growth",
+    "label": "Atlanta Fed GDPNow (current qtr, % saar)",
+    "unit": "%",
+    "value": 3.209,
+    "gap": 1.209,
+    "weight": 1.5,
+    "observation_date": "2026-10-01",
+    "series": [
+     "GDPNOW"
+    ],
+    "note": "Nowcast of current-quarter real GDP; gap = value - trend.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "gdp",
+    "axis": "growth",
+    "label": "Real GDP, last quarter (% saar)",
+    "unit": "%",
+    "value": 3.4,
+    "gap": 1.4,
+    "weight": 1.0,
+    "observation_date": "2026-07-01",
+    "series": [
+     "A191RL1Q225SBEA"
+    ],
+    "note": "Latest BEA print; gap = value - trend.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "cfnai",
+    "axis": "growth",
+    "label": "Chicago Fed National Activity Index, 3m avg",
+    "unit": "idx",
+    "value": -0.047,
+    "gap": -0.07,
+    "weight": 1.0,
+    "observation_date": "2026-10-01",
+    "series": [
+     "CFNAI"
+    ],
+    "note": "CFNAI = 0 means trend growth; heuristic: 1 index pt ~ 1.5pp of growth.",
+    "supports": "neutral"
+   },
+   {
+    "id": "payrolls",
+    "axis": "growth",
+    "label": "Nonfarm payrolls, 3m avg change (k)",
+    "unit": "k",
+    "value": 137.0,
+    "gap": 0.95,
+    "weight": 1.0,
+    "observation_date": "2026-10-01",
+    "series": [
+     "PAYEMS"
+    ],
+    "note": "Gap vs ~80k/month breakeven (low immigration era); 60k ~ 1pp. Heuristic.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "unemp",
+    "axis": "growth",
+    "label": "Unemployment rate, 6m change in 3m avg (pp)",
+    "unit": "pp",
+    "value": -0.2,
+    "gap": 0.8,
+    "weight": 1.0,
+    "observation_date": "2026-10-01",
+    "series": [
+     "UNRATE"
+    ],
+    "note": "Okun's law: +0.5pp/yr unemployment ~ -1pp growth, so 6m change x -4.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "indpro",
+    "axis": "growth",
+    "label": "Industrial production, 6m annualized (%)",
+    "unit": "%",
+    "value": 1.602,
+    "gap": 0.301,
+    "weight": 0.5,
+    "observation_date": "2026-10-01",
+    "series": [
+     "INDPRO"
+    ],
+    "note": "IP trend ~1%/yr and ~2x as volatile as GDP, so scaled by 0.5.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "claims",
+    "axis": "growth",
+    "label": "Initial claims, 4wk avg vs 52wk avg (%)",
+    "unit": "%",
+    "value": -5.426,
+    "gap": 0.543,
+    "weight": 0.5,
+    "observation_date": "2026-11-14",
+    "series": [
+     "ICSA"
+    ],
+    "note": "Claims 10% above their 1y average ~ -1pp growth. Heuristic.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "retail",
+    "axis": "growth",
+    "label": "Real retail sales, 3m annualized (%)",
+    "unit": "%",
+    "value": 4.692,
+    "gap": 1.346,
+    "weight": 0.5,
+    "observation_date": "2026-10-01",
+    "series": [
+     "RSAFS",
+     "CPIAUCSL"
+    ],
+    "note": "Nominal retail sales deflated by headline CPI; volatile, scaled by 0.5.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "nfci",
+    "axis": "growth",
+    "label": "Chicago Fed NFCI (financial conditions)",
+    "unit": "idx",
+    "value": -0.473,
+    "gap": 0.473,
+    "weight": 0.5,
+    "observation_date": "2026-11-13",
+    "series": [
+     "NFCI"
+    ],
+    "note": "Leading: negative NFCI = looser than average = supports growth.",
+    "supports": "above_trend"
+   },
+   {
+    "id": "core_pce_yoy",
+    "axis": "inflation",
+    "label": "Core PCE, y/y (%)",
+    "unit": "%",
+    "value": 3.121,
+    "gap": 1.121,
+    "weight": 1.5,
+    "observation_date": "2026-09-01",
+    "series": [
+     "PCEPILFE"
+    ],
+    "note": "The Fed's target measure; gap = value - 2%.",
+    "supports": "above_target"
+   },
+   {
+    "id": "core_pce_3m",
+    "axis": "inflation",
+    "label": "Core PCE, 3m annualized (%)",
+    "unit": "%",
+    "value": 2.903,
+    "gap": 0.903,
+    "weight": 1.0,
+    "observation_date": "2026-09-01",
+    "series": [
+     "PCEPILFE"
+    ],
+    "note": "Momentum of the target measure.",
+    "supports": "above_target"
+   },
+   {
+    "id": "core_cpi_3m",
+    "axis": "inflation",
+    "label": "Core CPI, 3m annualized (%)",
+    "unit": "%",
+    "value": 3.746,
+    "gap": 1.346,
+    "weight": 1.0,
+    "observation_date": "2026-10-01",
+    "series": [
+     "CPILFESL"
+    ],
+    "note": "CPI runs ~0.4pp above PCE, so gap = value - 2.4%.",
+    "supports": "above_target"
+   },
+   {
+    "id": "cpi_6m",
+    "axis": "inflation",
+    "label": "Headline CPI, 6m annualized (%)",
+    "unit": "%",
+    "value": 3.073,
+    "gap": 0.673,
+    "weight": 0.5,
+    "observation_date": "2026-10-01",
+    "series": [
+     "CPIAUCSL"
+    ],
+    "note": "Includes energy (volatile, so 6m window and half weight); gap = value - 2.4%.",
+    "supports": "above_target"
+   },
+   {
+    "id": "be10",
+    "axis": "inflation",
+    "label": "10y breakeven inflation (%)",
+    "unit": "%",
+    "value": 2.182,
+    "gap": -0.118,
+    "weight": 0.5,
+    "observation_date": "2026-11-20",
+    "series": [
+     "T10YIE"
+    ],
+    "note": "Market-implied CPI inflation; ~0.3pp CPI/PCE + risk premium wedge.",
+    "supports": "neutral"
+   },
+   {
+    "id": "fwd5y5y",
+    "axis": "inflation",
+    "label": "5y5y forward breakeven (%)",
+    "unit": "%",
+    "value": 2.136,
+    "gap": -0.164,
+    "weight": 0.5,
+    "observation_date": "2026-11-20",
+    "series": [
+     "T5YIFR"
+    ],
+    "note": "Long-run expectations anchor.",
+    "supports": "neutral"
+   },
+   {
+    "id": "umich",
+    "axis": "inflation",
+    "label": "UMich 1y inflation expectations (%)",
+    "unit": "%",
+    "value": 4.7,
+    "gap": 0.85,
+    "weight": 0.5,
+    "observation_date": "2026-10-01",
+    "series": [
+     "MICH"
+    ],
+    "note": "Survey runs ~1pp above realized PCE on average; half weight on the gap.",
+    "supports": "above_target"
+   }
+  ],
+  "growth": {
+   "mean": 0.83,
+   "sd": 0.543
+  },
+  "inflation": {
+   "mean": 0.827,
+   "sd": 0.556
+  },
+  "point": {
+   "id": "data_model",
+   "name": "Hard-data model (FRED)",
+   "short": "Data",
+   "x": 0.83,
+   "sx": 0.543,
+   "y": 0.827,
+   "sy": 0.556,
+   "dx": 0.23,
+   "dy": 0.19,
+   "quadrant": "overheating"
+  },
+  "history": [
+   {
+    "as_of": "2025-05-31",
+    "x": 0.029,
+    "y": 0.553,
+    "sx": 0.923,
+    "sy": 0.617
+   },
+   {
+    "as_of": "2025-06-30",
+    "x": -0.202,
+    "y": 0.321,
+    "sx": 0.962,
+    "sy": 0.608
+   },
+   {
+    "as_of": "2025-07-31",
+    "x": 0.27,
+    "y": 0.542,
+    "sx": 1.286,
+    "sy": 0.52
+   },
+   {
+    "as_of": "2025-08-31",
+    "x": 0.366,
+    "y": 0.481,
+    "sx": 1.157,
+    "sy": 0.472
+   },
+   {
+    "as_of": "2025-09-30",
+    "x": 0.385,
+    "y": 0.623,
+    "sx": 1.214,
+    "sy": 0.48
+   },
+   {
+    "as_of": "2025-10-31",
+    "x": 0.448,
+    "y": 0.613,
+    "sx": 1.259,
+    "sy": 0.438
+   },
+   {
+    "as_of": "2025-11-30",
+    "x": 0.107,
+    "y": 0.565,
+    "sx": 1.606,
+    "sy": 0.437
+   },
+   {
+    "as_of": "2025-12-31",
+    "x": 0.251,
+    "y": 0.436,
+    "sx": 1.431,
+    "sy": 0.375
+   },
+   {
+    "as_of": "2026-01-31",
+    "x": -0.826,
+    "y": 0.518,
+    "sx": 0.853,
+    "sy": 0.442
+   },
+   {
+    "as_of": "2026-02-28",
+    "x": -0.739,
+    "y": 0.699,
+    "sx": 0.77,
+    "sy": 0.592
+   },
+   {
+    "as_of": "2026-03-31",
+    "x": -0.703,
+    "y": 0.888,
+    "sx": 0.82,
+    "sy": 0.79
+   },
+   {
+    "as_of": "2026-04-30",
+    "x": -0.34,
+    "y": 1.018,
+    "sx": 0.705,
+    "sy": 0.751
+   },
+   {
+    "as_of": "2026-05-31",
+    "x": 0.24,
+    "y": 1.055,
+    "sx": 0.669,
+    "sy": 0.75
+   },
+   {
+    "as_of": "2026-06-30",
+    "x": 0.384,
+    "y": 1.06,
+    "sx": 0.702,
+    "sy": 0.873
+   },
+   {
+    "as_of": "2026-07-31",
+    "x": 0.598,
+    "y": 0.632,
+    "sx": 0.561,
+    "sy": 0.635
+   },
+   {
+    "as_of": "2026-08-31",
+    "x": 0.489,
+    "y": 0.378,
+    "sx": 0.754,
+    "sy": 0.728
+   },
+   {
+    "as_of": "2026-09-30",
+    "x": 0.59,
+    "y": 0.469,
+    "sx": 0.604,
+    "sy": 0.706
+   },
+   {
+    "as_of": "2026-10-31",
+    "x": 0.754,
+    "y": 0.845,
+    "sx": 0.606,
+    "sy": 0.487
+   }
+  ],
+  "caveat": "History uses current-vintage FRED data with approximate publication lags, not true real-time vintages."
+ },
+ "views": [
+  {
+   "id": "gsam",
+   "name": "Goldman Sachs Asset Management",
+   "short": "GSAM",
+   "type": "buy_side",
+   "published": "2026-11-05",
+   "title": "US Market Pulse — November 2026",
+   "url": "https://am.gs.com/en-us/advisors/insights/article/market-pulse",
+   "x": 0.5,
+   "sx": 0.4,
+   "y": 0.7,
+   "sy": 0.6,
+   "dx": -0.1,
+   "dy": -0.5,
+   "quadrant_call": "overheating",
+   "summary": "Resilient growth (~2.5% in 2027) backed by balance sheets, AI capex and fiscal cushions; expects a December Fed hike, then data-dependent — a hold at 4.0–4.25% if energy/tariff impulses roll off.",
+   "key_points": [
+    "2027 US growth near 2.5%",
+    "Fed hike expected in December; March data-dependent",
+    "Inflation seen normalizing as energy and tariff impulses fade",
+    "Earnings growth slows in 2027 but still supports equities"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "US real GDP",
+     "value": "~2.5%",
+     "period": "2027"
+    },
+    {
+     "metric": "Fed funds (hold scenario)",
+     "value": "4.00–4.25%",
+     "period": "after Dec-2026 hike"
+    }
+   ],
+   "quotes": [
+    "We expect 2027 growth near 2.5% in the US, and above 1% in Europe and Japan.",
+    "We expect them to raise rates in December, but the move in March will be highly dependent on the data."
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "Growth 2.5% - 2.0 trend = +0.5 (explicit). No core PCE number; 'normalizing' from ~3.1% core PCE implies ~2.7% average over 12m -> +0.7 with qualitative sd 0.6.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 18,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "blackrock",
+   "name": "BlackRock Investment Institute",
+   "short": "BLK",
+   "type": "buy_side",
+   "published": "2026-11-09",
+   "title": "Midterms and AI in focus at 2027 Forum (Weekly commentary)",
+   "url": "https://www.blackrock.com/us/individual/insights/blackrock-investment-institute/weekly-commentary",
+   "x": 0.3,
+   "sx": 0.9,
+   "y": 1.0,
+   "sy": 0.7,
+   "dx": -0.4,
+   "dy": 0.0,
+   "quadrant_call": "overheating",
+   "summary": "Persistent inflation pressures keep Fed-hike expectations alive, but BII thinks further hikes are over-priced (overweight short Treasuries). Key growth risk: an AI-capex slowdown in 2027. Supply-driven regime 'largely priced in'.",
+   "key_points": [
+    "Persistent inflation pressures; inflation settles above pre-pandemic levels",
+    "Market pricing of further Fed hikes looks excessive",
+    "A material AI-spending slowdown in 2027 is the main downside risk",
+    "Downgraded US equities to neutral in October"
+   ],
+   "forecast_numbers": [],
+   "quotes": [
+    "We expect persistent inflation pressures to keep market expectations for further Fed rate hikes alive.",
+    "The supply-driven regime we've described for five years is largely priced in, making the outlook less directional."
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "Qualitative only. Inflation 'persistent/sticky above target' = +1.0. Growth resilient near term but stresses 2027 slowdown risk -> +0.3 with sd 0.8+0.2 for tail emphasis.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 14,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "pimco",
+   "name": "PIMCO",
+   "short": "PIMCO",
+   "type": "buy_side",
+   "published": "2026-10-06",
+   "title": "Growth Holds, Risks Widen (Cyclical Outlook)",
+   "url": "https://www.pimco.com/us/en/insights/growth-holds-risks-widen",
+   "x": 0.4,
+   "sx": 0.9,
+   "y": 0.6,
+   "sy": 0.8,
+   "dx": 0.0,
+   "dy": -0.5,
+   "quadrant_call": "overheating",
+   "summary": "Benign base case: resilient global growth over 6–12 months and inflation moderating as the energy shock fades, with only modest spillover to core and wages. Central banks unlikely to deliver all priced hikes. Wide tails: AI slowdown, worse energy shock, tighter financial conditions.",
+   "key_points": [
+    "Growth resilient over the cyclical horizon",
+    "Inflation moderates as energy shock fades",
+    "Fed/others won't need to fully deliver priced hikes",
+    "Neutral real rate may be ~1.5%"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Neutral real rate (r*)",
+     "value": "~1.5%",
+     "period": "current estimate"
+    }
+   ],
+   "quotes": [
+    "we expect global growth to remain resilient over our six- to 12-month cyclical horizon",
+    "inflation moderates as the energy price shock fades"
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "Qualitative. Resilient growth -> +0.4; 'moderating toward target' -> +0.6. sd widened (+0.2) because the piece stresses fat tails.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 48,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "vanguard",
+   "name": "Vanguard",
+   "short": "VG",
+   "type": "buy_side",
+   "published": "2026-11-09",
+   "title": "Vanguard economic and market outlook — United States",
+   "url": "https://externalcrewnet.vanguard.com/content/corporatesite/us/en/corp/vemo/vemo-united-states.html",
+   "x": 0.6,
+   "sx": 0.6,
+   "y": 0.8,
+   "sy": 0.35,
+   "dx": 0.2,
+   "dy": -0.6,
+   "quadrant_call": "overheating",
+   "summary": "Raised year-end 2026 core PCE forecast to 3.2%, expects tariff effects to fade so core PCE moves toward 2.5% by April 2027; adds one more Fed hike in early 2027. Ex-supply factors, underlying inflation is near 2%.",
+   "key_points": [
+    "Year-end 2026 core PCE forecast raised to 3.2%",
+    "Core PCE toward 2.5% by April 2027",
+    "One more Fed hike anticipated in early 2027",
+    "Overshoot mostly tariffs + energy"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Core PCE",
+     "value": "3.2%",
+     "period": "year-end 2026"
+    },
+    {
+     "metric": "Core PCE",
+     "value": "~2.5%",
+     "period": "April 2027"
+    },
+    {
+     "metric": "US GDP (unconfirmed date)",
+     "value": "2.3% / 3.0%",
+     "period": "2026 / 2027"
+    }
+   ],
+   "quotes": [
+    "prompting us to recently raise our year-end 2026 core inflation forecast to 3.2%",
+    "Excluding those supply factors, underlying inflation is much closer to the Fed's 2% target."
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "Core PCE path 3.2% -> 2.5% averages ~2.8% over 12m -> +0.8 (explicit, sd 0.35). GDP 2.3%/3.0% figure could not be dated -> +0.6 with sd 0.6.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 14,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "usbank",
+   "name": "U.S. Bank",
+   "short": "USB",
+   "type": "sell_side",
+   "published": "2026-11-02",
+   "title": "Monthly Economic Outlook — November 2026",
+   "url": "https://www.usbank.com/corporate-and-commercial-banking/insights/economy/outlook/monthly.html",
+   "x": 0.15,
+   "sx": 0.5,
+   "y": 0.85,
+   "sy": 0.35,
+   "dx": -0.4,
+   "dy": -0.5,
+   "quadrant_call": "overheating",
+   "summary": "Real GDP 2.5% Q4/Q4 in 2026 slowing to 2.0% in 2027; core PCE 3.2% y/y in Q4 2026 easing to 2.5% by end-2027; two more 25bp hikes by early 2027 to 4.25–4.50%; 25% recession probability.",
+   "key_points": [
+    "GDP 2.5% (2026 Q4/Q4) -> 2.0% (2027)",
+    "Core PCE 3.2% Q4-2026 -> 2.5% end-2027",
+    "Two more Fed hikes by early 2027 (4.25–4.50%)",
+    "Unemployment 4.2% in 2026 and 2027",
+    "Recession probability 25% (12m)"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Real GDP",
+     "value": "2.5% / 2.0%",
+     "period": "2026 / 2027 Q4/Q4"
+    },
+    {
+     "metric": "Core PCE",
+     "value": "3.2%",
+     "period": "Q4 2026"
+    },
+    {
+     "metric": "Core PCE",
+     "value": "2.5%",
+     "period": "end-2027"
+    },
+    {
+     "metric": "Fed funds",
+     "value": "4.25–4.50%",
+     "period": "early 2027"
+    },
+    {
+     "metric": "Recession probability",
+     "value": "25%",
+     "period": "next 12m"
+    }
+   ],
+   "quotes": [
+    "We expect core personal consumption expenditures (PCE) inflation to average 3.2% year-over-year in Q4 2026",
+    "We maintain a 25% probability of recession over the next 12 months."
+   ],
+   "confidence": "high",
+   "scoring_rationale": "Next-4-quarter growth ~2.15% -> +0.15; core PCE averaging ~2.85% over the horizon -> +0.85. Point forecasts (sd 0.3) widened on growth for the 25% recession tail.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 21,
+   "stale": false,
+   "weight": 1.0,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "wells",
+   "name": "Wells Fargo",
+   "short": "WFC",
+   "type": "sell_side",
+   "published": "2026-10-14",
+   "title": "2026 Midterms: economic implications (approx. date)",
+   "url": "https://www.wellsfargoadvisors.com/research-analysis/reports/policy/2026-midterms.htm",
+   "x": 0.3,
+   "sx": 0.6,
+   "y": 0.9,
+   "sy": 0.4,
+   "dx": 0.0,
+   "dy": -0.4,
+   "quadrant_call": "overheating",
+   "summary": "Headline CPI ends 2026 at 3.6% and slows only to 3.0% by end-2027; AI investment, energy and consumer resilience drive the outlook. Mid-year WFII targets: GDP 2.2% (2026), 2.4% (2027).",
+   "key_points": [
+    "CPI 3.6% YE-2026 -> 3.0% YE-2027",
+    "Inflation slows only modestly",
+    "Growth near 2.2–2.4%"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "CPI y/y",
+     "value": "3.6% / 3.0%",
+     "period": "YE-2026 / YE-2027"
+    },
+    {
+     "metric": "GDP (WFII, June)",
+     "value": "2.2% / 2.4%",
+     "period": "2026 / 2027"
+    }
+   ],
+   "quotes": [
+    "We expect 12-month topline Consumer Price Index inflation to end 2027 at 3.0%, slowing only modestly from our year-end 2026 forecast of 3.6%."
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "CPI path minus 0.4 CPI/PCE wedge -> ~2.9% core-PCE-equivalent average -> +0.9. Growth from June WFII targets (older) -> +0.3 with sd 0.6. Publication date approximate.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 40,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "ms",
+   "name": "Morgan Stanley",
+   "short": "MS",
+   "type": "sell_side",
+   "published": "2026-09-25",
+   "title": "Fed hike outlook raised to 4.25–4.5% terminal (via secondary coverage)",
+   "url": "https://www.morganstanley.com/insights/podcasts/thoughts-on-the-market/central-banks-rate-hikes-fed-ecb-boj-inflation-outlook-seth-carpenter",
+   "x": 0.35,
+   "sx": 0.6,
+   "y": 1.1,
+   "sy": 0.6,
+   "dx": 0.1,
+   "dy": -0.2,
+   "quadrant_call": "overheating",
+   "summary": "After the September hike, MS expects two more (December, March) to a 4.25–4.5% terminal rate as energy-driven inflation persists; Gapen: economy can absorb 75–100bp of hikes. Mid-year GDP path 2.25% (2026), 2.5% (2027).",
+   "key_points": [
+    "Two more Fed hikes (Dec, Mar) -> 4.25–4.5%",
+    "Inflation decline slower than Fed wants",
+    "Economy can handle 75–100bp total hikes",
+    "GDP 2.25% (2026) / 2.5% (2027) from May outlook"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Fed terminal",
+     "value": "4.25–4.5%",
+     "period": "Mar-2027"
+    },
+    {
+     "metric": "Real GDP",
+     "value": "2.25% / 2.5%",
+     "period": "2026 / 2027"
+    }
+   ],
+   "quotes": [
+    "economy can handle 75-100 bps in total hikes"
+   ],
+   "confidence": "low",
+   "scoring_rationale": "Growth from May outlook (2.25-2.5%) -> +0.35. Inflation 'persistent, more hikes needed' -> +1.1. Low confidence: latest view partly from secondary coverage.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 59,
+   "stale": false,
+   "weight": 0.6,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "fed_board",
+   "name": "Federal Reserve (speeches / SEP)",
+   "short": "Fed",
+   "type": "official",
+   "published": "2026-11-10",
+   "title": "Bowman: The US economy and considerations for monetary policy",
+   "url": "https://www.bis.org/speeches/20261112-us-economy-and-considerations-monetary-policy",
+   "x": 0.5,
+   "sx": 0.6,
+   "y": 0.6,
+   "sy": 0.5,
+   "dx": -0.2,
+   "dy": -0.7,
+   "quadrant_call": "overheating",
+   "summary": "Vice Chair for Supervision Bowman: Q3 GDP likely >3% after 2.4% in H1, driven by AI capex and consumers; core PCE ~3.3% in October; labor market stable but not tight (~80k jobs/month, 4.1% unemployment). Expects core PCE to move closer to 2% next year; further tightening must be weighed against costs.",
+   "key_points": [
+    "Q3 GDP >3%",
+    "Core PCE ~3.3% y/y (Oct est.)",
+    "Labor market stable, not tight",
+    "Core PCE closer to 2% in 2027",
+    "Policy not on a preset course"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Core PCE (est.)",
+     "value": "3.3%",
+     "period": "Oct 2026"
+    },
+    {
+     "metric": "Unemployment",
+     "value": "4.1%",
+     "period": "Oct 2026"
+    },
+    {
+     "metric": "Payrolls avg",
+     "value": "~80k/month",
+     "period": "through Oct 2026"
+    }
+   ],
+   "quotes": [
+    "my forecast is for core PCE inflation to move closer to 2 percent next year.",
+    "our progress on lowering inflation has disappointed."
+   ],
+   "confidence": "medium",
+   "scoring_rationale": "One FOMC voter, not the Committee. Strong current growth but no forward number -> +0.5. Core PCE 3.3% falling 'closer to 2%' -> ~2.6% average -> +0.6.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 13,
+   "stale": false,
+   "weight": 0.8,
+   "quadrant": "overheating",
+   "carried_forward": true
+  },
+  {
+   "id": "jpm",
+   "name": "J.P. Morgan",
+   "short": "JPM",
+   "type": "sell_side",
+   "published": "2026-07-09",
+   "title": "Economic trends: mid-year update (Commercial Banking)",
+   "url": "https://www.jpmorgan.com/commercial-banking/insights/economic-trends",
+   "x": -0.25,
+   "sx": 0.5,
+   "y": 1.4,
+   "sy": 0.4,
+   "dx": 0.0,
+   "dy": -0.3,
+   "quadrant_call": "stagflation",
+   "summary": "July view: 2026 GDP 1.5–2.0%; year-end core PCE raised to 3.4% (from 2.9%) on the Strait of Hormuz energy/fertilizer shock; Fed on hold at 3.50–3.75%. Superseded by events (Fed hiked in September).",
+   "key_points": [
+    "GDP 1.5–2.0% (2026)",
+    "Core PCE 3.4% YE-2026",
+    "Fed hold at 3.50–3.75% (now outdated)"
+   ],
+   "forecast_numbers": [
+    {
+     "metric": "Real GDP",
+     "value": "1.5–2.0%",
+     "period": "2026"
+    },
+    {
+     "metric": "Core PCE",
+     "value": "3.4%",
+     "period": "YE-2026"
+    }
+   ],
+   "quotes": [
+    "Our outlook for core PCE at year end is now 3.4%, up from 2.9% at the beginning of the year."
+   ],
+   "confidence": "low",
+   "scoring_rationale": "Stale (July). Midpoint 1.75% -> -0.25; core PCE 3.4% -> +1.4. Kept to show the drift of views; down-weighted automatically.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 137,
+   "stale": true,
+   "weight": 0.21,
+   "quadrant": "stagflation",
+   "carried_forward": true
+  },
+  {
+   "id": "bofa",
+   "name": "BofA Global Research",
+   "short": "BofA",
+   "type": "sell_side",
+   "published": "2026-06-02",
+   "title": "BofA sees rising odds of US reflation mini-cycle into 2027–28 (secondary coverage)",
+   "url": "https://www.roic.ai/news/bofa-sees-rising-odds-of-us-reflation-mini-cycle-lasting-into-2027-2028-06-02-2026",
+   "x": 0.6,
+   "sx": 0.8,
+   "y": 1.2,
+   "sy": 0.8,
+   "dx": 0.2,
+   "dy": 0.2,
+   "quadrant_call": "overheating",
+   "summary": "June 2026: rising odds of a US reflation mini-cycle lasting into 2027–28; May: no Fed cuts before H2-2027 given high inflation and positive job growth. 2027 Year Ahead not yet published.",
+   "key_points": [
+    "Reflation mini-cycle into 2027–28",
+    "No Fed cuts before H2-2027"
+   ],
+   "forecast_numbers": [],
+   "quotes": [],
+   "confidence": "low",
+   "scoring_rationale": "Stale, qualitative, secondary source. 'Reflation' -> above-trend growth (+0.6) and above-target inflation (+1.2), wide sd.",
+   "found_recent": true,
+   "method": "manual:claude-research-seed",
+   "age_days": 174,
+   "stale": true,
+   "weight": 0.21,
+   "quadrant": "overheating",
+   "carried_forward": true
+  }
+ ],
+ "blend": {
+  "houses": {
+   "x": 0.369,
+   "sx": 0.681,
+   "y": 0.841,
+   "sy": 0.592,
+   "probabilities": {
+    "goldilocks": 0.052,
+    "overheating": 0.666,
+    "stagflation": 0.264,
+    "slowdown": 0.018
+   }
+  },
+  "model": {
+   "x": 0.83,
+   "sx": 0.543,
+   "y": 0.827,
+   "sy": 0.556,
+   "probabilities": {
+    "goldilocks": 0.062,
+    "overheating": 0.875,
+    "stagflation": 0.059,
+    "slowdown": 0.005
+   }
+  },
+  "blended": {
+   "x": 0.553,
+   "sx": 0.669,
+   "y": 0.835,
+   "sy": 0.578,
+   "probabilities": {
+    "goldilocks": 0.055,
+    "overheating": 0.75,
+    "stagflation": 0.182,
+    "slowdown": 0.013
+   }
+  },
+  "model_weight_share": 0.4
+ },
+ "sources": [
+  {
+   "id": "gsam",
+   "name": "Goldman Sachs Asset Management",
+   "short": "GSAM",
+   "type": "buy_side"
+  },
+  {
+   "id": "gs_research",
+   "name": "Goldman Sachs Research",
+   "short": "GS",
+   "type": "sell_side"
+  },
+  {
+   "id": "jpm",
+   "name": "J.P. Morgan",
+   "short": "JPM",
+   "type": "sell_side"
+  },
+  {
+   "id": "ms",
+   "name": "Morgan Stanley",
+   "short": "MS",
+   "type": "sell_side"
+  },
+  {
+   "id": "bofa",
+   "name": "BofA Global Research",
+   "short": "BofA",
+   "type": "sell_side"
+  },
+  {
+   "id": "wells",
+   "name": "Wells Fargo",
+   "short": "WFC",
+   "type": "sell_side"
+  },
+  {
+   "id": "usbank",
+   "name": "U.S. Bank",
+   "short": "USB",
+   "type": "sell_side"
+  },
+  {
+   "id": "blackrock",
+   "name": "BlackRock Investment Institute",
+   "short": "BLK",
+   "type": "buy_side"
+  },
+  {
+   "id": "pimco",
+   "name": "PIMCO",
+   "short": "PIMCO",
+   "type": "buy_side"
+  },
+  {
+   "id": "vanguard",
+   "name": "Vanguard",
+   "short": "VG",
+   "type": "buy_side"
+  },
+  {
+   "id": "schwab",
+   "name": "Charles Schwab",
+   "short": "SCHW",
+   "type": "buy_side"
+  },
+  {
+   "id": "fed_board",
+   "name": "Federal Reserve (speeches / SEP)",
+   "short": "Fed",
+   "type": "official"
+  }
+ ],
+ "synthesis": {
+  "headline": "Overheating / Reflation is the most likely regime (75% blended probability)",
+  "regime_call": "overheating",
+  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.83pp (±0.54), inflation gap +0.83pp (±0.56). 8 of 9 growth indicators are above trend and 0 below; 5 of 7 inflation indicators are above target and 0 below.",
+  "consensus_vs_data": "The house consensus sits at growth +0.37pp / inflation +0.84pp versus the data model at +0.83 / +0.83.",
+  "divergences": [],
+  "watch_list": [],
+  "method": "template"
+ }
+}
