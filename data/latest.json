@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "as_of": "2026-11-24",
- "generated_at": "2026-11-24T00:50:04+00:00",
+ "as_of": "2026-11-25",
+ "generated_at": "2026-11-25T15:05:01+00:00",
  "params": {
   "trend_growth": 2.0,
   "inflation_target": 2.0,
@@ -39,8 +39,8 @@
     "axis": "growth",
     "label": "Real GDP, last quarter (% saar)",
     "unit": "%",
-    "value": 3.4,
-    "gap": 1.4,
+    "value": 4.3,
+    "gap": 2.3,
     "weight": 1.0,
     "observation_date": "2026-07-01",
     "series": [
@@ -99,25 +99,25 @@
     "axis": "growth",
     "label": "Industrial production, 6m annualized (%)",
     "unit": "%",
-    "value": 1.602,
-    "gap": 0.301,
+    "value": 1.19,
+    "gap": 0.095,
     "weight": 0.5,
     "observation_date": "2026-10-01",
     "series": [
      "INDPRO"
     ],
     "note": "IP trend ~1%/yr and ~2x as volatile as GDP, so scaled by 0.5.",
-    "supports": "above_trend"
+    "supports": "neutral"
    },
    {
     "id": "claims",
     "axis": "growth",
     "label": "Initial claims, 4wk avg vs 52wk avg (%)",
     "unit": "%",
-    "value": -5.426,
-    "gap": 0.543,
+    "value": -6.004,
+    "gap": 0.6,
     "weight": 0.5,
-    "observation_date": "2026-11-14",
+    "observation_date": "2026-11-21",
     "series": [
      "ICSA"
     ],
@@ -145,10 +145,10 @@
     "axis": "growth",
     "label": "Chicago Fed NFCI (financial conditions)",
     "unit": "idx",
-    "value": -0.473,
-    "gap": 0.473,
+    "value": -0.452,
+    "gap": 0.452,
     "weight": 0.5,
-    "observation_date": "2026-11-13",
+    "observation_date": "2026-11-20",
     "series": [
      "NFCI"
     ],
@@ -160,10 +160,10 @@
     "axis": "inflation",
     "label": "Core PCE, y/y (%)",
     "unit": "%",
-    "value": 3.121,
-    "gap": 1.121,
+    "value": 3.261,
+    "gap": 1.261,
     "weight": 1.5,
-    "observation_date": "2026-09-01",
+    "observation_date": "2026-10-01",
     "series": [
      "PCEPILFE"
     ],
@@ -175,10 +175,10 @@
     "axis": "inflation",
     "label": "Core PCE, 3m annualized (%)",
     "unit": "%",
-    "value": 2.903,
-    "gap": 0.903,
+    "value": 3.626,
+    "gap": 1.626,
     "weight": 1.0,
-    "observation_date": "2026-09-01",
+    "observation_date": "2026-10-01",
     "series": [
      "PCEPILFE"
     ],
@@ -220,10 +220,10 @@
     "axis": "inflation",
     "label": "10y breakeven inflation (%)",
     "unit": "%",
-    "value": 2.168,
-    "gap": -0.132,
+    "value": 2.15,
+    "gap": -0.15,
     "weight": 0.5,
-    "observation_date": "2026-11-23",
+    "observation_date": "2026-11-24",
     "series": [
      "T10YIE"
     ],
@@ -235,10 +235,10 @@
     "axis": "inflation",
     "label": "5y5y forward breakeven (%)",
     "unit": "%",
-    "value": 2.128,
-    "gap": -0.172,
+    "value": 2.122,
+    "gap": -0.178,
     "weight": 0.5,
-    "observation_date": "2026-11-23",
+    "observation_date": "2026-11-24",
     "series": [
      "T5YIFR"
     ],
@@ -262,151 +262,151 @@
    }
   ],
   "growth": {
-   "mean": 0.83,
-   "sd": 0.543
+   "mean": 0.939,
+   "sd": 0.738
   },
   "inflation": {
-   "mean": 0.825,
-   "sd": 0.559
+   "mean": 0.993,
+   "sd": 0.657
   },
   "point": {
    "id": "data_model",
    "name": "Hard-data model (FRED)",
    "short": "Data",
-   "x": 0.83,
-   "sx": 0.543,
-   "y": 0.825,
-   "sy": 0.559,
-   "dx": 0.23,
-   "dy": 0.19,
+   "x": 0.939,
+   "sx": 0.738,
+   "y": 0.993,
+   "sy": 0.657,
+   "dx": 0.35,
+   "dy": 0.36,
    "quadrant": "overheating"
   },
   "history": [
    {
     "as_of": "2025-05-31",
-    "x": 0.029,
+    "x": 0.016,
     "y": 0.553,
-    "sx": 0.923,
+    "sx": 0.909,
     "sy": 0.617
    },
    {
     "as_of": "2025-06-30",
-    "x": -0.202,
+    "x": -0.233,
     "y": 0.321,
-    "sx": 0.962,
+    "sx": 0.922,
     "sy": 0.608
    },
    {
     "as_of": "2025-07-31",
-    "x": 0.27,
+    "x": 0.25,
     "y": 0.542,
-    "sx": 1.286,
+    "sx": 1.282,
     "sy": 0.52
    },
    {
     "as_of": "2025-08-31",
-    "x": 0.366,
+    "x": 0.308,
     "y": 0.481,
-    "sx": 1.157,
+    "sx": 1.128,
     "sy": 0.472
    },
    {
     "as_of": "2025-09-30",
-    "x": 0.385,
+    "x": 0.352,
     "y": 0.623,
-    "sx": 1.214,
+    "sx": 1.23,
     "sy": 0.48
    },
    {
     "as_of": "2025-10-31",
-    "x": 0.448,
+    "x": 0.41,
     "y": 0.613,
-    "sx": 1.259,
+    "sx": 1.276,
     "sy": 0.438
    },
    {
     "as_of": "2025-11-30",
-    "x": 0.107,
+    "x": 0.086,
     "y": 0.565,
-    "sx": 1.606,
+    "sx": 1.614,
     "sy": 0.437
    },
    {
     "as_of": "2025-12-31",
-    "x": 0.251,
+    "x": 0.238,
     "y": 0.436,
-    "sx": 1.431,
+    "sx": 1.437,
     "sy": 0.375
    },
    {
     "as_of": "2026-01-31",
-    "x": -0.826,
+    "x": -0.849,
     "y": 0.518,
-    "sx": 0.853,
+    "sx": 0.848,
     "sy": 0.442
    },
    {
     "as_of": "2026-02-28",
-    "x": -0.739,
+    "x": -0.745,
     "y": 0.699,
-    "sx": 0.77,
+    "sx": 0.774,
     "sy": 0.592
    },
    {
     "as_of": "2026-03-31",
-    "x": -0.703,
+    "x": -0.715,
     "y": 0.888,
-    "sx": 0.82,
+    "sx": 0.814,
     "sy": 0.79
    },
    {
     "as_of": "2026-04-30",
-    "x": -0.34,
+    "x": -0.334,
     "y": 1.018,
-    "sx": 0.705,
+    "sx": 0.704,
     "sy": 0.751
    },
    {
     "as_of": "2026-05-31",
-    "x": 0.24,
+    "x": 0.221,
     "y": 1.055,
-    "sx": 0.669,
+    "sx": 0.655,
     "sy": 0.75
    },
    {
     "as_of": "2026-06-30",
-    "x": 0.384,
+    "x": 0.362,
     "y": 1.06,
-    "sx": 0.702,
+    "sx": 0.683,
     "sy": 0.873
    },
    {
     "as_of": "2026-07-31",
-    "x": 0.598,
+    "x": 0.585,
     "y": 0.632,
-    "sx": 0.561,
+    "sx": 0.555,
     "sy": 0.635
    },
    {
     "as_of": "2026-08-31",
-    "x": 0.489,
+    "x": 0.473,
     "y": 0.378,
-    "sx": 0.754,
+    "sx": 0.732,
     "sy": 0.728
    },
    {
     "as_of": "2026-09-30",
-    "x": 0.59,
-    "y": 0.469,
+    "x": 0.58,
+    "y": 0.481,
     "sx": 0.604,
-    "sy": 0.706
+    "sy": 0.705
    },
    {
     "as_of": "2026-10-31",
-    "x": 0.754,
-    "y": 0.845,
-    "sx": 0.606,
-    "sy": 0.487
+    "x": 0.835,
+    "y": 0.866,
+    "sx": 0.762,
+    "sy": 0.493
    }
   ],
   "caveat": "History uses current-vintage FRED data with approximate publication lags, not true real-time vintages."
@@ -454,7 +454,7 @@
    "scoring_rationale": "Growth 2.5% - 2.0 trend = +0.5 (explicit). No core PCE number; 'normalizing' from ~3.1% core PCE implies ~2.7% average over 12m -> +0.7 with qualitative sd 0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 19,
+   "age_days": 20,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -491,7 +491,7 @@
    "scoring_rationale": "Qualitative only. Inflation 'persistent/sticky above target' = +1.0. Growth resilient near term but stresses 2027 slowdown risk -> +0.3 with sd 0.8+0.2 for tail emphasis.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 15,
+   "age_days": 16,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -534,7 +534,7 @@
    "scoring_rationale": "Qualitative. Resilient growth -> +0.4; 'moderating toward target' -> +0.6. sd widened (+0.2) because the piece stresses fat tails.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 49,
+   "age_days": 50,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -587,7 +587,7 @@
    "scoring_rationale": "Core PCE path 3.2% -> 2.5% averages ~2.8% over 12m -> +0.8 (explicit, sd 0.35). GDP 2.3%/3.0% figure could not be dated -> +0.6 with sd 0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 15,
+   "age_days": 16,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -651,7 +651,7 @@
    "scoring_rationale": "Next-4-quarter growth ~2.15% -> +0.15; core PCE averaging ~2.85% over the horizon -> +0.85. Point forecasts (sd 0.3) widened on growth for the 25% recession tail.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 22,
+   "age_days": 23,
    "stale": false,
    "weight": 1.0,
    "quadrant": "overheating",
@@ -697,7 +697,7 @@
    "scoring_rationale": "CPI path minus 0.4 CPI/PCE wedge -> ~2.9% core-PCE-equivalent average -> +0.9. Growth from June WFII targets (older) -> +0.3 with sd 0.6. Publication date approximate.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 41,
+   "age_days": 42,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -744,9 +744,9 @@
    "scoring_rationale": "Growth from May outlook (2.25-2.5%) -> +0.35. Inflation 'persistent, more hikes needed' -> +1.1. Low confidence: latest view partly from secondary coverage.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 60,
-   "stale": false,
-   "weight": 0.6,
+   "age_days": 61,
+   "stale": true,
+   "weight": 0.21,
    "quadrant": "overheating",
    "carried_forward": true
   },
@@ -798,7 +798,7 @@
    "scoring_rationale": "One FOMC voter, not the Committee. Strong current growth but no forward number -> +0.5. Core PCE 3.3% falling 'closer to 2%' -> ~2.6% average -> +0.6.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 14,
+   "age_days": 15,
    "stale": false,
    "weight": 0.8,
    "quadrant": "overheating",
@@ -844,7 +844,7 @@
    "scoring_rationale": "Stale (July). Midpoint 1.75% -> -0.25; core PCE 3.4% -> +1.4. Kept to show the drift of views; down-weighted automatically.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 138,
+   "age_days": 139,
    "stale": true,
    "weight": 0.21,
    "quadrant": "stagflation",
@@ -876,7 +876,7 @@
    "scoring_rationale": "Stale, qualitative, secondary source. 'Reflation' -> above-trend growth (+0.6) and above-target inflation (+1.2), wide sd.",
    "found_recent": true,
    "method": "manual:claude-research-seed",
-   "age_days": 175,
+   "age_days": 176,
    "stale": true,
    "weight": 0.21,
    "quadrant": "overheating",
@@ -885,39 +885,39 @@
  ],
  "blend": {
   "houses": {
-   "x": 0.369,
-   "sx": 0.681,
-   "y": 0.841,
-   "sy": 0.592,
+   "x": 0.37,
+   "sx": 0.685,
+   "y": 0.825,
+   "sy": 0.588,
    "probabilities": {
-    "goldilocks": 0.052,
-    "overheating": 0.666,
-    "stagflation": 0.264,
-    "slowdown": 0.018
+    "goldilocks": 0.054,
+    "overheating": 0.665,
+    "stagflation": 0.263,
+    "slowdown": 0.019
    }
   },
   "model": {
-   "x": 0.83,
-   "sx": 0.543,
-   "y": 0.825,
-   "sy": 0.559,
+   "x": 0.939,
+   "sx": 0.738,
+   "y": 0.993,
+   "sy": 0.657,
    "probabilities": {
-    "goldilocks": 0.064,
-    "overheating": 0.873,
-    "stagflation": 0.059,
-    "slowdown": 0.005
+    "goldilocks": 0.057,
+    "overheating": 0.841,
+    "stagflation": 0.095,
+    "slowdown": 0.007
    }
   },
   "blended": {
-   "x": 0.553,
-   "sx": 0.669,
-   "y": 0.835,
-   "sy": 0.579,
+   "x": 0.597,
+   "sx": 0.76,
+   "y": 0.892,
+   "sy": 0.622,
    "probabilities": {
-    "goldilocks": 0.056,
-    "overheating": 0.749,
-    "stagflation": 0.182,
-    "slowdown": 0.013
+    "goldilocks": 0.054,
+    "overheating": 0.735,
+    "stagflation": 0.197,
+    "slowdown": 0.014
    }
   },
   "model_weight_share": 0.4
@@ -997,10 +997,10 @@
   }
  ],
  "synthesis": {
-  "headline": "Overheating / Reflation is the most likely regime (75% blended probability)",
+  "headline": "Overheating / Reflation is the most likely regime (74% blended probability)",
   "regime_call": "overheating",
-  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.83pp (±0.54), inflation gap +0.82pp (±0.56). 8 of 9 growth indicators are above trend and 0 below; 5 of 7 inflation indicators are above target and 0 below.",
-  "consensus_vs_data": "The house consensus sits at growth +0.37pp / inflation +0.84pp versus the data model at +0.83 / +0.82.",
+  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.94pp (±0.74), inflation gap +0.99pp (±0.66). 7 of 9 growth indicators are above trend and 0 below; 5 of 7 inflation indicators are above target and 0 below.",
+  "consensus_vs_data": "The house consensus sits at growth +0.37pp / inflation +0.82pp versus the data model at +0.94 / +0.99.",
   "divergences": [],
   "watch_list": [],
   "method": "template"
