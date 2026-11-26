@@ -1,7 +1,0 @@
-{
-  "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "g-i-q",
-  "pages_build_output_dir": "dist",
-  "compatibility_date": "2026-11-01",
-  "vars": { "BACKEND_URL": "https://giq-api.zixiao-cab.workers.dev" },
-}

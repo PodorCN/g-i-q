@@ -1,94 +1,167 @@
-# g / i / q
+# g-i-q — Growth × Inflation Quadrant
 
-Live: [giq.podor.org](https://giq.podor.org/) · Pages alias: [g-i-q.pages.dev](https://g-i-q.pages.dev/) · API: [giq-api.zixiao-cab.workers.dev](https://giq-api.zixiao-cab.workers.dev/api/health)
+Shows where the US economy sits on the growth/inflation quadrant, according to:
 
-An evidence-led **U.S. growth–inflation observatory**. Compare attributable institutional commentary with a reproducible hard-data estimate, inspect the evidence behind every point, and keep the frontend unchanged when the research updates.
+- **Hard data**: 16 FRED indicators turned into one model point with a confidence region.
+- **Each house's market commentary** (GS, JPM, MS, BofA, Wells, U.S. Bank, BlackRock, PIMCO, Vanguard, Schwab, the Fed, …). Claude reads each one and scores it with a fixed rubric. Every point on the chart is labelled with the house it belongs to.
+- **A blended consensus**: a probability for each quadrant, plus a short write-up of what the data supports.
 
-**Frontend:** React + TypeScript + Vite on Cloudflare Pages. **Backend:** a separate Cloudflare Worker with D1 snapshots and native Workers AI. **Schedule:** daily at 7 a.m. America/New_York, including daylight saving time.
-
-**Maintaining this dashboard:** start with [AGENTS.md](AGENTS.md) and the detailed [AGENT.MD maintenance handbook](AGENT.MD). They record the user-approved range, guidance, interaction and deployment rules for future agents.
-
-## What you can do
-
-- Explore the four-quadrant scatter plot; select a named institution to inspect its source, date, horizon, supporting quotes, and position compared with the data.
-- Toggle interpreted ranges, data sensitivity and labels; show all house views by default, or filter current assessments and outlooks while preserving each author’s actual horizon.
-- Show arrows only for a house’s explicitly published, comparable two-axis forward guidance. Both endpoints come from its report; the hard-data anchor never supplies a missing starting point. Partial guidance remains sourced text. Hollow dots flag report-backed alternative scenarios; they do not encode probabilities.
-- Inspect individual data series, reference months, raw history, transformations, and component scores.
-- Read unscored commentary, official news, and collection failures. Missing evidence never becomes an invented point.
-- Select historical snapshots and export the complete research JSON.
-- Change the source catalog, collector or model by deploying only the backend. A routine daily update writes D1 and deploys nothing.
-
-## Run locally
-
-Node 24 or later:
-
-```sh
-npm ci
-npm run dev
+```
+frontend/   Static site (Cloudflare Pages). Plain HTML/CSS/JS, no build step. It only reads from the API.
+backend/    Cloudflare Worker + KV. Serves /api/* and accepts new snapshots at POST /api/ingest.
+collector/  Python. Pulls FRED data, has Claude score the commentary, and builds a snapshot JSON.
+data/       Snapshots committed by the scheduled job (an audit trail). Hand-scored views go in data/views/.
 ```
 
-The included `data/latest.json` is an actually collected, dated snapshot. Vite serves it through the local development API. The real-data view does not contain illustrative institution points. Open `/?demo=1` for an explicitly labeled demo of all four quadrants, overlap, evidence inspection and both horizons.
+**To update the site, update only the backend.** The collector POSTs a new snapshot to the Worker. The page fetches `/api/latest` every time it loads, so the frontend never needs a redeploy for new data.
 
-To collect fresh public data:
-
-```sh
-npm run refresh
+```
+GitHub Actions cron ──► collector (FRED + Claude) ──► POST /api/ingest ──► Worker KV ◄── GET /api/latest ◄── Pages site
 ```
 
-If your environment supplies an HTTP proxy, use Node’s supported proxy mode:
+## The model
 
-```sh
-NODE_USE_ENV_PROXY=1 npm run refresh
+### Axes (units: percentage points, "pp"; horizon: the next 6–12 months)
+
+- `x = g − g*`
+  - `g`: expected real GDP growth
+  - `g*`: trend growth (2.0%, set in `collector/config.yaml`)
+- `y = π − π*`
+  - `π`: expected core PCE inflation
+  - `π*`: the Fed's 2% target
+
+| Quadrant | x | y |
+|---|---|---|
+| Goldilocks | > 0 | < 0 |
+| Overheating / Reflation | > 0 | > 0 |
+| Stagflation | < 0 | > 0 |
+| Disinflationary slowdown | < 0 | < 0 |
+
+### Hard-data point (`collector/giq/model.py`)
+
+Each indicator `i` is mapped to an implied gap `gᵢ` with a documented rule of thumb. Examples:
+
+- Okun's law: `g = −4 × Δu₆ₘ`, where `Δu₆ₘ` is the 6-month change in the unemployment rate.
+- CFNAI: `g = 1.5 × CFNAI`.
+- Core CPI: `y = CPI − 2.4`. The extra 0.4pp is the usual gap between CPI and PCE.
+
+The model point for an axis is
+
+- `μ = Σ wᵢgᵢ / Σ wᵢ`
+- `σ = √( Σ wᵢ(gᵢ − μ)² / Σ wᵢ + σ₀² )`
+
+where
+
+- `wᵢ`: the weight of indicator `i`
+- `σ₀`: a measurement floor (0.25pp)
+
+So `σ` measures how much the indicators disagree with each other, plus that floor.
+
+### House views (`collector/giq/commentary.py`)
+
+Claude searches the web for each house's latest outlook, reads it, and returns a JSON record (structured output) containing:
+
+- `x`, `y`: the house's point
+- `σx`, `σy`: its uncertainty
+- `plausible_quadrants`: quadrants explicitly mentioned or implied in the outlook (used to constrain uncertainty regions)
+- a direction arrow
+- forecast numbers and verbatim quotes
+- the reasoning behind the score
+
+The rubric:
+
+- Explicit forecasts convert directly. A CPI forecast has 0.4pp subtracted to put it on a PCE basis.
+- Qualitative views map to fixed anchors, e.g. "sticky above target" = +1.0pp.
+- `σ` is 0.3 for point forecasts, 0.5 for ranges, 0.8 for qualitative views, and +0.2 when the house stresses tail risks.
+- `plausible_quadrants` only admits quadrants beyond the base call when the commentary explicitly mentions or implies a scenario/risk crossing `x = 0` or `y = 0`.
+
+Views older than 60 days are marked stale. They are drawn hollow and given 0.35× weight.
+
+### Confidence regions (quadrant-constrained)
+
+Each point and the hard-data model follow a quadrant-truncated bivariate normal restricted to `plausible_quadrants` (for hard data, crossing `x = 0` or `y = 0` requires either a model mean inside `±0.25pp` or at least one indicator beyond `±0.25pp` on that side). Contour levels (68% / 90%) are calibrated over the truncated support, and `Blended` / `Houses` regions are true Highest Density Regions (HDR) of the weighted mixture density.
+
+### Quadrant probabilities
+
+Each view is a quadrant-truncated normal distribution `N(μ, σ) · 1[Q]`, with weight = confidence × staleness factor.
+
+- **Houses**: a mixture of all house views.
+- **Blended**: the house mixture with 60% of the weight and the hard-data point with 40% (`model_weight_share`).
+
+Probabilities are the share of 40k Monte Carlo draws that land in each quadrant.
+
+## Setup (one time)
+
+1. **Create the KV namespace and deploy the Worker.**
+   ```bash
+   cd backend && npm install
+   npx wrangler login
+   npx wrangler kv namespace create GIQ   # paste the id into wrangler.toml
+   npx wrangler secret put INGEST_TOKEN   # any long random string
+   npx wrangler deploy                    # note the URL, e.g. https://giq-api.<you>.workers.dev
+   ```
+2. **Deploy the site.** Set `apiBase` in `frontend/config.js` to the Worker URL, then:
+   ```bash
+   npx wrangler pages deploy frontend --project-name giq
+   ```
+   Optional: set `ALLOWED_ORIGINS` in `wrangler.toml` to your Pages domain(s), then redeploy the Worker.
+3. **Seed the data.**
+   ```bash
+   cd collector && pip install -r requirements.txt
+   GIQ_API_URL=https://giq-api.<you>.workers.dev GIQ_INGEST_TOKEN=... python -m giq.publish ../data/latest.json
+   ```
+4. **Automate.** In the GitHub repo settings, add:
+   - Secrets: `ANTHROPIC_API_KEY`, `GIQ_INGEST_TOKEN`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`
+   - Variables: `GIQ_API_URL`, and optionally `CF_PAGES_PROJECT`
+
+   GitHub Actions workflows:
+   - `collect.yml`: Mon/Thu 13:17 UTC, plus manual runs. Builds a snapshot, commits it to `data/`, and publishes it to the Worker.
+   - `deploy-backend.yml` / `deploy-frontend.yml`: run manually from GitHub Actions after configuring the target Worker and Pages project.
+
+## Day-to-day
+
+| Task | Command |
+|---|---|
+| Full refresh (FRED + Claude) | `python -m giq.build` (needs `ANTHROPIC_API_KEY`) |
+| FRED only, keep house views | `python -m giq.build --skip-llm` |
+| Hand-scored views / synthesis | `python -m giq.build --views ../data/views/<file>.json --synthesis ../data/views/<file>.json` |
+| Push to the site | `python -m giq.publish ../data/latest.json` |
+| Add or remove a house | edit `sources:` in `collector/config.yaml` |
+| Tune trend growth, staleness, weights | edit `params:` in `collector/config.yaml` |
+
+Local dev:
+
+```bash
+cd backend && echo "INGEST_TOKEN=dev" > .dev.vars && npx wrangler dev --local --port 8787
 ```
 
-The local CLI defaults to conservative phrase extraction. For semantic extraction, set `OPENAI_API_KEY` securely in the process environment; `OPENAI_MODEL` defaults to `gpt-4.1-mini`. Local `.env` files are not automatically loaded. Production uses Workers AI instead and needs no OpenAI key.
-
-```sh
-npm test
-npm run build
-npm run check:worker
+```bash
+cd frontend && python3 -m http.server 8080   # open http://localhost:8080/?api=http://localhost:8787
 ```
 
-## Host on Cloudflare
+Tests:
 
-Follow [the deployment guide](docs/deployment.md). It covers D1 creation, independent Worker/Pages deployments, the first refresh, production secrets, and optional GitHub deploy workflows. Nothing is deployed just by cloning the repository. A Cloudflare account and deployment credentials must be configured first.
-
-```text
-Browser → Pages frontend → /api read-only proxy → Worker → D1 snapshots
-                                                    ↑
-                                  daily 7 a.m. ET collector
-                                  BEA / Atlanta Fed / BLS / institutional articles / Fed news
+```bash
+cd collector && python -m pytest -q tests
 ```
 
-The browser knows only `/api/*`. Pages uses the configured `BACKEND_URL` to reach the separate Worker, so swapping the backend never requires compiling a new API URL into the frontend.
+```bash
+cd backend && npm test
+```
 
-## Read the analysis correctly
+## API
 
-The axes show **real growth minus an assumed 2.0% trend** and **core inflation minus the 2.0% target**, in percentage points. Strong growth with inflation falling toward—but still above—2% remains in Overheating. Growth trend is an explicit modeling assumption, not a measured constant.
+| Method | Path | Notes |
+|---|---|---|
+| GET | `/api/latest` | full latest snapshot |
+| GET | `/api/history?limit=N` | compact series: consensus, model and every house per date |
+| GET | `/api/snapshots` | stored dates |
+| GET | `/api/snapshot/YYYY-MM-DD` | one snapshot |
+| POST | `/api/ingest` | `Authorization: Bearer $INGEST_TOKEN`; validates schema v1 |
 
-The hard-data point averages the latest BEA annualized quarterly GDP rate and Atlanta Fed GDPNow, then compares BEA year-over-year core PCE with 2%. Different periods are shown explicitly. Five BLS labor/CPI series provide supporting momentum context and do not set the main coordinates. BEA and Atlanta Fed collection needs no BLS key.
+## Caveats
 
-The reviewed snapshot covers **20 research teams**, including UBS CIO, Citi Wealth CIO, BofA Private Bank CIO, Wells Fargo Investment Institute, TD Economics, U.S. Bank, ABN AMRO, HSBC AM, RBC Rochdale, UBP, BNP Paribas, PNC and Scotiabank alongside the original seven houses. The daily catalog monitors **23 teams**; Morgan Stanley, Barclays and BMO remain visible in coverage when their accessible material does not establish a usable two-axis house view. Team attribution is specific: wealth and asset-management views are not relabeled as an investment bank’s institutional research forecast. Explicit numerical forecasts are distinguished from our qualitative mappings. Each point preserves a real article, publication date, short verified quotations and the author's actual horizon. This is a monitored public-source sample, not comprehensive access to institutional research.
-
-Institution views can have **interpreted ranges within their own quadrant**. The ellipse is clipped to that quadrant plus only the specific alternatives explicitly supported by the report, with growth/inflation quotes and a separate horizon. Widths are interpretation assumptions, not institutional probability distributions or statistical confidence intervals. The hard-data ellipse remains a separate sensitivity assumption, without calibrated 68%/90% coverage. [Methodology](docs/methodology.md) gives the definitions and limits.
-
-## Repository map
-
-| Location                     | Purpose                                                      |
-| ---------------------------- | ------------------------------------------------------------ |
-| `frontend/`                  | Responsive plot, evidence inspector, data and coverage views |
-| `backend/collect.ts`         | Bounded public-source collection and validated extraction    |
-| `backend/levels.ts`          | Level-gap anchors and institutional mapping prompt           |
-| `backend/analysis.ts`        | Quote verification and supporting momentum transforms        |
-| `backend/sources.ts`         | Monitored institutions, official news and BLS series         |
-| `backend/index.ts`           | API, authentication, refresh locks and daily schedule        |
-| `backend/migrations/`        | D1 schema                                                    |
-| `functions/api/`             | Read-only Pages proxy                                        |
-| `shared/schema.ts`           | Validated, versioned frontend/backend contract               |
-| `data/latest.json`           | Dated local research snapshot                                |
-| `public/data/bootstrap.json` | Explicitly labeled saved fallback if the API is offline      |
-| `public/data/demo.json`      | Fictional, opt-in interface demo; rejected by the import API |
-| `scripts/refresh.ts`         | Local collection and optional backend import                 |
-| `.github/workflows/`         | Checks and independent, opt-in deployments                   |
-
-Design guidance: [Anthropic’s official frontend-design skill](https://github.com/anthropics/skills/blob/main/skills/frontend-design/SKILL.md). The specific palette, reading flow and layout are recorded in [the design notes](docs/design.md).
+- The indicator-to-gap mappings are rules of thumb, not an estimated model. Tune the weights and scalings to your own priors.
+- The hard-data history uses current-vintage FRED data with approximate publication lags. It is not true real-time data.
+- House scores are an interpretation of the house's commentary, not the house's own coordinates. Each record keeps `scoring_rationale`, quotes and the source URL so you can audit it.
+- The seed snapshot (`data/views/2026-11-13-seed.json`) was scored by hand from public pages found on 2026-11-13. Some dates and figures came from secondary coverage; those records are flagged in their rationale.

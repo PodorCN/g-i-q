@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Growth–Inflation Quadrant</title>
+  <meta name="description" content="Where the US economy sits on the growth/inflation quadrant, according to hard data and each house's market commentary, with quadrant-constrained confidence regions.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23151514'/%3E%3Cpath d='M16 5v22M5 16h22' stroke='%23898781' stroke-width='2'/%3E%3Ccircle cx='21' cy='11' r='4' fill='%23eb6834'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css">
+  <script src="config.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="wrap topbar-inner">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <div>
+          <h1>Growth–Inflation Quadrant</h1>
+          <p class="sub" id="asof">Loading…</p>
+        </div>
+      </div>
+      <div class="topbar-actions">
+        <span class="freshness-pill" id="freshness-summary" hidden></span>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div id="banner" class="banner" hidden></div>
+
+    <section class="hero" aria-labelledby="headline">
+      <div class="hero-top">
+        <div>
+          <p class="eyebrow">Current macro regime</p>
+          <h2 id="headline" class="headline">&nbsp;</h2>
+          <p id="subheadline" class="subheadline"></p>
+        </div>
+        <div class="seg" role="radiogroup" aria-label="Probability basis" id="prob-basis">
+          <button role="radio" data-basis="houses" aria-checked="true">Houses</button>
+          <button role="radio" data-basis="model" aria-checked="false">Hard data</button>
+        </div>
+      </div>
+
+      <div class="tiles" id="tiles" aria-label="Quadrant probabilities (click to filter chart)"></div>
+
+      <div class="card yardstick-card" aria-labelledby="yardstick-h">
+        <div class="card-head">
+          <h3 id="yardstick-h">Where numbers actually sit (implied 6–12m levels vs benchmarks)</h3>
+          <span class="muted small" id="yardstick-note"></span>
+        </div>
+        <div id="yardstick" class="yardstick-grid"></div>
+      </div>
+    </section>
+
+    <div class="controls" role="toolbar" aria-label="Chart options">
+      <div class="seg" role="radiogroup" aria-label="Chart zoom" id="zoom-mode">
+        <button role="radio" data-zoom="cluster" aria-checked="true">Focus cluster</button>
+        <button role="radio" data-zoom="full" aria-checked="false">4 quadrants</button>
+      </div>
+      <div class="seg" role="radiogroup" aria-label="Confidence level" id="ci">
+        <button role="radio" data-ci="0.68" aria-checked="true">68% region</button>
+        <button role="radio" data-ci="0.90" aria-checked="false">90% region</button>
+      </div>
+      <label class="check"><input type="checkbox" id="opt-ellipses"> All regions</label>
+      <label class="check"><input type="checkbox" id="opt-arrows" checked> Direction arrows</label>
+      <label class="check"><input type="checkbox" id="opt-trail" checked> History trail</label>
+      <label class="check"><input type="checkbox" id="opt-stale" checked> Stale views</label>
+      <button class="ghost small-btn" id="clear-filters" type="button" hidden>Reset filters</button>
+    </div>
+
+    <section class="grid">
+      <div class="card chart-card">
+        <div class="card-head">
+          <div class="chart-title-wrap">
+            <h3>Who is where</h3>
+            <span class="zoom-badge" id="zoom-badge" hidden></span>
+          </div>
+          <ul class="legend" id="legend" aria-label="Interactive legend (click to filter)"></ul>
+        </div>
+        <div class="hover-bar" id="hover-bar">
+          <span class="hb-main idle">Hover or click any point, label, or cloud — click again or empty space to reset.</span>
+          <span class="hb-meta">Dotted line = 18-month Hard data path (click any dot on the path to replay that month).</span>
+        </div>
+        <div id="chart" class="chart" aria-describedby="chart-desc"></div>
+
+        <div class="replay-bar" id="replay-bar" hidden>
+          <button class="ghost small-btn" id="replay-prev" type="button" aria-label="Previous date">←</button>
+          <button class="ghost small-btn" id="replay-play" type="button">Play</button>
+          <input id="replay-slider" type="range" min="0" max="0" value="0" aria-label="Historical snapshot date">
+          <button class="ghost small-btn" id="replay-next" type="button" aria-label="Next date">→</button>
+          <span class="replay-label" id="replay-label">Latest</span>
+          <button class="ghost small-btn" id="replay-reset" type="button" hidden>Live</button>
+        </div>
+
+        <details class="card-details">
+          <summary>Chart guide &amp; definitions</summary>
+          <p id="chart-desc" class="muted small">
+            x = expected real GDP growth minus trend; y = expected core PCE inflation minus the 2% target (pp, next 6–12m).
+            Each house shows its point coordinate, forward direction arrow, and (when toggled on) a soft Gaussian cloud fading to 0 at the 68%/90% horizon and strictly bounded to cited quadrants. Houses consensus and Hard data are plotted as clean benchmark points without outer circles.
+          </p>
+        </details>
+      </div>
+
+      <aside class="card detail" id="detail" aria-live="polite"></aside>
+    </section>
+
+    <section class="card" id="timeline-card" aria-labelledby="timeline-h" hidden>
+      <div class="card-head">
+        <h3 id="timeline-h">How we got here (historical path &amp; regime drift)</h3>
+        <span class="muted small" id="timeline-sub">Click any point on the timeline to replay that date on the quadrant chart</span>
+      </div>
+      <div id="timeline-chart" class="timeline-chart"></div>
+    </section>
+
+    <section class="card" aria-labelledby="supports-h">
+      <div class="card-head"><h3 id="supports-h">What the data supports</h3><span class="muted small" id="synth-method"></span></div>
+      <p id="data-supports" class="lede"></p>
+      <div class="two" id="synth-cols">
+        <div>
+          <h4>Consensus vs. data</h4>
+          <p id="consensus-vs-data"></p>
+          <div id="divergences-wrap">
+            <h4>Where the houses disagree</h4>
+            <ul id="divergences" class="bullets"></ul>
+          </div>
+        </div>
+        <div id="watch-wrap">
+          <h4>Watch list &amp; coverage</h4>
+          <ul id="watch" class="bullets"></ul>
+        </div>
+      </div>
+
+      <div class="subhead-row mt">
+        <h4>Hard-data indicators</h4>
+        <div class="pills" id="ind-filter" role="tablist" aria-label="Filter indicators">
+          <button type="button" class="pill active" data-ind="all">All</button>
+          <button type="button" class="pill" data-ind="growth">Growth</button>
+          <button type="button" class="pill" data-ind="inflation">Inflation</button>
+          <button type="button" class="pill" data-ind="cool">Neutral / Cool</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="ind" id="indicators">
+          <thead>
+            <tr>
+              <th scope="col">Indicator</th>
+              <th scope="col" class="num">Latest</th>
+              <th scope="col">As of</th>
+              <th scope="col" class="num">Wt</th>
+              <th scope="col" class="gapcol">Gap vs trend / target (pp)</th>
+              <th scope="col">Supports</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card" aria-labelledby="table-h">
+      <div class="card-head">
+        <h3 id="table-h">All views</h3>
+        <div class="table-tools">
+          <div class="pills" id="views-filter" aria-label="Filter house views">
+            <button type="button" class="pill active" data-vf="all">All</button>
+            <button type="button" class="pill" data-vf="fresh">Fresh (&le;60d)</button>
+            <button type="button" class="pill" data-vf="sell_side">Sell-side</button>
+            <button type="button" class="pill" data-vf="buy_side">Buy-side</button>
+            <button type="button" class="pill" data-vf="tail">Flags tail risk</button>
+          </div>
+          <input type="search" id="views-search" class="search-input" placeholder="Search house or view…" aria-label="Search house views">
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table class="views" id="views-table">
+          <thead>
+            <tr>
+              <th scope="col" data-sort="name" class="sortable">Source</th>
+              <th scope="col" data-sort="type" class="sortable">Type</th>
+              <th scope="col" data-sort="published" class="sortable">Published</th>
+              <th scope="col" data-sort="x" class="num sortable">Growth gap</th>
+              <th scope="col" data-sort="y" class="num sortable">Inflation gap</th>
+              <th scope="col" data-sort="quadrant" class="sortable">Base &amp; Plausible</th>
+              <th scope="col">Key call</th>
+              <th scope="col" data-sort="confidence" class="sortable">Confidence</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="card method" aria-labelledby="method-h">
+      <details>
+        <summary><h3 id="method-h">Methodology, parameters &amp; data sources</h3></summary>
+        <div class="method-body">
+          <p><b>Axes.</b> <code>x = g − g*</code> and <code>y = π − π*</code>, where <code>g</code> is expected real GDP growth over the next 6–12 months, <code>g*</code> is trend growth (<span data-param="trend_growth"></span>%), <code>π</code> is expected core PCE inflation and <code>π*</code> is the Fed's target (<span data-param="inflation_target"></span>%). Units are percentage points (pp).</p>
+          <p><b>House views.</b> Each house's latest commentary is read and scored with a fixed rubric: explicit forecasts convert directly (CPI forecasts minus 0.4pp to convert to PCE); qualitative views map to anchors. The 1-sigma <code>σ</code> is 0.3pp for point forecasts, 0.5pp for ranges, 0.8pp for qualitative views, +0.2pp when tail risks are emphasized. Views older than <span data-param="stale_after_days"></span> days are marked stale and down-weighted.</p>
+          <p><b>Quadrant-constrained confidence clouds.</b> A house's uncertainty cloud only crosses into another quadrant if its commentary explicitly mentions or implies a scenario/risk in that quadrant. Each house follows a quadrant-truncated bivariate normal calibrated so 68% or 90% of its truncated probability mass lies inside the cloud.</p>
+          <p><b>Hard-data model.</b> Each FRED indicator is mapped to an implied gap with a documented rule of thumb (Okun's law, CFNAI × 1.5, CPI − 0.4pp, etc.). The model point is the weighted mean across the 16 indicators and is plotted as an observed benchmark point (without a forecast circle).</p>
+          <p><b>Quadrant probabilities.</b> House mixture weights equal confidence × staleness; probabilities are Monte Carlo draws from the quadrant-truncated house views (or, under the Hard data tab, from the indicator dispersion around the model point).</p>
+          <p class="muted small"><b>Sources &amp; disclaimer.</b> <span id="footer-gen"></span> · Data: FRED (St. Louis Fed) and public commentary from each institution. Not investment advice.</p>
+        </div>
+      </details>
+    </section>
+  </main>
+
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="View details" hidden>
+    <div class="drawer-head">
+      <span class="muted small">Detailed breakdown</span>
+      <div class="drawer-actions">
+        <button type="button" class="ghost small-btn" id="drawer-to-chart">View on chart ↑</button>
+        <button type="button" class="ghost small-btn" id="drawer-close" aria-label="Close details">✕</button>
+      </div>
+    </div>
+    <div id="drawer-body"></div>
+  </aside>
+
+  <script src="app.js" type="module"></script>
+</body>
+</html>
