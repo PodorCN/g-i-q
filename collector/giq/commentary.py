@@ -32,9 +32,17 @@ Scoring rubric:
   re-accelerating +1.5.
 - sd (1-sigma, pp): 0.3 for explicit point forecasts, 0.5 for ranges or mixed signals,
   0.8 for qualitative-only views; add 0.2 if the house stresses two-sided/tail risks.
+- plausible_quadrants: always include `quadrant_call`. Include another quadrant ONLY if
+  the commentary explicitly mentions or implies a current/6-12m scenario, range, or
+  material risk that crosses x = 0 (trend growth) or y = 0 (2% core PCE target) into
+  that quadrant (e.g., recession/slowdown risk -> stagflation or slowdown; disinflation
+  below 2% -> goldilocks or slowdown). Do NOT add other quadrants purely due to missing
+  numbers or generic uncertainty.
 - direction: expected change in each gap over the horizon, from -1 (falling fast) to +1.
 - Use the house's own words; do not import other houses' numbers.
 """
+
+QUADRANT_ENUM = ["goldilocks", "overheating", "stagflation", "slowdown"]
 
 VIEW_SCHEMA = {
     "type": "object",
@@ -49,8 +57,11 @@ VIEW_SCHEMA = {
         "inflation_sd": {"type": "number"},
         "direction_growth": {"type": "number"},
         "direction_inflation": {"type": "number"},
-        "quadrant_call": {"type": "string",
-                          "enum": ["goldilocks", "overheating", "stagflation", "slowdown"]},
+        "quadrant_call": {"type": "string", "enum": QUADRANT_ENUM},
+        "plausible_quadrants": {
+            "type": "array",
+            "items": {"type": "string", "enum": QUADRANT_ENUM},
+        },
         "summary": {"type": "string"},
         "key_points": {"type": "array", "items": {"type": "string"}},
         "forecast_numbers": {"type": "array", "items": {
@@ -64,8 +75,8 @@ VIEW_SCHEMA = {
     },
     "required": ["found", "published", "title", "url", "growth_gap", "growth_sd",
                  "inflation_gap", "inflation_sd", "direction_growth", "direction_inflation",
-                 "quadrant_call", "summary", "key_points", "forecast_numbers", "quotes",
-                 "confidence", "scoring_rationale"],
+                 "quadrant_call", "plausible_quadrants", "summary", "key_points",
+                 "forecast_numbers", "quotes", "confidence", "scoring_rationale"],
     "additionalProperties": False,
 }
 
@@ -159,6 +170,15 @@ def _clamp(v: float, lo: float, hi: float) -> float:
 
 def to_view(src: dict, raw: dict, method: str) -> dict:
     """Normalise a raw scored record into the snapshot `views[]` shape."""
+    from .model import quadrant_of
+
+    x = round(_clamp(raw["growth_gap"], -4, 4), 2)
+    y = round(_clamp(raw["inflation_gap"], -3, 5), 2)
+    base_q = quadrant_of(x, y)
+    raw_pq = [q for q in (raw.get("plausible_quadrants") or []) if q in QUADRANT_ENUM]
+    if base_q not in raw_pq:
+        raw_pq.insert(0, base_q)
+    plausible = [q for q in QUADRANT_ENUM if q in raw_pq]
     return {
         "id": src["id"],
         "name": src["name"],
@@ -167,13 +187,14 @@ def to_view(src: dict, raw: dict, method: str) -> dict:
         "published": raw.get("published"),
         "title": raw.get("title", ""),
         "url": raw.get("url", ""),
-        "x": round(_clamp(raw["growth_gap"], -4, 4), 2),
+        "x": x,
         "sx": round(_clamp(raw["growth_sd"], 0.15, 2.0), 2),
-        "y": round(_clamp(raw["inflation_gap"], -3, 5), 2),
+        "y": y,
         "sy": round(_clamp(raw["inflation_sd"], 0.15, 2.0), 2),
         "dx": round(_clamp(raw.get("direction_growth", 0), -1, 1), 2),
         "dy": round(_clamp(raw.get("direction_inflation", 0), -1, 1), 2),
-        "quadrant_call": raw.get("quadrant_call"),
+        "quadrant_call": raw.get("quadrant_call") or base_q,
+        "plausible_quadrants": plausible,
         "summary": raw.get("summary", ""),
         "key_points": raw.get("key_points", [])[:6],
         "forecast_numbers": raw.get("forecast_numbers", [])[:8],

@@ -57,6 +57,17 @@ def test_resumes_pause_turn_then_parses_json():
     assert msgs.calls[1]["messages"][-1]["role"] == "assistant"
 
 
+def test_to_view_plausible_quadrants_defaults_to_base_and_preserves_explicit():
+    v_default = commentary.to_view({"id": "x", "name": "X", "type": "sell_side"}, RAW, "test")
+    assert v_default["plausible_quadrants"] == ["overheating"]
+    v_explicit = commentary.to_view(
+        {"id": "x", "name": "X", "type": "sell_side"},
+        {**RAW, "plausible_quadrants": ["stagflation"]},
+        "test",
+    )
+    assert v_explicit["plausible_quadrants"] == ["overheating", "stagflation"]
+
+
 def test_refusal_raises():
     client, _ = fake_client(resp("refusal", details=NS(category="cyber")))
     with pytest.raises(RuntimeError, match="declined"):

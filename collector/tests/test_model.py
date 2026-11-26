@@ -70,6 +70,30 @@ def test_to_view_clamps():
     assert (v["x"], v["sx"], v["y"], v["sy"], v["dx"], v["dy"]) == (4, 0.15, -3, 2.0, 1, -1)
 
 
+def test_quadrant_truncated_mixture_respects_plausible_quadrants():
+    mix = model.mixture([
+        {"x": 0.3, "sx": 0.8, "y": 0.8, "sy": 0.6, "w": 1.0, "plausible_quadrants": ["overheating"]},
+    ], draws=10000)
+    assert mix["probabilities"]["overheating"] == 1.0
+    assert mix["probabilities"]["stagflation"] == 0.0
+    assert mix["probabilities"]["goldilocks"] == 0.0
+    assert mix["probabilities"]["slowdown"] == 0.0
+    assert mix["plausible_quadrants"] == ["overheating"]
+
+    ev_hot = {
+        "growth": {"mean": 0.9, "sd": 0.7},
+        "inflation": {"mean": 0.9, "sd": 0.6},
+        "indicators": [
+            {"axis": "growth", "gap": 1.2},
+            {"axis": "growth", "gap": -0.05},
+            {"axis": "inflation", "gap": 1.1},
+        ],
+    }
+    assert model.model_plausible_quadrants(ev_hot) == ["overheating"]
+    ev_hot["indicators"].append({"axis": "growth", "gap": -0.4})
+    assert model.model_plausible_quadrants(ev_hot) == ["overheating", "stagflation"]
+
+
 def test_build_offline_with_seed_views():
     sources = {s["id"]: s for s in CFG["sources"]}
     views = build.load_manual_views([ROOT / "data" / "views" / "2026-11-13-seed.json"], sources)
@@ -79,6 +103,8 @@ def test_build_offline_with_seed_views():
     assert {"x", "sx", "y", "sy", "probabilities"} <= set(snap["blend"]["blended"])
     assert sum(snap["blend"]["blended"]["probabilities"].values()) == pytest.approx(1, abs=1e-6)
     assert snap["synthesis"]["method"] == "template"
+    assert len(snap["synthesis"]["divergences"]) >= 1
+    assert len(snap["synthesis"]["watch_list"]) >= 1
     stale = {v["id"] for v in snap["views"] if v["stale"]}
     assert stale == {"jpm", "bofa"}
     json.dumps(snap)  # serialisable

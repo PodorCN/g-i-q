@@ -63,6 +63,7 @@ Claude searches the web for each house's latest outlook, reads it, and returns a
 
 - `x`, `y`: the house's point
 - `σx`, `σy`: its uncertainty
+- `plausible_quadrants`: quadrants explicitly mentioned or implied in the outlook (used to constrain uncertainty regions)
 - a direction arrow
 - forecast numbers and verbatim quotes
 - the reasoning behind the score
@@ -72,22 +73,17 @@ The rubric:
 - Explicit forecasts convert directly. A CPI forecast has 0.4pp subtracted to put it on a PCE basis.
 - Qualitative views map to fixed anchors, e.g. "sticky above target" = +1.0pp.
 - `σ` is 0.3 for point forecasts, 0.5 for ranges, 0.8 for qualitative views, and +0.2 when the house stresses tail risks.
+- `plausible_quadrants` only admits quadrants beyond the base call when the commentary explicitly mentions or implies a scenario/risk crossing `x = 0` or `y = 0`.
 
 Views older than 60 days are marked stale. They are drawn hollow and given 0.35× weight.
 
-### Confidence ellipses
+### Confidence regions (quadrant-constrained)
 
-The semi-axes are `k·σx` and `k·σy`, with `k = √χ²₂(p)`:
-
-- `p`: the coverage level (68% or 90%)
-- `χ²₂(p)`: the chi-square quantile with 2 degrees of freedom
-- so `k` = 1.52 for 68% and 2.15 for 90%
-
-The two axes are treated as independent.
+Each point and the hard-data model follow a quadrant-truncated bivariate normal restricted to `plausible_quadrants` (for hard data, crossing `x = 0` or `y = 0` requires either a model mean inside `±0.25pp` or at least one indicator beyond `±0.25pp` on that side). Contour levels (68% / 90%) are calibrated over the truncated support, and `Blended` / `Houses` regions are true Highest Density Regions (HDR) of the weighted mixture density.
 
 ### Quadrant probabilities
 
-Each view is a normal distribution `N(μ, σ)`, with weight = confidence × staleness factor.
+Each view is a quadrant-truncated normal distribution `N(μ, σ) · 1[Q]`, with weight = confidence × staleness factor.
 
 - **Houses**: a mixture of all house views.
 - **Blended**: the house mixture with 60% of the weight and the hard-data point with 40% (`model_weight_share`).

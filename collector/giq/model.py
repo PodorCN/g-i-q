@@ -209,6 +209,36 @@ def evaluate(data: dict[str, Series], params: dict, as_of: date | None = None) -
             raise RuntimeError(f"no {axis} indicators available")
         m, sd = _weighted_mean_sd(pairs, floor)
         out[axis] = {"mean": round(m, 3), "sd": round(sd, 3)}
+    out["plausible_quadrants"] = model_plausible_quadrants(out)
+    return out
+
+
+def model_plausible_quadrants(ev: dict, band: float = 0.25) -> list[str]:
+    """Quadrants supported by the hard-data indicator distribution.
+
+    Allows crossing x=0 or y=0 only when the model mean lies within the neutral
+    band around zero OR at least one indicator on that axis meaningfully sits on
+    the opposite side of zero (beyond `band`).
+    """
+    gx, gy = ev["growth"]["mean"], ev["inflation"]["mean"]
+    g_rows = [r for r in ev["indicators"] if r["axis"] == "growth"]
+    i_rows = [r for r in ev["indicators"] if r["axis"] == "inflation"]
+    x_neg = gx <= band or any(r["gap"] < -band for r in g_rows)
+    x_pos = gx >= -band or any(r["gap"] > band for r in g_rows)
+    y_neg = gy <= band or any(r["gap"] < -band for r in i_rows)
+    y_pos = gy >= -band or any(r["gap"] > band for r in i_rows)
+    out = []
+    for q, (need_x_pos, need_y_pos) in (
+        ("goldilocks", (True, False)),
+        ("overheating", (True, True)),
+        ("stagflation", (False, True)),
+        ("slowdown", (False, False)),
+    ):
+        if (x_pos if need_x_pos else x_neg) and (y_pos if need_y_pos else y_neg):
+            out.append(q)
+    base = quadrant_of(gx, gy)
+    if base not in out:
+        out.insert(0, base)
     return out
 
 
@@ -234,9 +264,31 @@ def quadrant_of(x: float, y: float) -> str:
     return "stagflation" if y >= 0 else "slowdown"
 
 
+def _norm_quads(quads: list[str] | set[str] | None, x: float, y: float) -> set[str]:
+    base = quadrant_of(x, y)
+    valid = {q for q in (quads or []) if q in QUADRANTS}
+    valid.add(base)
+    return valid
+
+
+def _sample_truncated(rng: random.Random, c: dict, allowed: set[str]) -> tuple[float, float]:
+    if len(allowed) >= 4:
+        return rng.gauss(c["x"], c["sx"]), rng.gauss(c["y"], c["sy"])
+    for _ in range(256):
+        gx = rng.gauss(c["x"], c["sx"])
+        gy = rng.gauss(c["y"], c["sy"])
+        if quadrant_of(gx, gy) in allowed:
+            return gx, gy
+    return c["x"], c["y"]
+
+
 def mixture(components: list[dict], draws: int, seed: int = 7) -> dict:
-    """components: [{x, sx, y, sy, w}]. Returns mixture mean/sd and quadrant probabilities
-    estimated by Monte Carlo (axes treated as independent within a component)."""
+    """components: [{x, sx, y, sy, w, plausible_quadrants?}].
+
+    Returns mixture mean/sd and quadrant probabilities estimated by Monte Carlo
+    using quadrant-truncated bivariate normals (mass only enters quadrants in
+    `plausible_quadrants`, defaulting to all 4 quadrants if omitted).
+    """
     comps = [c for c in components if c["w"] > 0]
     wsum = sum(c["w"] for c in comps)
     if not comps:
@@ -248,16 +300,27 @@ def mixture(components: list[dict], draws: int, seed: int = 7) -> dict:
     vy = sum(c["w"] * (c["y"] ** 2 + c["sy"] ** 2) for c in comps) / wsum - my ** 2
     rng = random.Random(seed)
     cum, acc = [], 0.0
+    allowed_list = []
+    all_allowed: set[str] = set()
     for c in comps:
         acc += c["w"] / wsum
         cum.append(acc)
+        if c.get("plausible_quadrants"):
+            aq = _norm_quads(c["plausible_quadrants"], c["x"], c["y"])
+        else:
+            aq = set(QUADRANTS)
+        allowed_list.append(aq)
+        all_allowed |= aq
     counts = dict.fromkeys(QUADRANTS, 0)
     for _ in range(draws):
         u = rng.random()
-        c = comps[next((i for i, t in enumerate(cum) if u <= t), len(comps) - 1)]
-        counts[quadrant_of(rng.gauss(c["x"], c["sx"]), rng.gauss(c["y"], c["sy"]))] += 1
+        idx = next((i for i, t in enumerate(cum) if u <= t), len(comps) - 1)
+        gx, gy = _sample_truncated(rng, comps[idx], allowed_list[idx])
+        counts[quadrant_of(gx, gy)] += 1
+    ordered_quads = [q for q in QUADRANTS if q in all_allowed]
     return {
         "x": round(mx, 3), "sx": round(math.sqrt(max(vx, 0)), 3),
         "y": round(my, 3), "sy": round(math.sqrt(max(vy, 0)), 3),
+        "plausible_quadrants": ordered_quads,
         "probabilities": {k: round(v / draws, 3) for k, v in counts.items()},
     }

@@ -27,71 +27,71 @@ sources:
     name: Goldman Sachs Asset Management
     short: GSAM
     type: buy_side
-    hints: ["am.gs.com market pulse", "Goldman Sachs economics research outlook"]
+    hints: ["am.gs.com US Market Pulse", "Goldman Sachs Asset Management Investment Outlook"]
     domains: ["am.gs.com", "goldmansachs.com"]
   - id: gs_research
     name: Goldman Sachs Research
     short: GS
     type: sell_side
-    hints: ["Goldman Sachs economists US GDP core PCE forecast"]
+    hints: ["Goldman Sachs US Economics Outlook GDP core PCE", "End of the Inflation Shocks"]
     domains: ["goldmansachs.com"]
   - id: jpm
-    name: J.P. Morgan
+    name: J.P. Morgan Asset Management
     short: JPM
-    type: sell_side
-    hints: ["J.P. Morgan economic outlook", "JPMorgan Asset Management notes on the week ahead"]
-    domains: ["jpmorgan.com", "am.jpmorgan.com"]
+    type: buy_side
+    hints: ["am.jpmorgan.com Weekly Market Recap", "Notes on the Week Ahead Dr. David Kelly"]
+    domains: ["am.jpmorgan.com", "jpmorgan.com"]
   - id: ms
     name: Morgan Stanley
     short: MS
     type: sell_side
-    hints: ["Morgan Stanley Thoughts on the Market Seth Carpenter Michael Gapen"]
+    hints: ["Morgan Stanley Global Economic Outlook", "Thoughts on the Market"]
     domains: ["morganstanley.com"]
   - id: bofa
-    name: BofA Global Research
+    name: BofA Global Research / CIO
     short: BofA
     type: sell_side
-    hints: ["BofA Global Research US economic outlook"]
-    domains: ["bofa.com", "ml.com"]
+    hints: ["BofA Private Bank Capital Market Outlook", "BofA Global Research US Economic Outlook"]
+    domains: ["privatebank.bankofamerica.com", "ml.com", "bankofamerica.com", "institute.bankofamerica.com"]
   - id: wells
-    name: Wells Fargo
+    name: Wells Fargo (WFII / Economics)
     short: WFC
     type: sell_side
-    hints: ["Wells Fargo Economics outlook"]
-    domains: ["wellsfargo.com", "wf.com", "wellsfargo.bluematrix.com"]
+    hints: ["Wells Fargo Advisors Weekly Market Commentary", "Wells Fargo CIB Monthly Economic Outlook"]
+    domains: ["wellsfargoadvisors.com", "wellsfargo.com", "wf.com"]
   - id: usbank
     name: U.S. Bank
     short: USB
     type: sell_side
-    hints: ["U.S. Bank monthly economic outlook"]
+    hints: ["U.S. Bank Monthly Economic Outlook"]
     domains: ["usbank.com"]
   - id: blackrock
     name: BlackRock Investment Institute
     short: BLK
     type: buy_side
-    hints: ["BlackRock weekly market commentary"]
+    hints: ["BlackRock Global Weekly Commentary", "blackrock.com/corporate/insights/blackrock-investment-institute"]
     domains: ["blackrock.com"]
   - id: pimco
     name: PIMCO
     short: PIMCO
     type: buy_side
-    hints: ["PIMCO cyclical outlook"]
+    hints: ["PIMCO Cyclical Outlook", "pimco.com/us/en/insights"]
     domains: ["pimco.com"]
   - id: vanguard
     name: Vanguard
     short: VG
     type: buy_side
-    hints: ["Vanguard economic and market outlook United States"]
-    domains: ["vanguard.com"]
+    hints: ["corporate.vanguard.com economic and market outlook VEMO United States"]
+    domains: ["corporate.vanguard.com", "vanguard.com"]
   - id: schwab
     name: Charles Schwab
     short: SCHW
     type: buy_side
-    hints: ["Schwab market perspective"]
+    hints: ["Schwab's Market Perspective Liz Ann Sonders", "schwab.com/learn/market-commentary"]
     domains: ["schwab.com", "schwabassetmanagement.com"]
   - id: fed_board
-    name: Federal Reserve (speeches / SEP)
+    name: Federal Reserve (FOMC / SEP)
     short: Fed
     type: official
-    hints: ["Federal Reserve governor speech economic outlook", "FOMC statement"]
-    domains: ["federalreserve.gov", "bis.org"]
+    hints: ["FOMC statement minutes Summary of Economic Projections", "Federal Reserve"]
+    domains: ["federalreserve.gov"]

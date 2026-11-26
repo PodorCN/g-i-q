@@ -114,6 +114,10 @@ def annotate(views: list[dict], params: dict, today: date) -> None:
             w *= params["stale_weight"]
         v["weight"] = round(w, 3)
         v["quadrant"] = model.quadrant_of(v["x"], v["y"])
+        raw_pq = [q for q in (v.get("plausible_quadrants") or []) if q in model.QUADRANTS]
+        if v["quadrant"] not in raw_pq:
+            raw_pq.insert(0, v["quadrant"])
+        v["plausible_quadrants"] = [q for q in model.QUADRANTS if q in raw_pq]
 
 
 # ----------------------------------------------------------------------------- synthesis
@@ -122,6 +126,9 @@ def annotate(views: list[dict], params: dict, today: date) -> None:
 def template_synthesis(snap: dict) -> dict:
     """Deterministic fallback when the LLM is not available."""
     m, b = snap["model"], snap["blend"]
+    params = snap.get("params", {})
+    trend = params.get("trend_growth", 2.0)
+    target = params.get("inflation_target", 2.0)
     g = [r for r in m["indicators"] if r["axis"] == "growth"]
     p = [r for r in m["indicators"] if r["axis"] == "inflation"]
     up_g = sum(r["supports"] == "above_trend" for r in g)
@@ -133,21 +140,76 @@ def template_synthesis(snap: dict) -> dict:
     top = max(probs, key=probs.get)
     name = lambda q: model.QUADRANTS[q].split(" (")[0]  # noqa: E731
     houses = b["houses"]
+    views = snap.get("views", [])
+    fresh = [v for v in views if not v.get("stale")]
+    stale = [v for v in views if v.get("stale")]
+    source_ids = {s["id"] for s in snap.get("sources", [])}
+    missing = [s["name"] for s in snap.get("sources", []) if s["id"] not in {v["id"] for v in views}]
+
+    divergences = []
+    pool = fresh or views
+    if len(pool) >= 2:
+        g_lo, g_hi = min(pool, key=lambda v: v["x"]), max(pool, key=lambda v: v["x"])
+        if g_hi["x"] - g_lo["x"] >= 0.2:
+            divergences.append(
+                f"Growth spread (fresh views): {g_lo['name']} ({g_lo['x']:+.2f}pp) vs {g_hi['name']} ({g_hi['x']:+.2f}pp)."
+            )
+        p_lo, p_hi = min(pool, key=lambda v: v["y"]), max(pool, key=lambda v: v["y"])
+        if p_hi["y"] - p_lo["y"] >= 0.2:
+            divergences.append(
+                f"Inflation spread (fresh views): {p_lo['name']} ({p_lo['y']:+.2f}pp) vs {p_hi['name']} ({p_hi['y']:+.2f}pp)."
+            )
+    tail_houses = [v["short"] or v["name"] for v in pool if "stagflation" in (v.get("plausible_quadrants") or []) and v["quadrant"] != "stagflation"]
+    if tail_houses:
+        divergences.append(
+            f"Downside growth / stagflation tail risk flagged by: {', '.join(tail_houses)}."
+        )
+    be = [r for r in p if r["id"] in ("be10", "fwd5y5y")]
+    if be and all(r["gap"] <= 0 for r in be) and m["inflation"]["mean"] > 0.4:
+        be_str = ", ".join(f"{r['label'].split(' (')[0]} {r['value']:.2f}%" for r in be)
+        divergences.append(
+            f"Realized vs expectations: core PCE/CPI run >+1.2pp above target, yet market breakevens remain anchored ({be_str})."
+        )
+
+    watch_list = []
+    if stale:
+        watch_list.append(
+            f"Stale views (>{params.get('stale_after_days', 60)}d, down-weighted to {params.get('stale_weight', 0.35):.0%}): "
+            + ", ".join(f"{v.get('short') or v['name']} ({v.get('published') or 'n.d.'})" for v in stale)
+            + "."
+        )
+    if missing:
+        watch_list.append(f"Missing coverage ({len(missing)} of {len(source_ids)} configured sources): {', '.join(missing)}.")
+    soft_ind = sorted(m["indicators"], key=lambda r: r["gap"])[:2]
+    if soft_ind:
+        watch_list.append(
+            "Coolest hard-data readings: " + "; ".join(f"{r['label'].split(' (')[0]} ({r['gap']:+.2f}pp)" for r in soft_ind) + "."
+        )
+
+    gap_g = houses["x"] - m["growth"]["mean"]
+    h_probs = houses["probabilities"]
+    h_top = max(h_probs, key=h_probs.get)
+    imp_g = trend + houses["x"]
+    imp_p = target + houses["y"]
     return {
-        "headline": f"{name(top)} is the most likely regime ({probs[top]:.0%} blended probability)",
-        "regime_call": top,
+        "headline": (
+            f"{name(h_top)} ({h_probs[h_top]:.0%} house consensus) — implied {imp_g:.1f}% real GDP, {imp_p:.1f}% core PCE"
+        ),
+        "regime_call": h_top,
         "data_supports": (
             f"Hard data place the economy in {name(mq)}: growth gap {m['growth']['mean']:+.2f}pp "
-            f"(±{m['growth']['sd']:.2f}), inflation gap {m['inflation']['mean']:+.2f}pp "
-            f"(±{m['inflation']['sd']:.2f}). {up_g} of {len(g)} growth indicators are above trend and "
-            f"{dn_g} below; {up_p} of {len(p)} inflation indicators are above target and {dn_p} below."
+            f"(~{trend + m['growth']['mean']:.2f}% GDP, ±{m['growth']['sd']:.2f}), inflation gap "
+            f"{m['inflation']['mean']:+.2f}pp (~{target + m['inflation']['mean']:.2f}% core PCE, ±{m['inflation']['sd']:.2f}). "
+            f"{up_g} of {len(g)} growth indicators are above trend and {dn_g} below; "
+            f"{up_p} of {len(p)} inflation indicators are above target and {dn_p} below."
         ),
         "consensus_vs_data": (
-            f"The house consensus sits at growth {houses['x']:+.2f}pp / inflation {houses['y']:+.2f}pp "
-            f"versus the data model at {m['growth']['mean']:+.2f} / {m['inflation']['mean']:+.2f}."
+            f"House consensus sits at growth {houses['x']:+.2f}pp / inflation {houses['y']:+.2f}pp "
+            f"versus hard data at {m['growth']['mean']:+.2f} / {m['inflation']['mean']:+.2f} "
+            f"(houses sit {abs(gap_g):.2f}pp {'below' if gap_g < 0 else 'above'} hard data on growth)."
         ),
-        "divergences": [],
-        "watch_list": [],
+        "divergences": divergences,
+        "watch_list": watch_list,
         "method": "template",
     }
 
@@ -169,18 +231,22 @@ def build(cfg: dict, data: dict, views: list[dict], today: date, backfill_months
         "x": ev["growth"]["mean"], "sx": ev["growth"]["sd"],
         "y": ev["inflation"]["mean"], "sy": ev["inflation"]["sd"],
         "dx": dx, "dy": dy, "quadrant": model.quadrant_of(ev["growth"]["mean"], ev["inflation"]["mean"]),
+        "plausible_quadrants": ev["plausible_quadrants"],
     }
     annotate(views, params, today)
 
-    comps = [{"x": v["x"], "sx": v["sx"], "y": v["y"], "sy": v["sy"], "w": v["weight"]} for v in views]
+    comps = [{"x": v["x"], "sx": v["sx"], "y": v["y"], "sy": v["sy"], "w": v["weight"],
+              "plausible_quadrants": v["plausible_quadrants"]} for v in views]
     draws = params["mc_draws"]
     houses = model.mixture(comps, draws) if comps else None
-    model_mix = model.mixture([{"x": model_pt["x"], "sx": model_pt["sx"], "y": model_pt["y"],
-                                "sy": model_pt["sy"], "w": 1.0}], draws)
+    model_comp = {"x": model_pt["x"], "sx": model_pt["sx"], "y": model_pt["y"],
+                  "sy": model_pt["sy"], "w": 1.0,
+                  "plausible_quadrants": model_pt["plausible_quadrants"]}
+    model_mix = model.mixture([model_comp], draws)
     share = params["model_weight_share"] if comps else 1.0
     wsum = sum(c["w"] for c in comps) or 1.0
     blended_comps = [{**c, "w": c["w"] / wsum * (1 - share)} for c in comps] + [
-        {"x": model_pt["x"], "sx": model_pt["sx"], "y": model_pt["y"], "sy": model_pt["sy"], "w": share}]
+        {**model_comp, "w": share}]
     blended = model.mixture(blended_comps, draws)
 
     snap = {
