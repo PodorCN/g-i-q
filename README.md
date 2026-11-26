@@ -102,7 +102,7 @@ Probabilities are the share of 40k Monte Carlo draws that land in each quadrant.
    ```
 2. **Deploy the site.** Set `apiBase` in `frontend/config.js` to the Worker URL, then:
    ```bash
-   npx wrangler pages deploy frontend --project-name giq
+   npx wrangler pages deploy frontend --project-name g-i-q --branch main
    ```
    Optional: set `ALLOWED_ORIGINS` in `wrangler.toml` to your Pages domain(s), then redeploy the Worker.
 3. **Seed the data.**
@@ -116,7 +116,9 @@ Probabilities are the share of 40k Monte Carlo draws that land in each quadrant.
 
    GitHub Actions workflows:
    - `collect.yml`: Mon/Thu 13:17 UTC, plus manual runs. Builds a snapshot, commits it to `data/`, and publishes it to the Worker.
-   - `deploy-backend.yml` / `deploy-frontend.yml`: run manually from GitHub Actions after configuring the target Worker and Pages project.
+   - `deploy-backend.yml`: runs on pushes to `main` that change `backend/` or its workflow. It deploys after the tests pass and the GIQ KV namespace ID is configured.
+   - `deploy-frontend.yml`: runs on pushes to `main` that change `frontend/` or its workflow. It deploys to the `g-i-q` Pages project by default once `GIQ_API_URL` serves a compatible snapshot at `/api/latest`.
+   - Both deployment workflows can also be started manually on `main`.
 
 ## Day-to-day
 
