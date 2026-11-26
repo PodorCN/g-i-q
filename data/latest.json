@@ -1,7 +1,7 @@
 {
  "schema_version": 1,
- "as_of": "2026-11-25",
- "generated_at": "2026-11-26T01:18:11+00:00",
+ "as_of": "2026-11-26",
+ "generated_at": "2026-11-26T22:21:04+00:00",
  "params": {
   "trend_growth": 2.0,
   "inflation_target": 2.0,
@@ -24,8 +24,8 @@
     "axis": "growth",
     "label": "Atlanta Fed GDPNow (current qtr, % saar)",
     "unit": "%",
-    "value": 3.209,
-    "gap": 1.209,
+    "value": 2.902,
+    "gap": 0.902,
     "weight": 1.5,
     "observation_date": "2026-10-01",
     "series": [
@@ -220,10 +220,10 @@
     "axis": "inflation",
     "label": "10y breakeven inflation (%)",
     "unit": "%",
-    "value": 2.15,
-    "gap": -0.15,
+    "value": 2.136,
+    "gap": -0.164,
     "weight": 0.5,
-    "observation_date": "2026-11-24",
+    "observation_date": "2026-11-25",
     "series": [
      "T10YIE"
     ],
@@ -235,10 +235,10 @@
     "axis": "inflation",
     "label": "5y5y forward breakeven (%)",
     "unit": "%",
-    "value": 2.122,
-    "gap": -0.178,
+    "value": 2.114,
+    "gap": -0.186,
     "weight": 0.5,
-    "observation_date": "2026-11-24",
+    "observation_date": "2026-11-25",
     "series": [
      "T5YIFR"
     ],
@@ -262,22 +262,25 @@
    }
   ],
   "growth": {
-   "mean": 0.939,
-   "sd": 0.738
+   "mean": 0.877,
+   "sd": 0.725
   },
   "inflation": {
-   "mean": 0.993,
-   "sd": 0.657
+   "mean": 0.991,
+   "sd": 0.661
   },
+  "plausible_quadrants": [
+   "overheating"
+  ],
   "point": {
    "id": "data_model",
    "name": "Hard-data model (FRED)",
    "short": "Data",
-   "x": 0.939,
-   "sx": 0.738,
-   "y": 0.993,
-   "sy": 0.657,
-   "dx": 0.35,
+   "x": 0.877,
+   "sx": 0.725,
+   "y": 0.991,
+   "sy": 0.661,
+   "dx": 0.29,
    "dy": 0.36,
    "quadrant": "overheating",
    "plausible_quadrants": [
@@ -406,16 +409,13 @@
    },
    {
     "as_of": "2026-10-31",
-    "x": 0.835,
+    "x": 0.774,
     "y": 0.866,
-    "sx": 0.762,
+    "sx": 0.741,
     "sy": 0.493
    }
   ],
-  "caveat": "History uses current-vintage FRED data with approximate publication lags, not true real-time vintages.",
-  "plausible_quadrants": [
-   "overheating"
-  ]
+  "caveat": "History uses current-vintage FRED data with approximate publication lags, not true real-time vintages."
  },
  "views": [
   {
@@ -459,10 +459,11 @@
    "scoring_rationale": "Qualitative growth ('holds relatively steady', watching AI buildout-to-adoption transition from Nov 9/16 Forum) -> +0.3 with sd 0.8. Headline inflation cooling from ~3% while services stay sticky -> +0.6 (sd 0.65).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 2,
+   "age_days": 3,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "gs_research",
@@ -511,10 +512,11 @@
    "scoring_rationale": "Explicit point forecasts: 2027 GDP 2.4% - 2.0% trend = +0.4 (sd 0.35); core PCE path 3.2% -> 2.4% averages ~2.8% over next 12m -> +0.8 (sd 0.35).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 2,
+   "age_days": 3,
    "stale": false,
    "weight": 1.0,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "jpm",
@@ -558,10 +560,11 @@
    "scoring_rationale": "Headline PCE path 3.7% -> 2.3% averages ~3.0% (~2.8% core-PCE equivalent as energy fades) -> +0.8 (sd 0.45). Growth at 3.4% today tempered by equity/tech drawdown and AI capex risks -> +0.4 (sd 0.65).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 2,
+   "age_days": 3,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "bofa",
@@ -611,10 +614,11 @@
    "scoring_rationale": "2027 GDP 2.3% -> +0.3 (sd widened to 0.55 for explicit AI hard-landing tail risk). Core PCE staying above target at 2.6% by YE-2027 implies ~2.9% average over next 12m -> +0.9. Quantitative metrics via press coverage of Nov 24 BofA Global Research report alongside Nov 23 CIO weekly.",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 1,
+   "age_days": 2,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "vanguard",
@@ -663,10 +667,11 @@
    "scoring_rationale": "2027 GDP ~3.0% blended with near-term transition -> +0.75 (sd 0.55 for AI diffusion timing risk). Core PCE 3.2% -> 2.5% by mid-2027 averages ~2.8% over next 12m -> +0.8.",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 6,
+   "age_days": 7,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "fed_board",
@@ -715,10 +720,11 @@
    "scoring_rationale": "Official FOMC SEP medians: next-4Q GDP ~2.4% -> +0.4 (sd 0.35); Core PCE path 3.4% (2026) -> 2.5% (2027) averages ~2.95% over the next 12m -> +0.95 (sd 0.35).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 7,
+   "age_days": 8,
    "stale": false,
    "weight": 1.0,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "wells",
@@ -757,10 +763,11 @@
    "scoring_rationale": "GDP range 2.1–2.3% midpoint 2.2% -> +0.2 (sd 0.5). Inflation sticky above 2% cooling toward mid-2% -> +0.8 (sd 0.5; CIB full table gated).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 7,
+   "age_days": 8,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "ms",
@@ -804,10 +811,11 @@
    "scoring_rationale": "Explicit range 2.5–2.75% GDP midpoint ~2.6% -> +0.6 (sd 0.45). Core PCE 3.2% -> 2.6% averages ~2.85% over next 12m -> +0.85 (sd 0.35).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 9,
+   "age_days": 10,
    "stale": false,
    "weight": 1.0,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "schwab",
@@ -841,10 +849,11 @@
    "scoring_rationale": "Qualitative commentary. Positive headline growth tempered by trade drag and labor cooling risk -> +0.25 (sd 0.75, includes stagflation tail). Sticky core inflation pressures -> +0.85 (sd 0.65).",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 12,
+   "age_days": 13,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "gsam",
@@ -891,10 +900,11 @@
    "scoring_rationale": "Growth 2.5% - 2.0 trend = +0.5 (explicit). No core PCE number; 'normalizing' from ~3.1% core PCE implies ~2.7% average over 12m -> +0.7 with qualitative sd 0.6.",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 20,
+   "age_days": 21,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "usbank",
@@ -958,10 +968,11 @@
    "scoring_rationale": "Next-4-quarter growth ~2.15% -> +0.15; core PCE averaging ~2.85% over the horizon -> +0.85. Point forecasts (sd 0.3) widened on growth for the 25% recession tail.",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 23,
+   "age_days": 24,
    "stale": false,
    "weight": 1.0,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   },
   {
    "id": "pimco",
@@ -1004,10 +1015,11 @@
    "scoring_rationale": "Qualitative. Resilient growth -> +0.4; 'moderating toward target' -> +0.6. sd widened (+0.2) because the piece stresses fat tails.",
    "found_recent": true,
    "method": "manual:web-search-refresh-2026-11-25",
-   "age_days": 50,
+   "age_days": 51,
    "stale": false,
    "weight": 0.8,
-   "quadrant": "overheating"
+   "quadrant": "overheating",
+   "carried_forward": true
   }
  ],
  "blend": {
@@ -1028,10 +1040,10 @@
    }
   },
   "model": {
-   "x": 0.939,
-   "sx": 0.738,
-   "y": 0.993,
-   "sy": 0.657,
+   "x": 0.877,
+   "sx": 0.725,
+   "y": 0.991,
+   "sy": 0.661,
    "plausible_quadrants": [
     "overheating"
    ],
@@ -1043,10 +1055,10 @@
    }
   },
   "blended": {
-   "x": 0.608,
-   "sx": 0.711,
+   "x": 0.583,
+   "sx": 0.695,
    "y": 0.875,
-   "sy": 0.582,
+   "sy": 0.584,
    "plausible_quadrants": [
     "overheating",
     "stagflation"
@@ -1137,16 +1149,16 @@
  "synthesis": {
   "headline": "Overheating / Reflation (86% house consensus) — implied 2.4% real GDP, 2.8% core PCE",
   "regime_call": "overheating",
-  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.94pp (~2.94% GDP, ±0.74), inflation gap +0.99pp (~2.99% core PCE, ±0.66). 7 of 9 growth indicators are above trend and 0 below; 5 of 7 inflation indicators are above target and 0 below.",
-  "consensus_vs_data": "House consensus sits at growth +0.39pp / inflation +0.80pp versus hard data at +0.94 / +0.99 (houses sit 0.55pp below hard data on growth).",
+  "data_supports": "Hard data place the economy in Overheating / Reflation: growth gap +0.88pp (~2.88% GDP, ±0.72), inflation gap +0.99pp (~2.99% core PCE, ±0.66). 7 of 9 growth indicators are above trend and 0 below; 5 of 7 inflation indicators are above target and 0 below.",
+  "consensus_vs_data": "House consensus sits at growth +0.39pp / inflation +0.80pp versus hard data at +0.88 / +0.99 (houses sit 0.49pp below hard data on growth).",
   "divergences": [
    "Growth spread (fresh views): U.S. Bank (+0.15pp) vs Vanguard (+0.75pp).",
    "Inflation spread (fresh views): BlackRock Investment Institute (+0.60pp) vs Federal Reserve (FOMC / SEP) (+0.95pp).",
    "Downside growth / stagflation tail risk flagged by: BLK, BofA, SCHW, USB, PIMCO.",
-   "Realized vs expectations: core PCE/CPI run >+1.2pp above target, yet market breakevens remain anchored (10y breakeven inflation 2.15%, 5y5y forward breakeven 2.12%)."
+   "Realized vs expectations: core PCE/CPI run >+1.2pp above target, yet market breakevens remain anchored (10y breakeven inflation 2.14%, 5y5y forward breakeven 2.11%)."
   ],
   "watch_list": [
-   "Coolest hard-data readings: 5y5y forward breakeven (-0.18pp); 10y breakeven inflation (-0.15pp)."
+   "Coolest hard-data readings: 5y5y forward breakeven (-0.19pp); 10y breakeven inflation (-0.16pp)."
   ],
   "method": "template"
  }
